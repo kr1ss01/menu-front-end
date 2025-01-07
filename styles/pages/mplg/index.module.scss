@@ -1,0 +1,111 @@
+@use "../../mixins";
+@use "../../variables";
+
+.login {
+  @include mixins.page();
+  @include mixins.d-flex(center, center, column);
+  .loginCont {
+    margin-top: -10%;
+    width: 350px;
+    height: 570px;
+    // background-color: variables.$grey;
+    border: 1px solid variables.$grey;
+    border-radius: 5px;
+    padding: 1rem;
+    // background-color: variables.$white;
+    h2 {
+      text-align: center;
+      margin-top: 1rem;
+      text-transform: uppercase;
+      color: variables.$black;
+      font-weight: 900;
+      font-size: 1.2rem;
+      cursor: default;
+    }
+    h3 {
+      text-align: center;
+      font-size: 0.8rem;
+      margin-top: 0.3rem;
+      border-bottom: 1px solid variables.$black;
+      padding-bottom: 0.5rem;
+      cursor: default;
+    }
+    form {
+      @include mixins.d-flex(center, flex-start, column);
+      margin-top: 1rem;
+      gap: 1rem 0;
+      .errorDiv {
+        @include mixins.d-flex(center, center, row);
+        height: 25px;
+        // background-color: #111;
+        width: 100%;
+        margin-top: 0;
+        overflow: hidden;
+        .error {
+          font-size: .9rem;
+          font-weight: 300;
+          text-transform: capitalize;
+          color: variables.$error;
+          cursor: default;
+          text-align: center;
+          transform: translateX(-100%);
+          width: 100%;
+          transition: all 350ms linear;
+          animation: slideIn 350ms linear 1 forwards;
+        }
+      }
+      .submitButton {
+        @include mixins.d-flex(center, center, row);
+        @include mixins.naturalButton();
+        padding: 0.3rem 1.8rem;
+        color: variables.$black;
+        // background-color: variables.$grey;
+        background-color: transparent;
+        text-transform: uppercase;
+        border-radius: 0px;
+        font-weight: 300;
+        margin: 0 auto;
+        margin-top: 1rem;
+        border-bottom: 2px solid variables.$grey;
+        position: relative;
+        .borderAnimationButton {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          height: 2px;
+          width: 100%;
+          background-color: variables.$black;
+          transform-origin: left;
+          transform: scale(0);
+          transition: all 300ms linear;
+        }
+      }
+      img {
+        margin-top: 1.5rem;
+        transform: rotate(45deg);
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .submitButton {
+    transition: all 250ms linear;
+    &:hover,
+    &:focus {
+      .borderAnimationButton {
+        transform: scale(1) !important;
+      }
+    }
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

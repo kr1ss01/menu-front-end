@@ -1,0 +1,100 @@
+@use "../../mixins";
+@use "../../variables";
+
+@mixin initialBox() {
+  width: 400px;
+  height: 570px;
+  background-color: variables.$white;
+  // @include mixins.setTransBg();
+  border-radius: 10px;
+  margin-top: 100px;
+  overflow: hidden;
+  position: relative;
+  @include mixins.shadowSimple();
+}
+
+@mixin errorDiv() {
+  @include mixins.d-flex(center, center, row);
+  height: 25px;
+  width: 100%;
+  margin-top: 0;
+  overflow: hidden;
+  .error {
+    font-size: 0.9rem;
+    font-weight: 300;
+    text-transform: capitalize;
+    color: variables.$error;
+    cursor: default;
+    text-align: center;
+    transform: translateX(-100%);
+    z-index: 12;
+    width: 100%;
+    transition: all 350ms linear;
+    animation: slideIn 350ms linear 1 forwards;
+  }
+}
+
+@mixin closeDiv() {
+  margin-top: auto;
+  width: 100%;
+  .closeButton {
+    @include mixins.naturalButton();
+    @include mixins.d-flex(center, center, row);
+    width: 100%;
+    padding: 0.6rem 0;
+    // background-color: variables.$black;
+    @include mixins.setTransBg();
+    color: variables.$black;
+    font-size: 0.8rem;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+}
+
+@mixin popUp() {
+  @include mixins.d-flex(center, flex-start, column);
+  position: absolute;
+  top: 44px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  // background-color: variables.$white;
+  @include mixins.setTransBg();
+  z-index: 10;
+  transition: all 300ms linear;
+  transform: translateY(100%);
+  padding: 0rem 0rem;
+}
+
+@mixin commonH2() {
+  @include mixins.d-flex(center, center, row);
+  text-transform: uppercase;
+  text-align: center;
+  padding: 0.5rem 1rem;
+  // background-color: variables.$black;
+  @include mixins.setTransBg();
+  color: variables.$black;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  cursor: default;
+  height: 44px;
+}
+
+@mixin addButton() {
+  @include mixins.d-flex(center, center, row);
+  @include mixins.naturalButton();
+  height: calc(15% - 44px);
+  width: 100%;
+  background-color: variables.$white;
+  color: variables.$black;
+  text-transform: capitalize;
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

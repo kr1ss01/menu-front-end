@@ -1,0 +1,129 @@
+@use "../../../mixins";
+@use '../dashboard';
+@use "../../../variables";
+
+.user {
+  @include dashboard.initialBox();
+  h2 {
+    @include dashboard.commonH2();
+  }
+  .userBody {
+    padding: 1rem;
+    .changeSection {
+      width: 100%;
+      background-color: variables.$grey;
+      padding: 0.7rem;
+      border-radius: 5px;
+      color: variables.$black;
+      margin-bottom: 1rem;
+      &:nth-child(2) {
+        margin-top: 2rem;
+      }
+      h3 {
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        font-weight: 900;
+        cursor: default;
+      }
+      p {
+        font-size: 0.9rem;
+        font-weight: 300;
+        padding-left: 0.5rem;
+        cursor: default;
+      }
+      button[type="button"] {
+        @include mixins.naturalButton();
+        @include mixins.d-flex(center, center, row);
+        background-color: variables.$black;
+        color: variables.$white;
+        margin-top: 0.7rem;
+        padding: 0.2rem 1.5rem;
+        border-radius: 5px;
+        margin-left: 0.5rem;
+      }
+    }
+    .userGeneralOptions {
+      @include mixins.d-flex(flex-start, flex-start, column);
+      gap: 1rem 0;
+      width: 100%;
+      margin-top: 1.5rem;
+      .userGeneralOptionsRow {
+        @include mixins.d-flex(center, space-between, row);
+        padding: 0 0.5rem;
+        width: 100%;
+        label {
+          text-align: left;
+          color: variables.$black;
+          cursor: default;
+          font-weight: 900;
+          text-transform: capitalize;
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+
+.passwordChange {
+  @include dashboard.popUp();
+  .passwordVerify {
+    @include mixins.d-flex(center, center, row);
+    gap: 0 .5rem;
+    width: 100%;
+    margin-top: .5rem;
+    div {
+      flex-basis: 12.5%;
+      height: 20px;
+      background-color: variables.$grey;
+      border-radius: 10px;
+    }
+  }
+  .passwordVerifyRules {
+    @include mixins.d-flex(flex-start, flex-start, column);
+    gap: .3rem 0;
+    padding: 0 1rem;
+    margin-top: .5rem;
+    p {
+      font-size: .8rem;
+      width: 100%;
+      background-color: variables.$grey;
+      padding: .3rem;
+      border-radius: 5px;
+      cursor: default;
+    }
+  }
+  form {
+    @include mixins.d-flex(center, flex-start, column);
+    gap: .3rem 0;
+    margin-top: 1rem;
+    width: 100%;
+    .errorDiv {
+      @include dashboard.errorDiv();
+    }
+  }
+  .closeDiv {
+    @include dashboard.closeDiv();
+  }
+}
+
+.changeEmail {
+  @include dashboard.popUp();
+  form {
+    @include mixins.d-flex(center, flex-start, column);
+    gap: 1rem 0;
+    margin-top: 1rem;
+    width: 100%;
+    .errorDiv {
+      @include dashboard.errorDiv();
+    }
+  }
+  .closeDiv {
+    @include dashboard.closeDiv();
+  }
+}
+
+@media screen and (max-width: 410px) {
+  .user {
+    width: 310px !important;
+  }
+}

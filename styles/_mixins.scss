@@ -1,0 +1,63 @@
+@use "./variables";
+$margin_top: 60px;
+
+@mixin page() {
+  width: 100%;
+  min-height: 100vh;
+  margin-top: calc($margin_top - 0px);
+  padding-bottom: 2rem;
+}
+
+@mixin d-flex($align, $justify, $dir) {
+  display: flex;
+  align-items: $align;
+  justify-content: $justify;
+  flex-direction: $dir;
+}
+
+@mixin naturalButton() {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-family: "Jura", sans-serif;
+  font-weight: 700;
+}
+
+@mixin shadowSimple() {
+  -webkit-box-shadow: 0px 5px 10px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 5px 10px 1px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0px 5px 10px 1px rgba(0, 0, 0, 0.2);
+}
+
+@mixin inputDiv() {
+  @include d-flex(center, flex-start, row);
+  gap: 0.2rem;
+  padding: 0.5rem;
+  background-color: variables.$white;
+  border-radius: 30px;
+  margin-bottom: 1rem;
+  max-width: variables.$max_width_input;
+  transition: transform 200ms ease-in;
+  @include shadowSimple();
+  input,
+  p {
+    border: none;
+    outline: none;
+    background-color: inherit;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-left: 1ch;
+    margin-right: auto;
+    width: 100%;
+  }
+  button {
+    @include naturalButton();
+  }
+}
+
+@mixin setTransBg() {
+  background: rgba(255, 255, 255, 0.59);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8.5px);
+  -webkit-backdrop-filter: blur(8.5px);
+}

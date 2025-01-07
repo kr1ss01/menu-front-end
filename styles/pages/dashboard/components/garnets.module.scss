@@ -1,0 +1,227 @@
+@use "../../../mixins";
+@use "../dashboard";
+@use "../../../variables";
+
+.garnets {
+  @include mixins.page();
+  @include mixins.d-flex(center, center, row);
+  .garnetsView {
+    @include mixins.d-flex(center, flex-start, row);
+    @include mixins.setTransBg();
+    width: 100%;
+    max-width: 720px;
+    height: 460px;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    perspective: 1000px;
+    .errorHandlingDiv {
+      @include mixins.d-flex(center, space-between, row);
+      @include mixins.setTransBg();
+      position: absolute;
+      top: 10px;
+      left: 0;
+      width: 55%;
+      margin: 0 1rem;
+      border-radius: 5px;
+      padding: 0.5rem 1rem;
+      animation: slideDown 250ms linear 1 forwards;
+      cursor: pointer;
+      z-index: 800;
+      overflow: hidden;
+      p {
+        width: 80%;
+        text-align: left;
+        font-size: 1rem;
+        font-weight: 700;
+        color: variables.$error;
+        cursor: pointer;
+      }
+      &::before {
+        content: "";
+        position: absolute;
+        top: calc(100% - 1px);
+        left: 0px;
+        right: 0px;
+        height: 1px;
+        background-color: variables.$error;
+        animation: timer 5000ms linear 1 forwards;
+      }
+    }
+    .garnetsViewList {
+      @include mixins.d-flex(flex-start, flex-start, column);
+      gap: 0.5rem 0;
+      flex-basis: 60%;
+      height: 100%;
+      overflow-y: scroll;
+      padding: 1rem;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      .garnetsViewList_loading {
+        @include mixins.d-flex(center, flex-start, column);
+        gap: 0.5rem 0;
+        width: 100%;
+        margin: auto 0;
+        p {
+          font-size: 1rem;
+          font-weight: 900;
+          cursor: default;
+          text-transform: capitalize;
+        }
+      }
+      .garnetsViewList_error {
+        @include mixins.d-flex(center, flex-start, column);
+        gap: 0.5rem 0;
+        width: 100%;
+        margin: auto 0;
+        svg {
+          animation: shake 1200ms linear infinite both;
+        }
+        p {
+          font-size: 1rem;
+          font-weight: 900;
+          cursor: default;
+          text-transform: capitalize;
+        }
+        button[type="button"] {
+          @include mixins.d-flex(center, center, row);
+          @include mixins.naturalButton();
+          padding: 0.4rem 1.2rem;
+          color: variables.$black;
+          text-transform: capitalize;
+          background-color: transparent;
+          border-bottom: 1px solid variables.$black;
+        }
+      }
+      .garnetView {
+        @include mixins.d-flex(center, space-between, row);
+        width: 100%;
+        padding: 0.4rem 0.8rem;
+        background-color: variables.$white;
+        border-radius: 5px;
+        .garnetView_left {
+          @include mixins.d-flex(center, flex-start, row);
+          gap: 0 1rem;
+          p {
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: default;
+          }
+        }
+        .garnetView_right {
+          @include mixins.d-flex(center, flex-end, row);
+          gap: 0 0.7rem;
+          button {
+            @include mixins.d-flex(center, center, row);
+            @include mixins.naturalButton();
+          }
+          .garnetBtn_remove svg {
+            fill: variables.$error;
+          }
+        }
+      }
+    }
+    .garnetsSettings {
+      flex-basis: 40%;
+      min-width: 300px;
+      background-color: variables.$white;
+      height: 100%;
+      h2 {
+        font-size: 1rem;
+        font-weight: 700;
+        text-align: center;
+        width: 100%;
+        padding: 0.5rem;
+        cursor: default;
+      }
+      form {
+        @include mixins.d-flex(center, flex-start, column);
+        padding: 0.5rem;
+        gap: 0.5rem 0;
+        .submitButtonDiv {
+          @include mixins.d-flex(center, flex-end, row);
+          button[type="button"] {
+            @include mixins.d-flex(center, center, row);
+            @include mixins.naturalButton();
+          }
+        }
+      }
+      .garnetsSettingsInfo {
+        padding: 1rem 1rem;
+        margin-top: 1rem;
+        border-top: 1px solid variables.$black;
+        border-bottom: 1px solid variables.$black;
+        p {
+          @include mixins.d-flex(center, space-between, row);
+          font-size: 0.9rem;
+          font-weight: 300;
+          cursor: default;
+        }
+      }
+    }
+  }
+}
+
+@keyframes shake {
+  0% {
+    transform: rotate(0deg);
+  }
+  10% {
+    transform: rotate(60deg);
+  }
+  30% {
+    transform: rotate(-60deg);
+  }
+  40% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(0);
+  }
+}
+
+@keyframes slideDown {
+  0% {
+    transform: translateY(0) rotateX(90deg);
+  }
+  100% {
+    transform: translateY(0) rotateX(0);
+  }
+}
+
+@keyframes timer {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@media screen and (max-width: 620px) {
+  .garnetsView {
+    flex-direction: column-reverse !important;
+    width: 400px !important;
+    height: fit-content !important;
+  }
+  .garnetsViewList,
+  .garnetsSettings {
+    flex-basis: auto !important;
+  }
+  .errorHandlingDiv {
+    width: 95% !important;
+    margin: 0 !important;
+    right: 10px !important;
+    left: 10px !important;
+  }
+  .garnetsSettings {
+    width: 100%;
+    padding: 0.5rem 1rem;
+  }
+  .garnetsViewList {
+    width: 100%;
+    height: 500px !important;
+  }
+}

@@ -1,0 +1,97 @@
+@use "../../mixins";
+@use "../../variables";
+
+.dropDownInput {
+    position: relative;
+    width: 100%;
+    max-width: variables.$max_width_input;
+}
+
+.dropDownButton {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: variables.$max_width_input;
+    padding: .6rem .3rem;
+    padding-left: .5rem;
+    background-color: variables.$white;
+    border-radius: 50px;
+    box-shadow: rgba($color: variables.$black, $alpha: .2) 0px 8px 24px;
+    cursor: pointer;
+    border: none;
+    margin-bottom: 1rem;
+    outline: none;
+    p {
+        @include mixins.d-flex(center, flex-start, row);
+        gap: 0 .5rem;
+        font-family: 'Jura', sans-serif !important;
+        font-weight: 300;
+        font-size: .9rem;
+        opacity: .8;
+    }
+    span {
+        display: flex;   
+        align-items: center;
+        justify-content: center;
+        margin-left: 1rem;
+    }
+}
+
+.buttonOpen {
+    background-color: rgba($color: variables.$grey, $alpha: .5);
+}
+
+.dropDownContent {
+    position: absolute;
+    min-width: 100%;
+    z-index: 11;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    margin-top: .5rem;
+    background-color: variables.$white;
+    border-radius: 10px;
+    box-shadow: rgba($color: variables.$black, $alpha: .2) 0px 8px 24px;
+    max-height: 40vh;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    opacity: 0;
+    transition: opacity 150ms ease-in-out;
+    transform: translateY(-5%);
+    transition: transform 200ms ease-in-out;
+    pointer-events: none;
+    &::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+    }
+}
+
+.contentOpen {
+    opacity: 1;  
+    transform: translateY(0);
+    pointer-events: all;
+}
+
+.dropDownItem {
+    padding: .5rem;
+    margin: .1rem;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: variables.$white;
+    &:hover {
+        background-color: rgba($color: variables.$grey, $alpha: .4);
+    }
+}
+
+.dropDownItemActive {
+    padding: .5rem;
+    margin: .1rem;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: rgba($color: variables.$grey, $alpha: .9);
+}

@@ -1,0 +1,40 @@
+@use "../mixins";
+@use "../variables";
+
+.logo {
+  width: fit-content;
+  .logoMain {
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    font-weight: 900;
+  }
+  .logoSecondary {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    font-weight: 900;
+  }
+}
+
+.logoMainDark {
+  color: variables.$white;
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: variables.$white;
+}
+
+.logoSecondaryDark {
+  color: variables.$black;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: variables.$white;
+}
+
+.logoMainLight {
+  color: variables.$black;
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: variables.$black;
+}
+
+.logoSecondaryLight {
+  color: variables.$black;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: variables.$black;
+}

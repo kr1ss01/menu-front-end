@@ -1,0 +1,45 @@
+@use "../../mixins";
+@use "../../variables";
+
+.submitButton {
+  @include mixins.naturalButton();
+  @include mixins.d-flex(center, center, row);
+  padding: 0.4rem 1.8rem;
+  background-color: variables.$black;
+  color: variables.$white;
+  border-radius: 5px;
+  font-weight: 900;
+  margin-left: auto;
+  margin-right: 65px;
+  margin-top: 1rem;
+  transition: all 200ms linear;
+  @include mixins.shadowSimple();
+}
+
+.submitButton2 {
+  @include mixins.naturalButton();
+  @include mixins.d-flex(center, center, row);
+  padding: 0.6rem 1.8rem;
+  background-color: rgba($color: variables.$black, $alpha: 0.8);
+  color: variables.$white;
+  margin-left: auto;
+  border-radius: 10px;
+  text-transform: capitalize;
+  font-weight: 300;
+  transition: all 250ms linear;
+}
+
+@media screen and (min-width: 769px) {
+  .submitButton {
+    &:hover,
+    &:focus {
+      transform: scale(1.1);
+    }
+  }
+  .submitButton2 {
+    &:hover,
+    &:focus {
+      background-color: variables.$black !important;
+    }
+  }
+}

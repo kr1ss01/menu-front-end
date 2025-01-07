@@ -1,0 +1,218 @@
+@use "../../mixins";
+@use "../../variables";
+
+.mainNav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  z-index: 900;
+  background-color: variables.$black;
+  .mainNavWidth {
+    @include mixins.d-flex(center, space-between, row);
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    height: 60px;
+    padding: 0 1rem;
+    .navButtonCont {
+      .navButton,
+      .navButtonOpen {
+        @include mixins.d-flex(center, center, column);
+        @include mixins.naturalButton();
+        width: 30px;
+        height: 30px;
+        aspect-ratio: 1/1;
+        background-color: transparent;
+        position: relative;
+        overflow: hidden;
+        span {
+          position: absolute;
+          background-color: variables.$white;
+          width: 24px;
+          height: 1px;
+          transition: 250ms linear all;
+          transform-origin: center;
+          &:nth-child(2) {
+            width: 18px;
+          }
+        }
+      }
+      .navButton {
+        span {
+          background-color: variables.$white;
+          &:nth-child(1) {
+            transform: translateY(10px);
+          }
+          &:nth-child(2) {
+            width: 18px;
+          }
+          &:nth-child(3) {
+            transform: translateY(-10px);
+          }
+        }
+      }
+      .navButtonOpen {
+        span {
+          background-color: variables.$white;
+          &:nth-child(1) {
+            transform: translateY(0) rotateZ(45deg);
+          }
+          &:nth-child(2) {
+            transform: translateX(50px);
+          }
+          &:nth-child(3) {
+            transform: translateY(0) rotateZ(-45deg);
+          }
+        }
+      }
+    }
+  }
+}
+.sideNavOuter {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba($color: variables.$black, $alpha: 0.6);
+  z-index: 900;
+  opacity: 0;
+  animation: fadeIn 250ms linear 1 forwards;
+  transform-origin: left;
+}
+.sideNav {
+  @include mixins.d-flex(flex-start, flex-start, column);
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 300px;
+  z-index: 901;
+  background-color: variables.$black;
+  padding-top: 0.5rem;
+  overflow-y: scroll;
+  transition: 250ms linear all;
+  transform: translateX(100%);
+  animation: slideIn 250ms linear 1 forwards;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  .sideNavTop {
+    @include mixins.d-flex(center, center, row);
+    width: 100%;
+    border-bottom: 1px solid variables.$white;
+    padding-bottom: 0.5rem;
+  }
+  .loadingSpinner {
+    width: 100%;
+    margin: 0.5rem 0;
+    margin-bottom: 1rem;
+    margin-top: 0.5rem;
+    border-top: 1px solid variables.$white;
+    padding-top: 1rem;
+    p {
+      width: 100%;
+      font-size: 1rem;
+      font-weight: 700;
+      color: variables.$white;
+      text-align: center;
+      margin-top: 1rem;
+      cursor: default;
+    }
+  }
+  .categoriesContNav {
+    @include mixins.d-flex(flex-start, flex-start, column);
+    gap: 0.2rem 0;
+    list-style: none;
+    width: 100%;
+    margin-top: 0.5rem;
+    // border-top: 1px solid variables.$white;
+    padding-top: 0.5rem;
+    li {
+      @include mixins.d-flex(center, flex-start, row);
+      width: 100%;
+      a {
+        text-align: left;
+        color: variables.$white;
+        padding: 0.3rem 0.9rem;
+        width: 100% !important;
+        font-size: 1rem;
+        font-weight: 700;
+        transition: background-color 200ms linear;
+        position: relative;
+        
+      }
+    }
+  }
+  .logOutButton {
+    @include mixins.d-flex(center, center, row);
+    @include mixins.naturalButton();
+    margin-top: auto;
+    width: 100%;
+    background-color: transparent;
+    color: variables.$white;
+    font-size: 1.2rem;
+    font-weight: 400;
+    padding: 0.5rem 0.9rem;
+    padding-bottom: 0.5rem;
+    border-top: 1px solid rgba($color: variables.$white, $alpha: 0.6);
+    transition: background-color 200ms linear;
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .logOutButton {
+    &:hover,
+    &:focus {
+      background-color: rgba($color: variables.$white, $alpha: 0.3);
+    }
+  }
+  .categoriesContNav li a {
+    &::before {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 50%;
+      background-color: variables.$white;
+      height: 1px;
+      transform-origin: left;
+      transform: translateX(-100%);
+      transition: transform 150ms linear;
+    }
+    &:hover,
+    &:focus {
+      background-color: rgba($color: variables.$white, $alpha: 0.3);
+    }
+    &:hover::before,
+    &:focus::before {
+      transform: translateX(0);
+    }
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .sideNav {
+    width: 101% !important;
+  }
+}

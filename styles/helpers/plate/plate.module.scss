@@ -1,0 +1,140 @@
+@use "../../mixins";
+@use "../../variables";
+
+.plate {
+  @include mixins.d-flex(center, flex-start, row);
+  gap: 0 0.5rem;
+  width: 100%;
+  max-width: 320px;
+  background-color: variables.$grey;
+  margin: 0.5rem 0;
+  border-radius: 10px;
+  overflow: hidden;
+  .plateImage {
+    @include mixins.d-flex(center, center, row);
+    aspect-ratio: 1/1;
+    // border-right: 1px solid variables.$black;
+    img {
+      object-fit: cover;
+    }
+  }
+  .plateInfoNoImage {
+    @include mixins.d-flex(flex-start, flex-start, column);
+    height: 100%;
+    padding: 0.5rem;
+    .plateDesc {
+      width: 300px;
+      inline-size: 300px;
+    }
+  }
+  .plateInfo {
+    @include mixins.d-flex(flex-start, flex-start, column);
+    height: 100%;
+    padding: 0.5rem 0;
+    .plateDesc {
+      width: 200px;
+      inline-size: 200px;
+    }
+    .platePrice {
+      margin-left: auto;
+    }
+  }
+  .plateInfo,
+  .plateInfoNoImage {
+    p {
+      cursor: default;
+    }
+    .plateName {
+      font-size: 1.1rem;
+      font-weight: 900;
+      margin-bottom: 0.3rem;
+    }
+    .plateDesc {
+      font-size: 0.8rem;
+      font-weight: 300;
+      overflow-wrap: break-word;
+      height: 2.4rem;
+      line-height: 0.8rem;
+      overflow-y: hidden;
+    }
+    .platePrice {
+      font-weight: 900;
+      font-size: 1rem;
+      margin-top: 0.2rem;
+    }
+  }
+}
+
+.plateView,
+.plateViewNoImage {
+  .imageCont {
+    display: flex;
+    height: 100%;
+    img {
+      object-fit: cover;
+      padding: 0;
+      margin: 0;
+    }
+  }
+  .infoDiv {
+    @include mixins.d-flex(flex-start, flex-start, column);
+    height: 100%;
+    .infoDivName {
+      font-size: 1.1rem;
+      font-weight: 900;
+      text-transform: capitalize;
+      padding: 0.3rem 0;
+      cursor: default;
+    }
+    .infoDivGarnet {
+      font-size: 0.7rem;
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+      height: 0.8rem;
+      line-height: 0.8rem;
+      overflow-y: hidden;
+      cursor: default;
+    }
+    .infoDivDesc {
+      font-size: 0.7rem;
+      font-weight: 300;
+      overflow-wrap: break-word;
+      height: 2.4rem;
+      line-height: 0.8rem;
+      overflow-y: hidden;
+      cursor: default;
+    }
+    .infoDivPrice {
+      font-size: 0.9rem;
+      font-weight: 900;
+      margin-top: auto;
+      margin-bottom: 0.3rem;
+      cursor: default;
+    }
+  }
+}
+
+.plateView {
+  @include mixins.d-flex(center, flex-start, row);
+  gap: 0 0.5rem;
+  width: 100%;
+  padding: 0;
+  height: 130px;
+  background-color: variables.$grey;
+  border-radius: 5px;
+  overflow: hidden;
+  cursor: pointer;
+  @include mixins.shadowSimple();
+}
+
+.plateViewNoImage {
+  @include mixins.d-flex(center, flex-start, row);
+  gap: 0 0.5rem;
+  width: 100%;
+  height: fit-content;
+  background-color: variables.$grey;
+  border-radius: 5px;
+  overflow: hidden;
+  cursor: pointer;
+  @include mixins.shadowSimple();
+}

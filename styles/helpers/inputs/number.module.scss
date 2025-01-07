@@ -1,0 +1,8 @@
+@use '../../mixins';
+@use '../../variables';
+
+.inputDiv {
+    @include mixins.inputDiv();
+    width: 100%;
+    max-width: variables.$max_width_input;
+}

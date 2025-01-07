@@ -1,0 +1,46 @@
+@use "../../mixins";
+@use "../../variables";
+
+.footerMain {
+  @include mixins.d-flex(center, center, column);
+  cursor: default;
+  margin-top: auto;
+  width: 100%;
+  height: fit-content;
+  background-color: variables.$black;
+  color: variables.$white;
+  .footerMainWidth {
+    @include mixins.d-flex(flex-start, center, row);
+    flex-wrap: wrap;
+    gap: 1rem;
+    width: 100%;
+    max-width: 1440px;
+    padding: 1rem 1rem;
+    .footerCol2 {
+      @include mixins.d-flex(flex-start, space-between, column);
+      height: 250px;
+      max-width: 250px;
+      .footerCol2Info {
+        @include mixins.d-flex(flex-start, flex-start, column);
+        gap: 0.5rem 0;
+        border-top: 1px solid variables.$white;
+        padding-top: .7rem;
+        p {
+          @include mixins.d-flex(center, flex-start, row);
+          gap: 0 0.5rem;
+        }
+        .footerCol2InfoPrice {
+          margin-top: 0.5rem;
+          padding-top: 0.5rem;
+          border-top: 1px solid variables.$white;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 547px) {
+    .footerCol2InfoPrice {
+        text-align: center;
+    }
+}
