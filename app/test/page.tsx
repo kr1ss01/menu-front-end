@@ -3,7 +3,7 @@
 import * as React from 'react';
 import style from '@/styles/pages/test/index.module.scss'
 import Colors from '@/types/colors';
-import { useQuery } from '@tanstack/react-query';
+import { skipToken, useQuery } from '@tanstack/react-query';
 import LoadingSpinner from '@/helpers/loading';
 import { getCategories } from '@/axios/categories';
 import Category from '@/types/categories';
@@ -18,9 +18,15 @@ import ToggleSwitch from '@/helpers/inputs/toggle.input';
 import SubmitButton from '@/helpers/components/submit.button';
 
 import { useAuthContext } from '../context/auth.contexts';
+import { PlateComplex } from '@/types/plate';
+import { getPlatesByCategoryStrickt } from '@/axios/complex';
 
 export default function Page() {
     const { token } = useAuthContext();
+
+    // ? Render Category Content
+    const [catContent, setCatContent] = React.useState<Category>();
+    // const [enableQuery, setEnableQuery] = React.useState<boolean>(false);
 
     const { data: categories, isLoading: isLoadingCategories, isError: isErrorCategories, refetch: refetchCategories } = useQuery<Category[]>({
         queryKey: ['get-all-categories-for-plates-admin'],
@@ -35,6 +41,12 @@ export default function Page() {
             return await getGarnets();
         }
     });
+
+    const { data: plates, isLoading: isLoadingPlates, isError: isErrorPlates, refetch: refetchPlates } = useQuery<PlateComplex[]>({
+        queryKey: ['get-all-plates-from-category-admin'],
+        queryFn: catContent ? () => getPlatesByCategoryStrickt(catContent._id) : skipToken,
+        
+    })
 
     // ? API States
     const [allCategories, setAllCategories] = React.useState<Category[]>();
@@ -71,6 +83,10 @@ export default function Page() {
     const [uploadImage, setUploadImage] = React.useState<File>();
     const [uploadImageShow, setUploadImageShow] = React.useState<string>();
 
+    // ? Render Category Content
+    // const [catContent, setCatContent] = React.useState<Category>();
+    // const [enableQuery, setEnableQuery] = React.useState<boolean>(false);
+
     React.useEffect(() => {
         if (categories) {
             setAllCategories(categories);
@@ -84,6 +100,11 @@ export default function Page() {
             if (!ans) setShowPrice(true);
         }
     }, [showPrice]);
+
+    const handlePrice = (price: number) => {
+        if (price % 1 == 0) return `${price}.00`;
+        return `${price}0`;
+    }
 
     return (
         <div className={style.plates}>
@@ -104,28 +125,73 @@ export default function Page() {
                             </button>
                         </div>
                     }
-                    {allCategories && allCategories.map((cat: Category, key: number) => {
+                    {(allCategories && !catContent) && allCategories.map((cat: Category, key: number) => {
+                            return (
+                                <div
+                                    className={style.categoryView}
+                                    key={key}
+                                    onClick={() => {setCatContent(cat); refetchPlates();}}
+                                >
+                                    <div className={style.categoryView_left}>
+                                        {cat.visible ?
+                                            <EyeOpenSVG box={.9} color={Colors.black} />
+                                        :
+                                            <EyeCloseSVG box={.9} color={Colors.black} />
+                                        }
+                                        <p>{cat.name}</p>
+                                    </div>
+                                    <div className={style.categoryView_right}>
+                                        <button className={style.categotyBtn_expand} role='button' title='Ενημέρωση Κατηγορίας' type='button' disabled>
+                                            <ExpandSVG box={1.1} color={Colors.black} />
+                                        </button>
+                                    </div>
+                                </div>
+                            )
+                        
+                            
+                        })}
+                    {(isLoadingPlates && catContent) &&
+                        <div className={style.categoriesViewList_loading}>
+                            <LoadingSpinner />
+                            <p>Φόρτωση Πιάτων...</p>
+                        </div>
+                    }
+                    {(isErrorPlates && catContent) && 
+                        <div className={style.categoriesViewList_error}>
+                            <BugSVG box={2.5} color={Colors.black} />
+                            <p>Απροσδιόριστο Σφάλμα.</p>
+                            <button type='button' role='button' onClick={() => refetchPlates()}>
+                                Προσπαθήστε Ξανά
+                            </button>
+                        </div>
+                    }
+                    {((catContent && plates) && plates.map((pl: PlateComplex, key: number) => {
                         return (
-                            <div
-                                className={style.categoryView}
+                            <div 
                                 key={key}
+                                className={style.platesViewMain}
+                                // style={{
+                                //     border: (!pl.availability || pl.onlyOnSpecial || pl.showOnSpecial) ? `1px solid ${Colors.error}` : ''
+                                // }}
                             >
-                                <div className={style.categoryView_left}>
-                                    {cat.visible ?
-                                        <EyeOpenSVG box={.9} color={Colors.black} />
+                                <p>
+                                    {pl.availability ?
+                                        <EyeOpenSVG box={1} color={Colors.black} />
                                     :
-                                        <EyeCloseSVG box={.9} color={Colors.black} />
+                                        <EyeCloseSVG box={1} color={Colors.error} />
                                     }
-                                    <p>{cat.name}</p>
-                                </div>
-                                <div className={style.categoryView_right}>
-                                    <button className={style.categotyBtn_expand} role='button' title='Ενημέρωση Κατηγορίας' type='button' disabled>
-                                        <ExpandSVG box={1.1} color={Colors.black} />
-                                    </button>
-                                </div>
+                                    {pl.name}
+                                </p>
+                                {pl.showGarnet && <span>{pl.garnet.name}</span>}
+                                {pl.showDesc && <span>{pl.desc}</span>}
+                                {pl.showPrice && 
+                                    <span className={style.platePrice}>
+                                    {handlePrice(pl.price)}&euro; {pl.kiloPrice && '/κιλό'}
+                                    </span>
+                                }
                             </div>
-                        )
-                    })}
+                        );
+                    }))}
                 </div>
                 <div className={style.platesSettings}>
                     <h2>Προσθήκη Πιατών</h2>

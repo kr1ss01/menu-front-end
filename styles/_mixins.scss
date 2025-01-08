@@ -21,6 +21,7 @@ $margin_top: 60px;
   cursor: pointer;
   font-family: "Jura", sans-serif;
   font-weight: 700;
+  background-color: transparent;
 }
 
 @mixin shadowSimple() {
@@ -52,6 +53,8 @@ $margin_top: 60px;
   }
   button {
     @include naturalButton();
+    background: none;
+    background-color: transparent;
   }
 }
 
