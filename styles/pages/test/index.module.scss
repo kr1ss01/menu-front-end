@@ -1,54 +1,21 @@
 @use "../../mixins";
 @use "../../variables";
 
-.plates {
+.user {
   @include mixins.page();
   @include mixins.d-flex(center, center, row);
-  .platesView {
+  .userView {
     @include mixins.d-flex(center, flex-start, row);
     @include mixins.setTransBg();
     width: 100%;
     max-width: 720px;
-    height: 820px;
+    height: 420px;
     border-radius: 5px;
     overflow: hidden;
     position: relative;
     z-index: 1;
     perspective: 1000px;
-    .errorHandlingDiv {
-      @include mixins.d-flex(center, space-between, row);
-      @include mixins.setTransBg();
-      position: absolute;
-      top: 10px;
-      left: 0;
-      width: 55%;
-      margin: 0 1rem;
-      border-radius: 5px;
-      padding: 0.5rem 1rem;
-      animation: slideDown 250ms linear 1 forwards;
-      cursor: pointer;
-      z-index: 800;
-      overflow: hidden;
-      p {
-        width: 80%;
-        text-align: left;
-        font-size: 1rem;
-        font-weight: 700;
-        color: variables.$error;
-        cursor: pointer;
-      }
-      &::before {
-        content: "";
-        position: absolute;
-        top: calc(100% - 1px);
-        left: 0px;
-        right: 0px;
-        height: 1px;
-        background-color: variables.$error;
-        animation: timer 5000ms linear 1 forwards;
-      }
-    }
-    .platesViewList {
+    .userViewList {
       @include mixins.d-flex(flex-start, flex-start, column);
       gap: 0.5rem 0;
       flex-basis: 60%;
@@ -58,127 +25,8 @@
       &::-webkit-scrollbar {
         display: none;
       }
-      .categoriesViewList_loading {
-        @include mixins.d-flex(center, flex-start, column);
-        gap: 0.5rem 0;
-        width: 100%;
-        margin: auto 0;
-        p {
-          font-size: 1rem;
-          font-weight: 900;
-          cursor: default;
-          text-transform: capitalize;
-        }
-      }
-      .categoriesViewList_error {
-        @include mixins.d-flex(center, flex-start, column);
-        gap: 0.5rem 0;
-        width: 100%;
-        margin: auto 0;
-        svg {
-          animation: shake 1200ms linear infinite both;
-        }
-        p {
-          font-size: 1rem;
-          font-weight: 900;
-          cursor: default;
-          text-transform: capitalize;
-        }
-        button[type="button"] {
-          @include mixins.d-flex(center, center, row);
-          @include mixins.naturalButton();
-          padding: 0.4rem 1.2rem;
-          color: variables.$black;
-          text-transform: capitalize;
-          background-color: transparent;
-          background: none;
-          border-bottom: 1px solid variables.$black;
-        }
-      }
-      .categoryView {
-        @include mixins.d-flex(center, space-between, row);
-        width: 100%;
-        padding: 0.4rem 0.8rem;
-        background-color: variables.$white;
-        border-radius: 5px;
-        cursor: pointer;
-        .categoryView_left {
-          @include mixins.d-flex(center, flex-start, row);
-          gap: 0 1rem;
-          p {
-            font-size: 0.8rem;
-            font-weight: 700;
-            cursor: default;
-          }
-        }
-        .categoryView_right {
-          @include mixins.d-flex(center, flex-end, row);
-          gap: 0 0.7rem;
-          button {
-            @include mixins.d-flex(center, center, row);
-            @include mixins.naturalButton();
-            background-color: transparent;
-          }
-        }
-      }
-      .platesViewInner {
-        @include mixins.d-flex(flex-start, flex-start, column);
-        gap: .5rem 0;
-        width: 100%;
-        overflow-y: scroll;
-        height: 100%;
-        list-style: none;
-        &::-webkit-scrollbar {
-          display: none;
-        }
-        .platesViewInnerButton {
-          @include mixins.d-flex(center, flex-start, row);
-          gap: 0 .5rem;
-          cursor: pointer;
-          margin-bottom: .5rem;
-          svg {
-            transform: rotate(-90deg);
-          }
-        }
-        .platesViewMain {
-          border-radius: 5px;
-          background-color: variables.$white;
-          padding: 0.5rem;
-          width: 100%;
-          cursor: default;
-          position: relative;
-          p {
-            @include mixins.d-flex(center, flex-start, row);
-            gap: 0 0.5rem;
-            width: fit-content;
-            font-size: 1.1rem;
-            font-weight: 900;
-            padding-bottom: 0.4rem;
-            position: relative;
-            &::before {
-              content: "";
-              position: absolute;
-              top: 85%;
-              left: 0;
-              width: 90%;
-              height: 1px;
-              background-color: rgba($color: variables.$black, $alpha: 0.4);
-            }
-          }
-          span {
-            display: block;
-            font-size: 0.8rem;
-            font-weight: 300;
-          }
-          .platePrice {
-            font-size: 0.8rem;
-            font-weight: 900;
-            margin-top: 0.4rem;
-          }
-        }
-      }
     }
-    .platesSettings {
+    .userSettings {
       flex-basis: 40%;
       min-width: 300px;
       background-color: variables.$white;
@@ -191,182 +39,23 @@
         padding: 0.5rem;
         cursor: default;
       }
-      form {
-        @include mixins.d-flex(center, flex-start, column);
-        padding: 0.5rem;
-        gap: 0.5rem 0;
-        .toggleDiv {
-          @include mixins.d-flex(center, space-between, row);
-          width: 100%;
-          margin: 0 auto;
-          padding: 0 0.5rem;
-          label {
-            text-align: left;
-            color: variables.$black;
-            cursor: default;
-            font-weight: 900;
-            font-size: 0.9rem;
-            text-transform: capitalize;
-            width: 100%;
-          }
-        }
-        .submitButtonDiv {
-          @include mixins.d-flex(center, flex-end, row);
-          button[type="button"] {
-            @include mixins.d-flex(center, center, row);
-            @include mixins.naturalButton();
-          }
-        }
-      }
-      .categoriesSettingsInfo {
+      .userSettingsInfo {
         padding: 1rem 1rem;
         margin-top: 1rem;
         border-top: 1px solid variables.$black;
         border-bottom: 1px solid variables.$black;
         p {
-          @include mixins.d-flex(center, space-between, row);
-          font-size: 0.9rem;
+          @include mixins.d-flex(flex-start, space-between, row);
+          font-size: 0.8rem;
+          font-weight: 600;
+          cursor: default;
+        }
+        span {
+          text-align: right;
+          font-size: .8rem;
           font-weight: 300;
-          cursor: default;
         }
       }
-      .toggleDiv {
-        @include mixins.d-flex(center, space-between, row);
-        width: 100%;
-        margin: 1rem auto;
-        padding: 0 1rem;
-        label {
-          text-align: left;
-          color: variables.$black;
-          cursor: default;
-          font-weight: 900;
-          font-size: 0.9rem;
-          text-transform: capitalize;
-          width: 100%;
-        }
-      }
-      .filters {
-        border-top: 1px solid variables.$black;
-        margin-top: 0.5rem;
-      }
-      .resetOrderDiv {
-        @include mixins.d-flex(center, space-between, row);
-        padding: 0 1rem;
-        button[type="button"] {
-          @include mixins.d-flex(center, center, row);
-          @include mixins.naturalButton();
-        }
-        p {
-          text-align: left;
-          color: variables.$black;
-          cursor: default;
-          font-weight: 900;
-          font-size: 0.9rem;
-          text-transform: capitalize;
-          width: 100%;
-        }
-      }
-      .submitOrderChange {
-        padding: 0 0.5rem;
-        margin-top: 1rem;
-        width: 100%;
-        button[type="button"] {
-          @include mixins.naturalButton();
-          @include mixins.d-flex(center, center, row);
-          padding: 0.6rem 1.8rem;
-          background-color: rgba($color: variables.$black, $alpha: 0.8);
-          color: variables.$white;
-          margin-left: auto;
-          border-radius: 10px;
-          text-transform: capitalize;
-          font-weight: 300;
-          transition: all 250ms linear;
-        }
-      }
-    }
-  }
-}
-
-@keyframes shake {
-  0% {
-    transform: rotate(0deg);
-  }
-  10% {
-    transform: rotate(60deg);
-  }
-  30% {
-    transform: rotate(-60deg);
-  }
-  40% {
-    transform: rotate(0);
-  }
-  100% {
-    transform: rotate(0);
-  }
-}
-
-@keyframes slideDown {
-  0% {
-    transform: translateY(0) rotateX(90deg);
-  }
-  100% {
-    transform: translateY(0) rotateX(0);
-  }
-}
-
-@keyframes timer {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-100%);
-  }
-}
-
-@media screen and (max-width: 620px) {
-  .platesView {
-    flex-direction: column-reverse !important;
-    width: 400px !important;
-    height: fit-content !important;
-  }
-  .platesViewList,
-  .platesSettings {
-    flex-basis: auto !important;
-  }
-  .errorHandlingDiv {
-    width: 95% !important;
-    margin: 0 !important;
-    right: 10px !important;
-    left: 10px !important;
-  }
-  .platesSettings {
-    width: 100%;
-    padding: 0.5rem 1rem;
-  }
-  .platesViewList {
-    width: 100%;
-    height: 500px !important;
-  }
-}
-
-@media screen and (min-width: 620px) {
-  .resetOrderDiv {
-    button {
-      svg {
-        transition: all 200ms linear;
-      }
-      &:hover,
-      &:focus {
-        svg {
-          transform: rotate(360deg);
-        }
-      }
-    }
-  }
-  .submitOrderChange button[type="button"] {
-    &:hover,
-    &:focus {
-      background-color: variables.$black !important;
     }
   }
 }

@@ -2,172 +2,61 @@
 
 import * as React from 'react';
 import style from '@/styles/pages/dashboard/components/plate.module.scss';
-import * as PlateTypes from '@/types/plate';
-import { useQuery } from '@tanstack/react-query';
-import { deletePlate, fixPlateOrder, newPlate, updatePlateWithImage } from '@/axios/plates';
-import LoadingSpinner from '@/helpers/loading';
-import TextInput from '@/helpers/inputs/text.input';
-import { BinSVG, CategorySVG, EyeCloseSVG, EyeOpenSVG, GarnetSVG, PlateSVG, ResetSVG, SaveSVG, XCircleFillIcon } from '@/svg';
 import Colors from '@/types/colors';
-import Category from '@/types/categories';
+import { skipToken, useQuery } from '@tanstack/react-query';
+import LoadingSpinner from '@/helpers/loading';
 import { getCategories } from '@/axios/categories';
+import Category from '@/types/categories';
+import { BugSVG, CategorySVG, ExpandSVG, EyeCloseSVG, EyeOpenSVG, GarnetSVG, PlateSVG, ResetSVG, SettingsSVG, UpSVG } from '@/svg';
+import ImageInput from '@/helpers/inputs/image.input';
+import TextInput from '@/helpers/inputs/text.input';
+import NumberInput from '@/helpers/inputs/number.input';
+import TextAreaInput from '@/helpers/inputs/textarea.input';
+import DropDownInput from '@/helpers/inputs/dropdown.input';
+import ToggleSwitch from '@/helpers/inputs/toggle.input';
+import SubmitButton from '@/helpers/components/submit.button';
 import Garnet from '@/types/garnets';
 import { getGarnets } from '@/axios/garnets';
-import NumberInput from '@/helpers/inputs/number.input';
-import SubmitButton from '@/helpers/components/submit.button';
-import ToggleSwitch from '@/helpers/inputs/toggle.input';
-import DropDownInput from '@/helpers/inputs/dropdown.input';
-import ImageInput from '@/helpers/inputs/image.input';
-import TextAreaInput from '@/helpers/inputs/textarea.input';
-import { PlatePreview, PlateViewDashboard } from '@/helpers/plate';
-import { getPlatesByCategory } from '@/axios/complex';
+import { PlateComplex, PlateFixOrder, PlateStats } from '@/types/plate';
+import { getPlatesByCategoryStrickt } from '@/axios/complex';
+import { PlateFinal } from '@/helpers/plate';
+import { fixPlateOrder, getPlateStats, newPlate, updatePlateWithImage } from '@/axios/plates';
+import ErrorDiv from '@/helpers/components/error.div';
 
 const Plate = ({ token }: { token: string | undefined }) => {
-    const { data: plates, isLoading, refetch } = useQuery<PlateTypes.PlateCategories[]>({
-        queryKey: ['get-all-plates'],
-        queryFn: async () => {
-            return await getPlatesByCategory();
-        }
-    });
+    // ? Render Category Content
+    const [catContent, setCatContent] = React.useState<Category>();
 
-    React.useEffect(() => {
-        if (plates) setAllPlates(plates.reverse());
-    }, [plates]);
-
-    // ? Basic States
-    const [allPlates, setAllPlates] = React.useState<PlateTypes.PlateCategories[] | null>(null);
-    const [objUpdate, setObjUpdate] = React.useState<PlateTypes.PlateCategories | null>(null);
-    const [showPlates, setShowPlates] = React.useState<PlateTypes.PlateComplex[] | null>(null);
-    const [addPlate, setAddPlate] = React.useState<boolean>(false);
-    const [order, setOrder] = React.useState<boolean>(false);
-
-    const [test, setTest] = React.useState<string>('');
-
-    // ? Slider Refs
-    const updatePlateRef = React.useRef<HTMLDivElement>(null);
-    const addPlateRef = React.useRef<HTMLDivElement>(null);
-
-    // ? Handle Open And Closing Animation For Add Category Menu (Modal)
-    const handleOpenAndCloseAddMenu = (type: boolean) => {
-        if (type) {
-            if (addPlateRef && addPlateRef.current) addPlateRef.current.style.transform = 'translateY(0)';
-            setAddPlate(true);
-        } else {
-            if (addPlateRef && addPlateRef.current) addPlateRef.current.style.transform = 'translateY(100%)';
-            setAddPlate(false);
-        }
-    }
-
-    // ? Handle Open And Closing Animation For Update Category Menu (Modal)
-    const handleOpenAndCloseUpdateMenu = (type: boolean) => {
-        if (type) {
-            if (updatePlateRef && updatePlateRef.current) updatePlateRef.current.style.transform = 'translateY(0)';
-        } else {
-            if (updatePlateRef && updatePlateRef.current) updatePlateRef.current.style.transform = 'translateY(100%)';
-            setObjUpdate(null);
-        }
-    }
-
-    return (
-        <>
-            {showPlates && <ShowPlatesOnCategory plates={showPlates} setClose={setShowPlates} token={token} refetch={refetch} />}
-            <div className={style.plates}>
-                <HandleAddPlate
-                    ref={addPlateRef}
-                    close={handleOpenAndCloseAddMenu}
-                    refetch={refetch}
-                    token={token}
-                />
-                <h2>Τροποποίηση Πιάτου</h2>
-                <ul className={style.platesCont}>
-                    {
-                        isLoading ?
-                            <div className={style.loadingCont}>
-                                <LoadingSpinner />
-                                <span>Φόρτωση</span>
-                            </div>
-                        :
-                            allPlates && allPlates.length < 1 ?
-                                <li className={style.noPlates}>
-                                    <p>Δεν έχετε ακόμη πιάτα.</p>
-                                </li>
-                            :
-                                allPlates && allPlates.map((pl: PlateTypes.PlateCategories, key: number) => {
-                                    return (
-                                        <li
-                                            key={key}
-                                            className={style.categoriesBanner}
-                                            style={{ color: !pl.category.visible ? Colors.error : 'initial' }}
-                                            onClick={() => {
-                                                setShowPlates(pl.plates);
-                                            }}
-                                        >
-                                            {pl.category.visible ?
-                                                <EyeOpenSVG box={1} color={Colors.black} />
-                                            :
-                                                <EyeCloseSVG box={1} color={Colors.error} />
-                                            }
-                                            {pl.category.name}
-                                        </li>
-                                        // <PlateViewDashboard
-                                        //     availability={pl.availability}
-                                        //     category={pl.category}
-                                        //     desc={pl.desc}
-                                        //     garnet={pl.garnet}
-                                        //     image={pl.image}
-                                        //     imageMimeType={pl.imageMimeType}
-                                        //     kiloPrice={pl.kiloPrice}
-                                        //     name={pl.name}
-                                        //     onlyOnSpecial={pl.onlyOnSpecial}
-                                        //     order={pl.order}
-                                        //     price={pl.price}
-                                        //     showDesc={pl.showDesc}
-                                        //     showGarnet={pl.showGarnet}
-                                        //     showIcon={pl.showIcon}
-                                        //     showOnSpecial={pl.showOnSpecial}
-                                        //     showPrice={pl.showPrice}
-                                        //     visible={pl.visible}
-                                        //     _id={pl._id}
-                                        //     key={key}
-                                        // />
-                                    )
-                                })
-                    }
-                </ul>
-                <button type='button' role='button' className={style.addBtn} onClick={() => handleOpenAndCloseAddMenu(true)}>
-                    Προσθήκη Πιάτου
-                </button>
-            </div>
-        </>
-    )
-}
-
-const HandleAddPlate = React.forwardRef((
-    {
-        close,
-        refetch,
-        token,
-    }:
-    {
-        close: (type: boolean) => void,
-        refetch: () => void,
-        token: string | undefined,
-    },
-    ref: React.ForwardedRef<HTMLDivElement>
-) => {
-    const { data: categories, isLoading: isLoadingCategories } = useQuery<Category[]>({
-        queryKey: ['get-all-categories'],
+    const { data: categories, isLoading: isLoadingCategories, isError: isErrorCategories, refetch: refetchCategories } = useQuery<Category[]>({
+        queryKey: ['get-all-categories-for-plates-admin'],
         queryFn: async () => {
             return (await getCategories()).reverse();
         }
     });
 
-    const { data: garnets, isLoading: isLoadingGarnets } = useQuery<Garnet[]>({
-        queryKey: ['get-all-garnets'],
+    const { data: garnets, isLoading: isLoadingGarnets, isError: isErrorGarnets } = useQuery<Garnet[]>({
+        queryKey: ['get-all-garnets-for-plates-admin'],
         queryFn: async () => {
             return await getGarnets();
         }
     });
+
+    const { data: plates, isLoading: isLoadingPlates, isError: isErrorPlates, refetch: refetchPlates, isFetching: isFetchingPlates } = useQuery<PlateComplex[]>({
+        queryKey: ['get-all-plates-from-category-admin'],
+        queryFn: catContent ? () => getPlatesByCategoryStrickt(catContent._id) : skipToken,
+        
+    });
+
+    const { data: stats, isLoading: isLoadingStats, isError: isErrorStats } = useQuery<PlateStats>({
+        queryKey: ['get-stats-plates-admin'],
+        queryFn: async () => {
+            return await getPlateStats();
+        }
+    })
+
+    // ? API States
+    const [allCategories, setAllCategories] = React.useState<Category[]>();
+    const [plate, setAllPlates] = React.useState<PlateComplex[]>();
 
     // ? Object States
     const [gID, setGID] = React.useState<string>(''); // garnet id
@@ -197,436 +86,93 @@ const HandleAddPlate = React.forwardRef((
     const [specialError, setSpecialError] = React.useState<boolean>(false);
     const [uploadImageTooLarge ,setUploadImageTooLarge] = React.useState<boolean>(false);
 
+    // ? Pop Up For Addresing Issues
+    const [popUp, setPopUp] = React.useState<string>('');
+
     // ? Image States
     const [uploadImage, setUploadImage] = React.useState<File>();
     const [uploadImageShow, setUploadImageShow] = React.useState<string>();
 
-    // ? Warn For Not Showing Price On Plate (Might be illegal)
-    React.useEffect(() => {
-        if (!showPrice) {
-            alert("Η απόκρυψη τιμής ίσως έχει σοβαρές συνέπειες!");
-        }
-    }, [showPrice]);
+    // ? Update State
+    const [updateObject, setUpdateObject] = React.useState<PlateComplex | null>(null);
 
-    const handleSubmition = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    // ? Settings States
+    const [settings, setSettings] = React.useState<boolean>(false);
 
-        setEmptyFields(false);
-        setNoImage(false);
-        setDescError(false);
-        setGarnetError(false);
-        setError(false);
-        setSpecialError(false);
-        setUploadImageTooLarge(false);
-
-        if (name.length === 0 || price === 0 || price == undefined || price == null 
-            || price == 0 || !gID || !cID || gID.length === 0 || cID.length === 0) {
-            setEmptyFields(true);
-            return;
-        }
-
-        if ((showDesc && !desc) || (showDesc && desc.length === 0)) {
-            setDescError(true);
-            return;
-        }
-
-        if (showIcon && !uploadImage) {
-            setNoImage(true);
-            return;
-        }
-
-        if ((showGarnet && !gID) || (showGarnet && gID.length === 0)) {
-            setGarnetError(true);
-            return;
-        }
-
-        if (onlyOnSpecial && !showOnSpecial) {
-            setSpecialError(true);
-            return;
-        }
-
-        const FD = new FormData();
-
-        FD.append('name', name);
-        FD.append('garnetID', gID);
-        FD.append('categoryID', cID);
-        FD.append('price', price.toString());
-        FD.append('visible', visible ? 'true' : 'false');
-        FD.append('showDesc', showDesc ? 'true' : 'false');
-        FD.append('showIcon', showIcon ? 'true' : 'false');
-        FD.append('kiloPrice', kiloPrice ? 'true' : 'false');
-        FD.append('showPrice', showPrice ? 'true' : 'false');
-        FD.append('showGarnet', showGarnet ? 'true' : 'false');
-        FD.append('availability', availability ? 'true' : 'false');
-        FD.append('showOnSpecial', showOnSpecial ? 'true' : 'false');
-        FD.append('onlyOnSpecial', onlyOnSpecial ? 'true' : 'false');
-        if (uploadImage) {FD.append('image', uploadImage)};
-        if (desc) {FD.append('desc', desc)}
-
-        const res = await newPlate(token, FD);
-
-        if (res) {
-            setName('');
-            setPrice(0);
-            setDesc('');
-            setCID('');
-            setGID('');
-            setGarnetName('');
-            setUploadImage(undefined);
-            setUploadImageShow(undefined);
-            refetch();
-            close(false);
-        } else {
-            setError(true);
-            return;
-        }
-    };
-
-    return (
-        <div className={style.addPlateDiv} ref={ref}>
-            <form autoComplete='off' autoCorrect='off' autoCapitalize='off' onSubmit={handleSubmition}>
-                <PlatePreview
-                    image={uploadImageShow}
-                    desc={desc}
-                    availability={availability}
-                    kiloPrice={kiloPrice}
-                    name={name}
-                    price={price}
-                    showDesc={showDesc}
-                    showGarnet={showGarnet}
-                    showIcon={showIcon}
-                    showPrice={showPrice}
-                    garnetName={garnetName}
-                />
-                <div className={style.errorDiv}>
-                    {emptyFields && <p className={style.error}>Κενά Πεδία!</p>}
-                    {error && <p className={style.error}>Απροσδιόριστο Σφάλμα!</p>}
-                    {noImage && <p className={style.error}>Ορίστε Εικόνα!</p>}
-                    {descError && <p className={style.error}>Δεν Υπάρχει Περιγραφή!</p>}
-                    {garnetError && <p className={style.error}>Δεν Υπάρχει Γαρνιτούρα!</p>}
-                    {specialError && <p className={style.error}>Το Πιάτο Δεν Ανήκει Στα Πιάτα Ημέρας!</p>}
-                    {uploadImageTooLarge && <p className={style.error}>Μεγάλο Αρχείο Εικόνας!</p>}
-                </div>
-                <ImageInput
-                    label='image_on_plate'
-                    placeholder='Επιλογή εικόνας...'
-                    size={1.3}
-                    setUploadImage={setUploadImage}
-                    setUploadImageShow={setUploadImageShow}
-                    setUploadImageTooLarge={setUploadImageTooLarge}
-                    noImage={noImage}
-                    setNoImage={setNoImage}
-                    uploadImage={uploadImage}
-                    uploadImageShow={uploadImageShow}
-                    uploadImageTooLarge={uploadImageTooLarge}
-                />
-                <TextInput
-                    label='name'
-                    placeholder='Όνομα Πιάτου...'
-                    value={name}
-                    setValue={setName}
-                    tabIndex={1}
-                    icon={<PlateSVG box={1.4} color={Colors.white} />}
-                    emptyFields={emptyFields}
-                    setEmptyFields={setEmptyFields}
-                    error={error}
-                    setError={setError}
-                />
-                <NumberInput
-                    tabIndex={2}
-                    label='price'
-                    placeholder='Τιμή'
-                    max={1000}
-                    min={0.5}
-                    size={1.3}
-                    step={.5}
-                    value={price}
-                    setValue={setPrice}
-                    emptyFields={emptyFields}
-                    setEmptyFields={setEmptyFields}
-                    error={error}
-                    setError={setError}
-                />
-                {isLoadingCategories ?
-                    <div className={style.loadingAnimationOnDropdownButton}>
-                        <div>
-                            <LoadingSpinner width={20}/>
-                        </div>
-                        <p>Φόρτωση...</p>
-                    </div>
-                : 
-                    <DropDownInput
-                        icon={<CategorySVG box={1.2} color={Colors.white} />}
-                        text={'Επιλογή Κατηγορίας'}
-                        content={categories}
-                        value={cID}
-                        setValue={setCID}
-                        takeForComp='_id'
-                        takeForDisplay='name'
-                    />
-                }
-                {isLoadingGarnets ?
-                    <div className={style.loadingAnimationOnDropdownButton}>
-                        <div>
-                            <LoadingSpinner width={20}/>
-                        </div>
-                        <p>Φόρτωση...</p>
-                    </div>
-                :
-                    <DropDownInput
-                        icon={<GarnetSVG box={1.2} color={Colors.white} />}
-                        text={'Επιλογή Γαρνιτούρας'}
-                        content={garnets}
-                        value={gID}
-                        setValue={setGID}
-                        takeForComp='_id'
-                        takeForDisplay='name'
-                        setValueName={setGarnetName}
-                    />
-                }
-                <TextAreaInput
-                    label='description'
-                    placeholder='Περιγραφή πιάτου...'
-                    value={desc}
-                    setValue={setDesc}
-                    tabIndex={3}
-                    icon={<PlateSVG box={1.4} color={Colors.white} />}
-                    emptyFields={emptyFields}
-                    setEmptyFields={setEmptyFields}
-                    error={error}
-                    setError={setError}
-                />
-                <div className={style.toggleDiv}>
-                    <label htmlFor='visible'>Εμφάνηση στο μενού: </label>
-                    <ToggleSwitch
-                        banner=''
-                        clicked={visible}
-                        setClicked={setVisible}
-                        hasInfo={false}
-                        label='visible'
-                        error={error}
-                        setError={setError}
-                    />
-                </div>
-                <div className={style.toggleDiv}>
-                    <label htmlFor='availability'>Διαθεσιμότητα: </label>
-                    <ToggleSwitch
-                        banner=''
-                        clicked={availability}
-                        setClicked={setAvailability}
-                        hasInfo={false}
-                        label='availability'
-                        error={error}
-                        setError={setError}
-                    />
-                </div>
-                <div className={style.toggleDiv}>
-                    <label htmlFor='show_image'>Προβολή εικόνας: </label>
-                    <ToggleSwitch
-                        banner=''
-                        clicked={showIcon}
-                        setClicked={setShowIcon}
-                        hasInfo={false}
-                        label='show_image'
-                        error={error}
-                        setError={setError}
-                    />
-                </div>
-                <div className={style.toggleDiv}>
-                    <label htmlFor='show_desc'>Προβολή περιγραφής: </label>
-                    <ToggleSwitch
-                        banner=''
-                        clicked={showDesc}
-                        setClicked={setShowDesc}
-                        hasInfo={false}
-                        label='show_desc'
-                        error={error}
-                        setError={setError}
-                    />
-                </div>
-                <div className={style.toggleDiv}>
-                    <label htmlFor='show_price'>Προβολή τιμής: </label>
-                    <ToggleSwitch
-                        banner=''
-                        clicked={showPrice}
-                        setClicked={setShowPrice}
-                        hasInfo={false}
-                        label='show_price'
-                        error={error}
-                        setError={setError}
-                    />
-                </div>
-                <div className={style.toggleDiv}>
-                    <label htmlFor='kilo_price'>Ζυγιζόμενο: </label>
-                    <ToggleSwitch
-                        banner=''
-                        clicked={kiloPrice}
-                        setClicked={setKiloPrice}
-                        hasInfo={false}
-                        label='kilo_price'
-                        error={error}
-                        setError={setError}
-                    />
-                </div>
-                <div className={style.toggleDiv}>
-                    <label htmlFor='show_garnet'>Προβολή γαρνιτούρας: </label>
-                    <ToggleSwitch
-                        banner=''
-                        clicked={showGarnet}
-                        setClicked={setShowGarnet}
-                        hasInfo={false}
-                        label='show_garnet'
-                        error={error}
-                        setError={setError}
-                    />
-                </div>
-                <div className={style.toggleDiv}>
-                    <label htmlFor='show_on_special'>Πιάτο ημέρας: </label>
-                    <ToggleSwitch
-                        banner=''
-                        clicked={showOnSpecial}
-                        setClicked={setShowOnSpecial}
-                        hasInfo={false}
-                        label='show_on_special'
-                        error={error}
-                        setError={setError}
-                    />
-                </div>
-                <div className={style.toggleDiv}>
-                    <label htmlFor='show_only_on_special' title='Δεν θα εμφανίζεται στο μενού - μόνο στα πιάτα ημέρας'>Μόνο στα ημέρας: </label>
-                    <ToggleSwitch
-                        banner=''
-                        clicked={onlyOnSpecial}
-                        setClicked={setOnlyOnSpecial}
-                        hasInfo={false}
-                        label='show_only_on_special'
-                        error={error}
-                        setError={setError}
-                    />
-                </div>
-                <div style={{ padding: '0 3rem', marginTop: '.5rem', width: '100%' }}>
-                    <SubmitButton text='Προσθήκη' type={true} />
-                </div>
-            </form>
-            <div className={style.closeDiv}>
-                <button role='button' type='button' onClick={() => close(false)} className={style.closeButton}>
-                    Κλείσιμο
-                </button>
-            </div>
-        </div>
-    )
-});
-
-const ShowPlatesOnCategory = ({
-    plates,
-    setClose,
-    token,
-    refetch,
-}: {
-    plates: PlateTypes.PlateComplex[],
-    setClose: React.Dispatch<React.SetStateAction<PlateTypes.PlateComplex[] | null>>,
-    token: string | undefined,
-    refetch: () => void,
-}) => {
-    const { data: categories, isLoading: isLoadingCategories } = useQuery<Category[]>({
-        queryKey: ['get-all-categories-plate'],
-        queryFn: async () => {
-            return (await getCategories()).reverse();
-        }
-    });
-
-    const { data: garnets, isLoading: isLoadingGarnets } = useQuery<Garnet[]>({
-        queryKey: ['get-all-garnets-plate'],
-        queryFn: async () => {
-            return await getGarnets();
-        }
-    });
-
-    // ? Update Object State
-    const [updateObj, setUpdateObj] = React.useState<PlateTypes.PlateComplex | null>(null);
-
-    // ? Plates Clone State
-    const [platesState, setPlatesState] = React.useState<PlateTypes.PlateComplex[]>(plates);
-
-    //  ? Fill States For Update Object
-    const [id, setID] = React.useState<string>('');
-    const [gID, setGID] = React.useState<string>('');
-    const [cID, setCID] = React.useState<string>('');
-    const [name, setName] = React.useState<string>('');
-    const [desc, setDesc] = React.useState<string>('');
-    const [price, setPrice] = React.useState<number>(0);
-    const [visible, setVisible] = React.useState<boolean>(false);
-    const [showIcon, setShowIcon] = React.useState<boolean>(false);
-    const [showDesc, setShowDesc] = React.useState<boolean>(false);
-    const [showPrice, setShowPrice] = React.useState<boolean>(false);
-    const [kiloPrice, setKiloPrice] = React.useState<boolean>(false);
-    const [showGarnet, setShowGarnet] = React.useState<boolean>(false);
-    const [availability, setAvailability] = React.useState<boolean>(false);
-    const [showOnSpecial, setShowOnSpecial] = React.useState<boolean>(false);
-    const [onlyOnSpecial, setOnlyOnSpecial] = React.useState<boolean>(false);
-
-    // ? Update Image States
-    const [uploadImage, setUploadImage] = React.useState<File>();
-    const [uploadImageShow, setUploadImageShow] = React.useState<Buffer | string>(); // Fuck my types...
-
-    // ? Fuck Me State AGAIN
-    const [garnetName, setGarnetName] = React.useState<string>('');
-
-    // ? Order State
+    // ? Order States
     const [order, setOrder] = React.useState<boolean>(false);
+    const [orderSet, setOrderSet] = React.useState<PlateComplex>();
+    const [orderLoading, setOrderLoading] = React.useState<boolean>(false);
 
-    // ? Error Handling State
-    const [error, setError] = React.useState<boolean>(false);
-    const [noImage, setNoImage] = React.useState<boolean>(false);
-    const [descError, setDescError] = React.useState<boolean>(false);
-    const [garnetError, setGarnetError] = React.useState<boolean>(false);
-    const [emptyFields, setEmptyFields] = React.useState<boolean>(false);
-    const [specialError, setSpecialError] = React.useState<boolean>(false);
-    const [uploadImageTooLarge ,setUploadImageTooLarge] = React.useState<boolean>(false);
+    // ? Filters
+    const [visibleOnly, setVisibleOnly] = React.useState<boolean>(false);
+    const [nonVisibleOnly, setNonVisibleOnly] = React.useState<boolean>(false);
+    const [availableOnly, setAvailableOnly] = React.useState<boolean>(false);
+    const [nonAvailableOnly, setNonAvailableOnly] = React.useState<boolean>(false);
+    const [dayPlateOnly, setDayPlateOnly] = React.useState<boolean>(false);
+    const [exclDayPlateOnly, setExclDayPlateOnly] = React.useState<boolean>(false);
+    const [hasImageOnly, setHasImageOnly] = React.useState<boolean>(false);
 
     // ? Drag N Drop Refs
     let todoItemDragOver = React.useRef<number>(0);
     let todoItemDrag = React.useRef<number>(0);
 
     React.useEffect(() => {
-        if (updateObj) {
-            setOrder(false);
-            // @ts-ignore
-            setID(updateObj._id);
-            setGID(updateObj.garnet._id);
-            setCID(updateObj.category._id);
-            setName(updateObj.name);
-            setDesc(updateObj.desc ? updateObj.desc : '');
-            setPrice(updateObj.price);
-            setVisible(updateObj.visible);
-            setShowIcon(updateObj.showIcon);
-            setShowDesc(updateObj.showDesc);
-            setShowPrice(updateObj.showPrice);
-            setKiloPrice(updateObj.kiloPrice);
-            setShowGarnet(updateObj.showGarnet);
-            setAvailability(updateObj.availability);
-            setShowOnSpecial(updateObj.showOnSpecial);
-            setOnlyOnSpecial(updateObj.onlyOnSpecial);
-            setUploadImageShow(updateObj.image);
+        if (categories) {
+            setAllCategories(categories);
+        }
+    }, [categories]);
+
+    // ? Warn For Not Showing Price On Plate (Might be illegal)
+    React.useEffect(() => {
+        if (!showPrice) {
+            const ans = confirm("Η απόκρυψη τιμής ίσως υπόκειτε σε νομικές παραβιάσεις!");
+            if (!ans) setShowPrice(true);
+        }
+    }, [showPrice]);
+
+    // ? Set Update Object Params
+    React.useEffect(() => {
+        if (updateObject) {
+            setGID(updateObject.garnet._id);
+            setCID(updateObject.category._id);
+            setName(updateObject.name);
+            setDesc(updateObject.desc ? updateObject.desc : '');
+            setPrice(updateObject.price);
+            setVisible(updateObject.visible);
+            setShowIcon(updateObject.showIcon);
+            setShowDesc(updateObject.showDesc);
+            setShowPrice(updateObject.showPrice);
+            setKiloPrice(updateObject.kiloPrice);
+            setShowGarnet(updateObject.showGarnet);
+            setAvailability(updateObject.availability);
+            setShowOnSpecial(updateObject.showOnSpecial);
+            setOnlyOnSpecial(updateObject.onlyOnSpecial);
         } else {
-            setID('');
             setGID('');
             setCID('');
             setName('');
             setDesc('');
             setPrice(0);
-            setVisible(false);
+            setVisible(true);
             setShowIcon(false);
             setShowDesc(false);
-            setShowPrice(false);
+            setShowPrice(true);
             setKiloPrice(false);
-            setShowGarnet(false);
-            setAvailability(false);
+            setShowGarnet(true);
+            setAvailability(true);
             setShowOnSpecial(false);
             setOnlyOnSpecial(false);
-            setUploadImageShow(undefined);
         }
-    }, [updateObj]);
+    }, [updateObject]);
+
+    React.useEffect(() => {
+        if (plates) {
+            setAllPlates(plates);
+        } else {
+            setAllPlates(undefined);
+        }
+    }, [plates]);
 
     const handleSubmition = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -642,32 +188,57 @@ const ShowPlatesOnCategory = ({
         if (name.length === 0 || price === 0 || price == undefined || price == null 
             || price == 0 || !gID || !cID || gID.length === 0 || cID.length === 0) {
             setEmptyFields(true);
+            setPopUp('Κενά Πεδία!');
+            const int = window.setInterval(() => {
+                setPopUp('');
+                window.clearInterval(int);
+            }, 5000);
             return;
         }
 
         if ((showDesc && !desc) || (showDesc && desc.length === 0)) {
             setDescError(true);
+            setPopUp('Σφάλμα Στην Περιγραφή!');
+            const int = window.setInterval(() => {
+                setPopUp('');
+                window.clearInterval(int);
+            }, 5000);
             return;
         }
 
-        // if (showIcon && !uploadImage) {
-        //     setNoImage(true);
-        //     return;
-        // }
+        if (showIcon && !uploadImage) {
+            setNoImage(true);
+            setPopUp('Σφάλμα Στην Εικόνα!');
+            const int = window.setInterval(() => {
+                setPopUp('');
+                window.clearInterval(int);
+            }, 5000);
+            return;
+        }
 
         if ((showGarnet && !gID) || (showGarnet && gID.length === 0)) {
             setGarnetError(true);
+            setPopUp('Σφάλμα Στην Γαρνιτούρα!');
+            const int = window.setInterval(() => {
+                setPopUp('');
+                window.clearInterval(int);
+            }, 5000);
             return;
         }
 
         if (onlyOnSpecial && !showOnSpecial) {
             setSpecialError(true);
+            setPopUp('Μη Διαθέσιμο στα Πιάτα Ημέρας!');
+            const int = window.setInterval(() => {
+                setPopUp('');
+                window.clearInterval(int);
+            }, 5000);
             return;
         }
 
         const FD = new FormData();
-
-        FD.append('_id', id);
+        
+        updateObject && FD.append('_id', updateObject._id ? updateObject._id : '');
         FD.append('name', name);
         FD.append('garnetID', gID);
         FD.append('categoryID', cID);
@@ -684,7 +255,13 @@ const ShowPlatesOnCategory = ({
         if (uploadImage) {FD.append('image', uploadImage)};
         if (desc) {FD.append('desc', desc)}
 
-        const res: boolean = await updatePlateWithImage(token, FD);
+        var res: boolean | undefined;
+
+        if (updateObject) {
+            res = await updatePlateWithImage(token, FD);
+        } else {
+            res = await newPlate(token, FD);
+        }
 
         if (res) {
             setName('');
@@ -695,172 +272,423 @@ const ShowPlatesOnCategory = ({
             setGarnetName('');
             setUploadImage(undefined);
             setUploadImageShow(undefined);
-            refetch();
-            setClose(null);
+            catContent && refetchPlates();
+            updateObject ? setPopUp('Επιτυχής Ενημέρωση Πιάτου') : setPopUp('Επιτυχής Καταχώρηση Πιάτου!');
+            updateObject && setUpdateObject(null);
+            const int = window.setInterval(() => {
+                setPopUp('');
+                window.clearInterval(int);
+            }, 5000);
+            return;
         } else {
             setError(true);
+            updateObject ? setPopUp('Ανεπιτυχής Ενημέρωση Πιάτου') : setPopUp('Ανεπιτυχής Καταχώρηση Πιάτου!');
+            const int = window.setInterval(() => {
+                setPopUp('');
+                window.clearInterval(int);
+            }, 5000);
             return;
         }
     }
 
-    const handleDeletion = async () => {
-        const ans = confirm("Είστε σίγουρος πως θέλετε να διαγράψετε το πίατο \"" + name + "\"");
-        if (!ans) return true;
+    const handleOrderSubmition = async (e: React.MouseEvent) => {
+        if (!order || !plate) return;
+        setOrder(false);
+        setOrderLoading(true);
 
-        const res = await deletePlate(token, id);
+        const orderFix: PlateFixOrder[] = [];
 
-        if (res) refetch();
-        if (!res) return false;
+        for (let i = 0; i < plate.length; i++) {
+            orderFix.push({
+                // @ts-ignore
+                _id: plate[i]._id,
+                order: plate[i].order,
+                categoryID: plate[i].category._id,
+                name: plate[i].name,
+            });
+        }
+
+        const res = await fixPlateOrder(token, orderFix);
+
+        if (res) {
+            refetchPlates();
+            setOrderLoading(false);
+            setPopUp('Επιτυχής Αλλαγή Σειράς!');
+            const int = window.setInterval(() => {
+                setPopUp('');
+                window.clearInterval(int);
+            }, 5000);
+            return;
+        } else {
+            setOrder(true);
+            setOrderLoading(false);
+            setPopUp('Ανεπιτυχής Αλλαγή Σειράς!');
+            const int = window.setInterval(() => {
+                setPopUp('');
+                window.clearInterval(int);
+            }, 5000);
+            return;
+        }
     }
 
+    // ? Handle Drag Start
     const dragStart = (e: React.DragEvent, index: number) => {
         if (!order) return;
         todoItemDrag.current = index;
     }
 
-    const dragEnd = (e: React.DragEvent) => {
-        if (!order) return;
-        if (!plates) return;
-        const platesClone = [...platesState];
-        const temp = platesClone[todoItemDrag.current];
-        platesClone[todoItemDrag.current] = platesClone[todoItemDragOver.current];
-        platesClone[todoItemDragOver.current] = temp;
-        setPlatesState(platesClone);
-    }
-
+    // ? Handle Drag Enter
     const dragEnter = (e: React.DragEvent, index: number) => {
         if (!order) return;
         todoItemDragOver.current = index;
     }
 
-    const handleOrderSubmition = async () => {
-        if (!order || !platesState) return;
-        setOrder(false);
+    // ? Handle Drag End Function
+    const dragEnd = (e?: React.DragEvent) => {
+        if (!order) return;
+        if (!plate) return;
+        const platesClone = [...plate];
+        const temp = platesClone[todoItemDrag.current];
+        platesClone[todoItemDrag.current] = platesClone[todoItemDragOver.current];
+        platesClone[todoItemDragOver.current] = temp;
+        setAllPlates(platesClone);
+    }
 
-        const orderFix: PlateTypes.PlateFixOrder[] = []
+    // ? Handle Order Behaviour For Mobile
+    const handleOrderMobile = (pl: PlateComplex) => {
+        if (window.innerWidth < 620 && order && plate) {
+            if (!orderSet) {
+                setOrderSet(pl);
+            } else {
+                let temp1 = pl;
+                let tempValue = pl.order;
+                let temp2 = orderSet;
+                temp1.order = orderSet.order;
+                temp2.order = tempValue;
 
-        for (let i = 0; i < platesState.length; i++) {
-            orderFix.push({
-                // @ts-ignore
-                _id: platesState[i]._id,
-                order: platesState[i].order,
-                categoryID: platesState[i].category._id,
-                name: platesState[i].name,
-            });
-        }
+                const final = [];
 
-        const res = await fixPlateOrder(token, orderFix.reverse());
+                for (let i = 0; i < plate.length; i++) {
+                    if (plate[i].order === temp1.order) {
+                        final.push(temp2);
+                    } else if (plate[i].order === temp2.order) {
+                        final.push(temp1);
+                    } else {
+                        final.push(plate[i]);
+                    }
+                }
 
-        if (res) {
-            refetch();
-            return;
-        } else {
-            setOrder(true);
-            return;
+                setOrderSet(undefined);
+                setAllPlates(final);
+            }
         }
     }
 
     return (
-        <div className={style.showPlates}>
-            <div className={style.showPlatesInner}>
-                <div className={style.showPlatesInnerDisplay}>
-                    <div className={style.showPlatesInnerDisplayControlls}>
-                        <button type="button" role='button' title='Ακύρωση' onClick={() => setClose(null)} className={style.cancelButton}>
-                            <XCircleFillIcon box={1.8} color={Colors.black} />
-                        </button>
-                        {/* <h2>Πιάτα στην κατηγορία {plates[0].category.name}</h2> */}
-                    </div>
-                    <ul className={style.showPlatesInnerDisplayItems} style={{ listStyle: 'none' }}>
-                        {platesState.map((pl: PlateTypes.PlateComplex, key: number) => {
+        <div className={style.plates}>
+            <div className={style.platesView}>
+                {popUp && <ErrorDiv text={popUp} />}
+                <div className={style.platesViewList}>
+                    {isLoadingCategories &&
+                        <div className={style.categoriesViewList_loading}>
+                            <LoadingSpinner />
+                            <p>Φόρτωση Κατηγοριών...</p>
+                        </div>
+                    }
+                    {isErrorCategories &&
+                        <div className={style.categoriesViewList_error}>
+                            <BugSVG box={2.5} color={Colors.black} />
+                            <p>Απροσδιόριστο Σφάλμα.</p>
+                            <button type='button' role='button' onClick={() => refetchCategories()}>
+                                Προσπαθήστε Ξανά
+                            </button>
+                        </div>
+                    }
+                    {(allCategories && !catContent) && allCategories.map((cat: Category, key: number) => {
                             return (
-                                <li
-                                    style={{ width: '100%' }}
+                                <div
+                                    className={style.categoryView}
                                     key={key}
-                                    draggable={order}
-                                    onDragStart={(e: React.DragEvent) => dragStart(e, key)}
-                                    onDragEnter={(e: React.DragEvent) => dragEnter(e, key)}
-                                    onDragEnd={(e: React.DragEvent) => dragEnd(e)}
-                                    onDragOver={(e: React.DragEvent) => e.preventDefault()}
+                                    onClick={() => {setCatContent(cat); refetchPlates();}}
                                 >
-                                    <PlateViewDashboard 
-                                        availability={pl.availability}
-                                        category={pl.category}
-                                        desc={pl.desc}
-                                        garnet={pl.garnet}
-                                        image={pl.image}
-                                        imageMimeType={pl.imageMimeType}
-                                        kiloPrice={pl.kiloPrice}
-                                        name={pl.name}
-                                        onlyOnSpecial={pl.onlyOnSpecial}
-                                        order={pl.order}
-                                        price={pl.price}
-                                        showDesc={pl.showDesc}
-                                        showGarnet={pl.showGarnet}
-                                        showIcon={pl.showIcon}
-                                        showOnSpecial={pl.showOnSpecial}
-                                        showPrice={pl.showPrice}
-                                        visible={pl.visible}
-                                        _id={pl._id}
-                                        object={pl}
-                                        onClick={setUpdateObj}
-                                    />
-                                </li>
-                            );
+                                    <div className={style.categoryView_left}>
+                                        {cat.visible ?
+                                            <EyeOpenSVG box={.9} color={Colors.black} />
+                                        :
+                                            <EyeCloseSVG box={.9} color={Colors.black} />
+                                        }
+                                        <p>{cat.name}</p>
+                                    </div>
+                                    <div className={style.categoryView_right}>
+                                        <button className={style.categotyBtn_expand} role='button' title='Ενημέρωση Κατηγορίας' type='button' disabled>
+                                            <ExpandSVG box={1.1} color={Colors.black} />
+                                        </button>
+                                    </div>
+                                </div>
+                            )
+                        
+                            
                         })}
-                    </ul>
+                    {(isLoadingPlates && catContent) &&
+                        <div className={style.categoriesViewList_loading}>
+                            <LoadingSpinner />
+                            <p>Φόρτωση Πιάτων...</p>
+                        </div>
+                    }
+                    {(isErrorPlates && catContent) && 
+                        <div className={style.categoriesViewList_error}>
+                            <BugSVG box={2.5} color={Colors.black} />
+                            <p>Απροσδιόριστο Σφάλμα.</p>
+                            <button type='button' role='button' onClick={() => refetchPlates()}>
+                                Προσπαθήστε Ξανά
+                            </button>
+                        </div>
+                    }
+                    {(isFetchingPlates && catContent && !isLoadingPlates && !isErrorPlates) &&
+                        <div className={style.categoriesViewList_loading}>
+                            <LoadingSpinner />
+                            <p>Φόρτωση Πιάτων...</p>
+                        </div>
+                    }
+                    {(catContent && plate && !isFetchingPlates) &&
+                        <ul className={style.platesViewInner}>
+                            <li className={style.platesViewInnerButton} role='button' onClick={() => {setCatContent(undefined); refetchPlates(); setUpdateObject(null); setAllPlates(undefined);}}>
+                                <UpSVG box={1} color={Colors.black} />
+                                Πίσω
+                            </li>
+                            {((catContent && plate) && plate.map((pl: PlateComplex, key: number) => {
+                                if (hasImageOnly && !pl.image) return;
+                                if (visibleOnly && !pl.visible) return;
+                                if (nonVisibleOnly && pl.visible) return;
+                                if (availableOnly && !pl.availability) return;
+                                if (nonAvailableOnly && pl.availability) return;
+                                if (dayPlateOnly && !pl.showOnSpecial) return;
+                                if (exclDayPlateOnly && !pl.onlyOnSpecial) return;
+                                return (
+                                    <li 
+                                        key={key}
+                                        className={style.plateViewOutside}
+                                        draggable={order}
+                                        onDragStart={(e: React.DragEvent) => dragStart(e, key)}
+                                        onDragEnter={(e: React.DragEvent) => dragEnter(e, key)}
+                                        onDragEnd={(e: React.DragEvent) => dragEnd(e)}
+                                        onDragOver={(e: React.DragEvent) => e.preventDefault()}
+                                        onClick={() => {setUpdateObject(pl); handleOrderMobile(pl);}}
+                                        style={{ opacity: orderSet?._id === pl._id ? .5 : 1 }}
+                                    >
+                                        <PlateFinal
+                                            image={pl.image}
+                                            name={pl.name}
+                                            price={pl.price}
+                                            category={pl.category}
+                                            garnet={pl.garnet}
+                                            desc={pl.desc}
+                                            availability={pl.availability}
+                                            showIcon={pl.showIcon}
+                                            showDesc={pl.showDesc}
+                                            showPrice={pl.showPrice}
+                                            showGarnet={pl.showGarnet}
+                                            kiloPrice={pl.kiloPrice}
+                                            onlyOnSpecial={pl.onlyOnSpecial}
+                                            order={pl.order}
+                                            showOnSpecial={pl.showOnSpecial}
+                                            visible={pl.visible}
+                                            imageMimeType={pl.imageMimeType}
+                                            _id={pl._id}
+                                            object={pl}
+                                            onClick={setUpdateObject}
+                                            showOrder={order}
+                                        />
+                                    </li>
+                                );
+                            }))}
+                        </ul>
+                    }
                 </div>
-                {updateObj ?
-                    isLoadingCategories || isLoadingGarnets ?
-                        <div className={style.updatePlatesInnerLoader}>
-                            <div>
-                                <LoadingSpinner width={50} />
+                <div className={style.platesSettings}>
+                    <h2>
+                        {updateObject ?
+                            'Ενημέρωση Πιάτων'
+                        :
+                            settings ?
+                                'Ρυθμίσεις'
+                            :
+                                'Προσθήκη Πιατών'
+                        }
+                    </h2>
+                    {settings ?
+                        <div className={style.settings}>
+                            <div className={style.platesSettingsInfo}>
+                                <p>Σύνολο Πιάτων: <span>{stats && stats.all}</span></p>
+                                <p>Διαθέσιμα: <span>{stats && stats.availability}</span></p>
+                                <p>Εμφάνηση Στο Μενού <span>{stats && stats.visible}</span></p>
+                                <p>Πιάτα Ημέρας <span>{stats && stats.showOnSpecial}</span></p>
+                                <p>Μόνο Στα Πιάτα Ημέρας <span>{stats && stats.onlyOnSpecial}</span></p>
+                                <p>Έχουν Εικόνα <span>{stats && stats.hasImage}</span></p>
                             </div>
-                            <p>Φόρτωση</p>
+                            <div className={style.toggleDiv}>
+                                <label htmlFor="order">Προγραμματισμός Σειράς: </label>
+                                <ToggleSwitch
+                                    banner=''
+                                    hasInfo={false}
+                                    label='order'
+                                    clicked={order}
+                                    setClicked={setOrder}
+                                />
+                            </div>
+                            <div className={style.resetOrderDiv}>
+                                <p>Επαναφορά Σειράς:</p>
+                                <button
+                                    type='button'
+                                    role='button'
+                                    title='Επαναφορά Πιάτων'
+                                    onClick={() => {
+                                        plates && setAllPlates(plates);
+                                    }}
+                                >
+                                    <ResetSVG box={1.5} color={Colors.error} />
+                                </button>
+                            </div>
+                            {(plate && !orderLoading) &&
+                                <div className={style.submitOrderChange} style={{ padding: '0 .5rem', marginTop: '1rem', width: '100%' }}>
+                                    <button
+                                        type="button"
+                                        role='button'
+                                        title='Αλλαγή Σειράς'
+                                        onClick={handleOrderSubmition}
+                                        disabled={!order}
+                                    >
+                                        Αλλαγή Σειράς
+                                    </button>
+                                </div>
+                            }
+                            <div className={style.filters}>
+                                <div className={style.toggleDiv}>
+                                    <label htmlFor="showOnlyVisibles">Δείτε Πιάτα Που Είναι Εμφανή: </label>
+                                    <ToggleSwitch
+                                        banner=''
+                                        hasInfo={false}
+                                        label='showOnlyVisibles'
+                                        clicked={visibleOnly}
+                                        setClicked={setVisibleOnly}
+                                    />
+                                </div>
+                                <div className={style.toggleDiv}>
+                                    <label htmlFor="showOnlyNonVisibles">Δείτε Πιάτα Που Είναι Μη Εμφανή: </label>
+                                    <ToggleSwitch
+                                        banner=''
+                                        hasInfo={false}
+                                        label='showOnlyNonVisibles'
+                                        clicked={nonVisibleOnly}
+                                        setClicked={setNonVisibleOnly}
+                                    />
+                                </div>
+                                <div className={style.toggleDiv}>
+                                    <label htmlFor="showOnlyAvailables">Δείτε Πιάτα Που Είναι Διαθέσιμα: </label>
+                                    <ToggleSwitch
+                                        banner=''
+                                        hasInfo={false}
+                                        label='showOnlyAvailables'
+                                        clicked={availableOnly}
+                                        setClicked={setAvailableOnly}
+                                    />
+                                </div>
+                                <div className={style.toggleDiv}>
+                                    <label htmlFor="showOnlyNonAvailables">Δείτε Πιάτα Που Είναι Μη Διαθέσιμα: </label>
+                                    <ToggleSwitch
+                                        banner=''
+                                        hasInfo={false}
+                                        label='showOnlyNonAvailables'
+                                        clicked={nonAvailableOnly}
+                                        setClicked={setNonAvailableOnly}
+                                    />
+                                </div>
+                                <div className={style.toggleDiv}>
+                                    <label htmlFor="showOnlyDayPlates">Δείτε Πιάτα Που Είναι Ημέρας: </label>
+                                    <ToggleSwitch
+                                        banner=''
+                                        hasInfo={false}
+                                        label='showOnlyDayPlates'
+                                        clicked={dayPlateOnly}
+                                        setClicked={setDayPlateOnly}
+                                    />
+                                </div>
+                                <div className={style.toggleDiv}>
+                                    <label htmlFor="showOnlyExclusivlyDayPlates">Δείτε Πιάτα Που Είναι Μόνο Ημέρας: </label>
+                                    <ToggleSwitch
+                                        banner=''
+                                        hasInfo={false}
+                                        label='showOnlyExclusivlyDayPlates'
+                                        clicked={exclDayPlateOnly}
+                                        setClicked={setExclDayPlateOnly}
+                                    />
+                                </div>
+                                <div className={style.toggleDiv}>
+                                    <label htmlFor="showPlatesWithImage">Δείτε Πιάτα Που Έχουν Εικόνα: </label>
+                                    <ToggleSwitch
+                                        banner=''
+                                        hasInfo={false}
+                                        label='showPlatesWithImage'
+                                        clicked={hasImageOnly}
+                                        setClicked={setHasImageOnly}
+                                    />
+                                </div>
+                                <button type='button' role='button' onClick={() => setSettings(false)} className={style.backSettingsButton}>
+                                    <UpSVG box={1} color={Colors.black} />
+                                    Πίσω
+                                </button>
+                            </div>
                         </div>
                     :
-                        <form className={style.updatePlatesInner} autoComplete='off' autoCorrect='off' autoCapitalize='off' onSubmit={handleSubmition}>
-                                <ImageInput
-                                    label='image_on_plate'
-                                    placeholder='Επιλογή εικόνας...'
-                                    size={1.3}
-                                    setUploadImage={setUploadImage}
-                                    //@ts-ignore
-                                    setUploadImageShow={setUploadImageShow}
-                                    setUploadImageTooLarge={setUploadImageTooLarge}
-                                    noImage={noImage}
-                                    setNoImage={setNoImage}
-                                    uploadImage={uploadImage}
-                                    //@ts-ignore
-                                    uploadImageShow={uploadImageShow}
-                                    uploadImageTooLarge={uploadImageTooLarge}
-                                />
-                                <TextInput
-                                    label='name_update'
-                                    placeholder='Όνομα Πιάτου'
-                                    value={name}
-                                    setValue={setName}
-                                    tabIndex={1}
-                                    icon={<PlateSVG box={1.4} color={Colors.white} />}
-                                    emptyFields={emptyFields}
-                                    setEmptyFields={setEmptyFields}
-                                    error={error}
-                                    setError={setError}
-                                />
-                                <NumberInput
-                                    tabIndex={2}
-                                    label='price_update'
-                                    placeholder='Τιμή'
-                                    max={1000}
-                                    min={0.5}
-                                    size={1.3}
-                                    step={.5}
-                                    value={price}
-                                    setValue={setPrice}
-                                    emptyFields={emptyFields}
-                                    setEmptyFields={setEmptyFields}
-                                    error={error}
-                                    setError={setError}
-                                />
+                        <form onSubmit={handleSubmition} autoCapitalize='off' autoComplete='off' autoCorrect='off'>
+                            <ImageInput
+                                label='image_on_plate'
+                                placeholder='Επιλογή Εικόνας'
+                                size={1.3}
+                                setUploadImage={setUploadImage}
+                                setUploadImageShow={setUploadImageShow}
+                                setUploadImageTooLarge={setUploadImageTooLarge}
+                                noImage={noImage}
+                                setNoImage={setNoImage}
+                                uploadImage={uploadImage}
+                                uploadImageShow={uploadImageShow}
+                                uploadImageTooLarge={uploadImageTooLarge}
+                            />
+                            <TextInput
+                                label='name'
+                                placeholder='Όνομα Πιάτου...'
+                                value={name}
+                                setValue={setName}
+                                tabIndex={1}
+                                icon={<PlateSVG box={1.4} color={Colors.white} />}
+                                emptyFields={emptyFields}
+                                setEmptyFields={setEmptyFields}
+                                error={error}
+                                setError={setError}
+                            />
+                            <NumberInput
+                                tabIndex={2}
+                                label='price'
+                                placeholder='Τιμή'
+                                max={1000}
+                                min={0.5}
+                                size={1.3}
+                                step={.5}
+                                value={price}
+                                setValue={setPrice}
+                                emptyFields={emptyFields}
+                                setEmptyFields={setEmptyFields}
+                                error={error}
+                                setError={setError}
+                            />
+                            {isLoadingCategories ?
+                                <div className={style.loadingAnimationOnDropdownButton}>
+                                    <div>
+                                        <LoadingSpinner width={20}/>
+                                    </div>
+                                    <p>Φόρτωση...</p>
+                                </div>
+                            : 
                                 <DropDownInput
                                     icon={<CategorySVG box={1.2} color={Colors.white} />}
                                     text={'Επιλογή Κατηγορίας'}
@@ -870,6 +698,15 @@ const ShowPlatesOnCategory = ({
                                     takeForComp='_id'
                                     takeForDisplay='name'
                                 />
+                            }
+                            {isLoadingGarnets ?
+                                <div className={style.loadingAnimationOnDropdownButton}>
+                                    <div>
+                                        <LoadingSpinner width={20}/>
+                                    </div>
+                                    <p>Φόρτωση...</p>
+                                </div>
+                            :
                                 <DropDownInput
                                     icon={<GarnetSVG box={1.2} color={Colors.white} />}
                                     text={'Επιλογή Γαρνιτούρας'}
@@ -880,163 +717,141 @@ const ShowPlatesOnCategory = ({
                                     takeForDisplay='name'
                                     setValueName={setGarnetName}
                                 />
-                                <TextAreaInput
-                                    label='description_update'
-                                    placeholder='Περιγραφή πιάτου...'
-                                    value={desc}
-                                    setValue={setDesc}
-                                    tabIndex={3}
-                                    icon={<PlateSVG box={1.4} color={Colors.white} />}
-                                    emptyFields={emptyFields}
-                                    setEmptyFields={setEmptyFields}
+                            }
+                            <TextAreaInput
+                                label='description'
+                                placeholder='Περιγραφή πιάτου...'
+                                value={desc}
+                                setValue={setDesc}
+                                tabIndex={3}
+                                icon={<PlateSVG box={1.4} color={Colors.white} />}
+                                emptyFields={emptyFields}
+                                setEmptyFields={setEmptyFields}
+                                error={error}
+                                setError={setError}
+                            />
+                            <div className={style.toggleDiv}>
+                                <label htmlFor='visible'>Εμφάνιση στο μενού: </label>
+                                <ToggleSwitch
+                                    banner=''
+                                    clicked={visible}
+                                    setClicked={setVisible}
+                                    hasInfo={false}
+                                    label='visible'
                                     error={error}
                                     setError={setError}
                                 />
-                                <div className={style.toggleDiv}>
-                                    <label htmlFor='visible_update'>Εμφάνηση στο μενού: </label>
-                                    <ToggleSwitch
-                                        banner=''
-                                        clicked={visible}
-                                        setClicked={setVisible}
-                                        hasInfo={false}
-                                        label='visible_update'
-                                        error={error}
-                                        setError={setError}
-                                    />
-                                </div>
-                                <div className={style.toggleDiv}>
-                                    <label htmlFor='availability_update'>Διαθεσιμότητα: </label>
-                                    <ToggleSwitch
-                                        banner=''
-                                        clicked={availability}
-                                        setClicked={setAvailability}
-                                        hasInfo={false}
-                                        label='availability_update'
-                                        error={error}
-                                        setError={setError}
-                                    />
-                                </div>
-                                <div className={style.toggleDiv}>
-                                    <label htmlFor='show_image_update'>Προβολή εικόνας: </label>
-                                    <ToggleSwitch
-                                        banner=''
-                                        clicked={showIcon}
-                                        setClicked={setShowIcon}
-                                        hasInfo={false}
-                                        label='show_image_update'
-                                        error={error}
-                                        setError={setError}
-                                    />
-                                </div>
-                                <div className={style.toggleDiv}>
-                                    <label htmlFor='show_desc_update'>Προβολή περιγραφής: </label>
-                                    <ToggleSwitch
-                                        banner=''
-                                        clicked={showDesc}
-                                        setClicked={setShowDesc}
-                                        hasInfo={false}
-                                        label='show_desc_update'
-                                        error={error}
-                                        setError={setError}
-                                    />
-                                </div>
-                                <div className={style.toggleDiv}>
-                                    <label htmlFor='show_price_update'>Προβολή τιμής: </label>
-                                    <ToggleSwitch
-                                        banner=''
-                                        clicked={showPrice}
-                                        setClicked={setShowPrice}
-                                        hasInfo={false}
-                                        label='show_price_update'
-                                        error={error}
-                                        setError={setError}
-                                    />
-                                </div>
-                                <div className={style.toggleDiv}>
-                                    <label htmlFor='kilo_price_update'>Ζυγιζόμενο: </label>
-                                    <ToggleSwitch
-                                        banner=''
-                                        clicked={kiloPrice}
-                                        setClicked={setKiloPrice}
-                                        hasInfo={false}
-                                        label='kilo_price_update'
-                                        error={error}
-                                        setError={setError}
-                                    />
-                                </div>
-                                <div className={style.toggleDiv}>
-                                    <label htmlFor='show_garnet_update'>Προβολή γαρνιτούρας: </label>
-                                    <ToggleSwitch
-                                        banner=''
-                                        clicked={showGarnet}
-                                        setClicked={setShowGarnet}
-                                        hasInfo={false}
-                                        label='show_garnet_update'
-                                        error={error}
-                                        setError={setError}
-                                    />
-                                </div>
-                                <div className={style.toggleDiv}>
-                                    <label htmlFor='show_on_special_update'>Πιάτο ημέρας: </label>
-                                    <ToggleSwitch
-                                        banner=''
-                                        clicked={showOnSpecial}
-                                        setClicked={setShowOnSpecial}
-                                        hasInfo={false}
-                                        label='show_on_special_update'
-                                        error={error}
-                                        setError={setError}
-                                    />
-                                </div>
-                                <div className={style.toggleDiv}>
-                                    <label htmlFor='show_only_on_special_update' title='Δεν θα εμφανίζεται στο μενού - μόνο στα πιάτα ημέρας'>Μόνο στα ημέρας: </label>
-                                    <ToggleSwitch
-                                        banner=''
-                                        clicked={onlyOnSpecial}
-                                        setClicked={setOnlyOnSpecial}
-                                        hasInfo={false}
-                                        label='show_only_on_special_update'
-                                        error={error}
-                                        setError={setError}
-                                    />
-                                </div>
-                                <div className={style.objUpdateButtons}>
-                                    <button type='submit' role='button' title='Αποθήκευση Αλλαγών' className={style.submitButton}>Αποθήκευση</button>
-                                    {/* <SubmitButton text='Αποθήκευση' type={false} /> */}
-                                    <button type='button' role='button' title='Διαγραφή Πιάτου' className={style.actionButton} onClick={() => handleDeletion()}>
-                                        <BinSVG box={1.5} color={Colors.error} />
-                                        </button>
-                                    <button type='button' role='button' title='Ακύρωση' className={style.actionButton} onClick={() => setUpdateObj(null)}>
-                                        <XCircleFillIcon box={1.5} color={Colors.black} />
-                                        </button>
-                                </div>
+                            </div>
+                            <div className={style.toggleDiv}>
+                                <label htmlFor='availability'>Διαθεσιμότητα: </label>
+                                <ToggleSwitch
+                                    banner=''
+                                    clicked={availability}
+                                    setClicked={setAvailability}
+                                    hasInfo={false}
+                                    label='availability'
+                                    error={error}
+                                    setError={setError}
+                                />
+                            </div>
+                            <div className={style.toggleDiv}>
+                                <label htmlFor='show_image'>Προβολή εικόνας: </label>
+                                <ToggleSwitch
+                                    banner=''
+                                    clicked={showIcon}
+                                    setClicked={setShowIcon}
+                                    hasInfo={false}
+                                    label='show_image'
+                                    error={error}
+                                    setError={setError}
+                                />
+                            </div>
+                            <div className={style.toggleDiv}>
+                                <label htmlFor='show_desc'>Προβολή περιγραφής: </label>
+                                <ToggleSwitch
+                                    banner=''
+                                    clicked={showDesc}
+                                    setClicked={setShowDesc}
+                                    hasInfo={false}
+                                    label='show_desc'
+                                    error={error}
+                                    setError={setError}
+                                />
+                            </div>
+                            <div className={style.toggleDiv}>
+                                <label htmlFor='show_price'>Προβολή τιμής: </label>
+                                <ToggleSwitch
+                                    banner=''
+                                    clicked={showPrice}
+                                    setClicked={setShowPrice}
+                                    hasInfo={false}
+                                    label='show_price'
+                                    error={error}
+                                    setError={setError}
+                                />
+                            </div>
+                            <div className={style.toggleDiv}>
+                                <label htmlFor='kilo_price'>Ζυγιζόμενο: </label>
+                                <ToggleSwitch
+                                    banner=''
+                                    clicked={kiloPrice}
+                                    setClicked={setKiloPrice}
+                                    hasInfo={false}
+                                    label='kilo_price'
+                                    error={error}
+                                    setError={setError}
+                                />
+                            </div>
+                            <div className={style.toggleDiv}>
+                                <label htmlFor='show_garnet'>Προβολή γαρνιτούρας: </label>
+                                <ToggleSwitch
+                                    banner=''
+                                    clicked={showGarnet}
+                                    setClicked={setShowGarnet}
+                                    hasInfo={false}
+                                    label='show_garnet'
+                                    error={error}
+                                    setError={setError}
+                                />
+                            </div>
+                            <div className={style.toggleDiv}>
+                                <label htmlFor='show_on_special'>Πιάτο ημέρας: </label>
+                                <ToggleSwitch
+                                    banner=''
+                                    clicked={showOnSpecial}
+                                    setClicked={setShowOnSpecial}
+                                    hasInfo={false}
+                                    label='show_on_special'
+                                    error={error}
+                                    setError={setError}
+                                />
+                            </div>
+                            <div className={style.toggleDiv}>
+                                <label htmlFor='show_only_on_special' title='Δεν θα εμφανίζεται στο μενού - μόνο στα πιάτα ημέρας'>Μόνο στα ημέρας: </label>
+                                <ToggleSwitch
+                                    banner=''
+                                    clicked={onlyOnSpecial}
+                                    setClicked={setOnlyOnSpecial}
+                                    hasInfo={false}
+                                    label='show_only_on_special'
+                                    error={error}
+                                    setError={setError}
+                                />
+                            </div>
+                            <div className={style.submitButtonDiv}>
+                                {!updateObject &&
+                                    <button type='button' role='button' title='Ρυθμίσεις' onClick={() => setSettings(curr => !curr)}>
+                                        <SettingsSVG box={2} color={Colors.black} />
+                                    </button>
+                                }
+                                <SubmitButton text={updateObject ? 'Ενημέρωση' : 'Προσθήκη'} type={true} />
+                            </div>
                         </form>
-                :
-                    <div className={style.updatePlatesInnerNoContent}>
-                        <p id={style.choosePlate}>Επιλέξτε ένα πίατο για να το επεξεργαστίται.</p>
-                        <span id={style.choosePlateSub}>Μπορείτε να κάνετε κλίκ σε οποιοδήποτε πιάτο θέλτε.</span>
-                        <div role='presentation' className={style.hrDiv}></div>
-                        <div className={style.orderLayout}>
-                            <p>Αλλαγή σειράς των πιάτων στην εμφανίση στο μενού.</p>
-                            <ToggleSwitch
-                                banner=''
-                                clicked={order}
-                                setClicked={setOrder}
-                                hasInfo={false}
-                                label='fix_order_plates'
-                            />
-                        </div>
-                        <div className={style.orderControlls}>
-                            <button type="button" role='button' title='Επαναφορά' onClick={() => setPlatesState(plates)} disabled={!order}>
-                                <ResetSVG box={2} color={Colors.black} />
-                            </button>
-                            <button type='button' role='button' title='Αποθήκευση' onClick={handleOrderSubmition} disabled={!order}><SaveSVG box={2} color={Colors.black} /></button>
-                        </div>
-                    </div>
-                }
+                    }
+                </div>
             </div>
         </div>
-    )
+    );
 }
 
 export default Plate;

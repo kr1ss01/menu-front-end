@@ -91,3 +91,7 @@ export const fixPlateOrder = async (at: string | undefined, obj: PlateFixOrder[]
         return;
     }
 }
+
+export const getPlateStats = async () => {
+    return (await api.get('stats/all')).data;
+}

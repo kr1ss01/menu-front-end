@@ -396,7 +396,7 @@ const Categories = ({ token }: { token: string | undefined }) => {
                         <p>Σύνολο Κρυφών Κατηγορίων: <span>{stats && stats.notVisible}</span></p>
                     </div>
                     <div className={style.toggleDiv}>
-                        <label htmlFor="order">Προγραμματισμός σειράς: </label>
+                        <label htmlFor="order">Προγραμματισμός Σειράς: </label>
                         <ToggleSwitch
                             banner=''
                             hasInfo={false}

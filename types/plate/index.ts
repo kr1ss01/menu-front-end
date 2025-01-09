@@ -103,3 +103,12 @@ export interface PlateFixOrder {
     _id: string;
     order: number;
 }
+
+export interface PlateStats {
+    all: number;
+    visible: number;
+    showOnSpecial: number;
+    onlyOnSpecial: number;
+    availability: number;
+    hasImage: number;
+}

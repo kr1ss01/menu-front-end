@@ -144,3 +144,17 @@ export const getUsersLastPasswordUpdate = async (at: string | undefined): Promis
         return '';
     }
 }
+
+export const getOwn = async (at: string | undefined) => {
+    try {
+        const token = 'Bearer ' + at;
+        const res = await api.get('/own', {
+            headers: {
+                'Authorization': `${token}`,
+            }
+        });
+        return res.data;
+    } catch (e) {
+        return '';
+    }
+}

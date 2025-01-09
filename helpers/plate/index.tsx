@@ -8,6 +8,7 @@ import { PlateComplex } from '@/types/plate';
 interface PlateViewDashboardProps extends PlateComplex {
     onClick: React.Dispatch<React.SetStateAction<PlateComplex | null>>,
     object: PlateComplex,
+    showOrder: boolean,
 }
 
 type PlatePreviewProps = {
@@ -77,6 +78,7 @@ export const PlateViewDashboard = ({
     showGarnet,
     _id,
     onClick,
+    showOrder,
 }: PlateViewDashboardProps) => {
     const handleUpdate = () => {
         onClick({
@@ -138,6 +140,7 @@ export const PlateFinal = ({
     _id,
     object,
     onClick,
+    showOrder
 }: PlateViewDashboardProps) => {
     const handlePrice = (price: number) => {
         if (price % 1 == 0) return `${price}.00`;
@@ -147,7 +150,7 @@ export const PlateFinal = ({
     // * RETURN WITH IMAGE
     if (image && showIcon && imageMimeType) {
         return (
-            <li
+            <div
                 className={style.plateWithImage}
                 onClick={() => onClick(object)}
                 >
@@ -163,7 +166,7 @@ export const PlateFinal = ({
                     >
                     </div>
                 <div className={style.plateInfo}>
-                    <p>{name}</p>
+                    <p>{showOrder && `(${order})`} {name}</p>
                     {showGarnet && <span>{garnet.name}</span>}
                     {showDesc && <span>{desc}</span>}
                     {showPrice && 
@@ -172,13 +175,13 @@ export const PlateFinal = ({
                     </span>
                     }
                 </div>
-                </li>
+            </div>
         );
     }
     // * RETURN NO IMAGE
     return (
-        <li className={style.plateNoImage} onClick={() => onClick(object)}>
-            <p>{name}</p>
+        <div className={style.plateNoImage} onClick={() => onClick(object)}>
+            <p>{showOrder && `(${order})`} {name}</p>
             {showGarnet && <span>{garnet.name}</span>}
             {showDesc && <span>{desc}</span>}
             {showPrice && 
@@ -186,6 +189,6 @@ export const PlateFinal = ({
                 {handlePrice(price)}&euro; {kiloPrice && '/κιλό'}
                 </span>
             }
-        </li>
+        </div>
     );
 }
