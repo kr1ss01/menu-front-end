@@ -10,6 +10,7 @@ import Colors from '@/types/colors';
 import { BinSVG, BugSVG, EditSVG, GarnetSVG, WarningSVG, XCircleNoFillIcon } from '@/svg';
 import SubmitButton from '@/helpers/components/submit.button';
 import LoadingSpinner from '@/helpers/loading';
+import ErrorDiv from '@/helpers/components/error.div';
 
 const Garnets = ({ token }: { token: string | undefined }) => {
     const { data: garnets, isLoading, isError, refetch } = useQuery<Garnet[]>({
@@ -77,19 +78,6 @@ const Garnets = ({ token }: { token: string | undefined }) => {
             }, 5000);
             return;
         }
-    }
-
-    const ErrorDiv = ({ text, icon, textColor }: { text: string, icon?: JSX.Element, textColor?: Colors }) => {
-        return (
-            <div className={style.errorHandlingDiv}>
-                <p style={{ color: textColor ? textColor : Colors.error }}>{text}</p>
-                {icon ? 
-                    icon 
-                :
-                    <WarningSVG box={2} color={Colors.error} />
-                }
-            </div>
-        )
     }
 
     const handleSubmitionCreation = async (e: React.FormEvent<HTMLFormElement>) => {

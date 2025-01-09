@@ -1,0 +1,54 @@
+@use "../../mixins";
+@use "../../variables";
+
+.errorHandlingDiv {
+  @include mixins.d-flex(center, space-between, row);
+  @include mixins.setTransBg();
+  position: absolute;
+  top: 10px;
+  left: 0;
+  width: 55%;
+  margin: 0 1rem;
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  animation: slideDown 250ms linear 1 forwards;
+  cursor: pointer;
+  z-index: 800;
+  overflow: hidden;
+  p {
+    width: 80%;
+    text-align: left;
+    font-size: 1rem;
+    font-weight: 700;
+    color: variables.$error;
+    cursor: pointer;
+  }
+  &::before {
+    content: "";
+    position: absolute;
+    top: calc(100% - 1px);
+    left: 0px;
+    right: 0px;
+    height: 1px;
+    background-color: variables.$error;
+    animation: timer 5000ms linear 1 forwards;
+  }
+}
+
+@keyframes slideDown {
+  0% {
+    transform: translateY(0) rotateX(90deg);
+  }
+  100% {
+    transform: translateY(0) rotateX(0);
+  }
+}
+
+@keyframes timer {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}

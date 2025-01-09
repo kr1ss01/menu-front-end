@@ -11,6 +11,7 @@ import { deleteCategory, getCategories, getStatsCategories, newCategory, orderFi
 import { useQuery } from '@tanstack/react-query';
 import Category, { CategoryStats } from '@/types/categories';
 import LoadingSpinner from '@/helpers/loading';
+import ErrorDiv from '@/helpers/components/error.div';
 
 const Categories = ({ token }: { token: string | undefined }) => {
     const { data: categories, isLoading, isError, refetch } = useQuery<Category[]>({
@@ -121,19 +122,6 @@ const Categories = ({ token }: { token: string | undefined }) => {
             }, 5000);
             return;
         }
-    }
-
-    const ErrorDiv = ({ text, icon, textColor }: { text: string, icon?: JSX.Element, textColor?: Colors }) => {
-        return (
-            <div className={style.errorHandlingDiv}>
-                <p style={{ color: textColor ? textColor : Colors.error }}>{text}</p>
-                {icon ? 
-                    icon 
-                :
-                    <WarningSVG box={2} color={Colors.error} />
-                }
-            </div>
-        )
     }
 
     const handleSubmitionCreation = async (e: React.FormEvent<HTMLFormElement>) => {

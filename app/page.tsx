@@ -121,17 +121,7 @@ export default function Home() {
     
                                 }}
                               >
-
                               </div>
-                            {/* <div className={styles.plateImage}>
-                              <Image
-                                src={`data:${pl.imageMimeType};base64,${Buffer.from(pl.image).toString('base64')}`}
-                                alt={`${pl.name} φωτογραφία`}
-                                // width={100}
-                                // height={100}
-                                fill={true}
-                              />
-                            </div> */}
                             <div className={styles.plateInfo}>
                               <p>{pl.name}</p>
                               {pl.showGarnet && <span>{pl.garnet.name}</span>}

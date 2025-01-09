@@ -7,6 +7,7 @@ import { PlateComplex } from '@/types/plate';
 
 interface PlateViewDashboardProps extends PlateComplex {
     onClick: React.Dispatch<React.SetStateAction<PlateComplex | null>>,
+    object: PlateComplex,
 }
 
 type PlatePreviewProps = {
@@ -113,5 +114,78 @@ export const PlateViewDashboard = ({
                 {showPrice && <p className={style.infoDivPrice}>{price}&euro;{kiloPrice ? '/κιλο' : ''}</p>}
             </div>
         </div>
+    );
+}
+
+export const PlateFinal = ({
+    image,
+    name,
+    price,
+    category,
+    garnet,
+    desc,
+    availability,
+    showIcon,
+    showDesc,
+    showPrice,
+    kiloPrice,
+    onlyOnSpecial,
+    order,
+    showOnSpecial,
+    visible,
+    imageMimeType,
+    showGarnet,
+    _id,
+    object,
+    onClick,
+}: PlateViewDashboardProps) => {
+    const handlePrice = (price: number) => {
+        if (price % 1 == 0) return `${price}.00`;
+        return `${price}0`;
+    }
+
+    // * RETURN WITH IMAGE
+    if (image && showIcon && imageMimeType) {
+        return (
+            <li
+                className={style.plateWithImage}
+                onClick={() => onClick(object)}
+                >
+                    <div
+                    className={style.imageBackface}
+                    style={{ 
+                        backgroundImage: `url(data:${imageMimeType};base64,${Buffer.from(image).toString('base64')})`,
+                        backgroundSize: 'cover',
+                        WebkitBackgroundSize: 'cover',
+
+                    }}
+                    role='presentation'
+                    >
+                    </div>
+                <div className={style.plateInfo}>
+                    <p>{name}</p>
+                    {showGarnet && <span>{garnet.name}</span>}
+                    {showDesc && <span>{desc}</span>}
+                    {showPrice && 
+                    <span className={style.platePrice}>
+                        {handlePrice(price)}&euro; {kiloPrice && '/κιλό'}
+                    </span>
+                    }
+                </div>
+                </li>
+        );
+    }
+    // * RETURN NO IMAGE
+    return (
+        <li className={style.plateNoImage} onClick={() => onClick(object)}>
+            <p>{name}</p>
+            {showGarnet && <span>{garnet.name}</span>}
+            {showDesc && <span>{desc}</span>}
+            {showPrice && 
+                <span className={style.platePrice}>
+                {handlePrice(price)}&euro; {kiloPrice && '/κιλό'}
+                </span>
+            }
+        </li>
     );
 }

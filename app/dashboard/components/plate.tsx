@@ -801,6 +801,7 @@ const ShowPlatesOnCategory = ({
                                         showPrice={pl.showPrice}
                                         visible={pl.visible}
                                         _id={pl._id}
+                                        object={pl}
                                         onClick={setUpdateObj}
                                     />
                                 </li>

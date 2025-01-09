@@ -7,7 +7,7 @@ import { skipToken, useQuery } from '@tanstack/react-query';
 import LoadingSpinner from '@/helpers/loading';
 import { getCategories } from '@/axios/categories';
 import Category from '@/types/categories';
-import { BugSVG, CategorySVG, ExpandSVG, EyeCloseSVG, EyeOpenSVG, GarnetSVG, PlateSVG } from '@/svg';
+import { BugSVG, CategorySVG, ExpandSVG, EyeCloseSVG, EyeOpenSVG, GarnetSVG, PlateSVG, UpSVG } from '@/svg';
 import TextInput from '@/helpers/inputs/text.input';
 import NumberInput from '@/helpers/inputs/number.input';
 import DropDownInput from '@/helpers/inputs/dropdown.input';
@@ -20,13 +20,17 @@ import SubmitButton from '@/helpers/components/submit.button';
 import { useAuthContext } from '../context/auth.contexts';
 import { PlateComplex } from '@/types/plate';
 import { getPlatesByCategoryStrickt } from '@/axios/complex';
+import getQueryClient from '../utils/getQueryClient';
+import { PlateFinal } from '@/helpers/plate';
+import ImageInput from '@/helpers/inputs/image.input';
+import { newPlate, updatePlateWithImage } from '@/axios/plates';
+import ErrorDiv from '@/helpers/components/error.div';
 
 export default function Page() {
     const { token } = useAuthContext();
 
     // ? Render Category Content
     const [catContent, setCatContent] = React.useState<Category>();
-    // const [enableQuery, setEnableQuery] = React.useState<boolean>(false);
 
     const { data: categories, isLoading: isLoadingCategories, isError: isErrorCategories, refetch: refetchCategories } = useQuery<Category[]>({
         queryKey: ['get-all-categories-for-plates-admin'],
@@ -42,7 +46,7 @@ export default function Page() {
         }
     });
 
-    const { data: plates, isLoading: isLoadingPlates, isError: isErrorPlates, refetch: refetchPlates } = useQuery<PlateComplex[]>({
+    const { data: plates, isLoading: isLoadingPlates, isError: isErrorPlates, refetch: refetchPlates, isFetching: isFetchingPlates } = useQuery<PlateComplex[]>({
         queryKey: ['get-all-plates-from-category-admin'],
         queryFn: catContent ? () => getPlatesByCategoryStrickt(catContent._id) : skipToken,
         
@@ -79,13 +83,15 @@ export default function Page() {
     const [specialError, setSpecialError] = React.useState<boolean>(false);
     const [uploadImageTooLarge ,setUploadImageTooLarge] = React.useState<boolean>(false);
 
+    // ? Pop Up For Addresing Issues
+    const [popUp, setPopUp] = React.useState<string>('');
+
     // ? Image States
     const [uploadImage, setUploadImage] = React.useState<File>();
     const [uploadImageShow, setUploadImageShow] = React.useState<string>();
 
-    // ? Render Category Content
-    // const [catContent, setCatContent] = React.useState<Category>();
-    // const [enableQuery, setEnableQuery] = React.useState<boolean>(false);
+    // ? Update State
+    const [updateObject, setUpdateObject] = React.useState<PlateComplex | null>(null);
 
     React.useEffect(() => {
         if (categories) {
@@ -101,14 +107,162 @@ export default function Page() {
         }
     }, [showPrice]);
 
-    const handlePrice = (price: number) => {
-        if (price % 1 == 0) return `${price}.00`;
-        return `${price}0`;
+    // ? Set Update Object Params
+    React.useEffect(() => {
+        if (updateObject) {
+            setGID(updateObject.garnet._id);
+            setCID(updateObject.category._id);
+            setName(updateObject.name);
+            setDesc(updateObject.desc ? updateObject.desc : '');
+            setPrice(updateObject.price);
+            setVisible(updateObject.visible);
+            setShowIcon(updateObject.showIcon);
+            setShowDesc(updateObject.showDesc);
+            setShowPrice(updateObject.showPrice);
+            setKiloPrice(updateObject.kiloPrice);
+            setShowGarnet(updateObject.showGarnet);
+            setAvailability(updateObject.availability);
+            setShowOnSpecial(updateObject.showOnSpecial);
+            setOnlyOnSpecial(updateObject.onlyOnSpecial);
+        } else {
+            setGID('');
+            setCID('');
+            setName('');
+            setDesc('');
+            setPrice(0);
+            setVisible(true);
+            setShowIcon(false);
+            setShowDesc(false);
+            setShowPrice(true);
+            setKiloPrice(false);
+            setShowGarnet(true);
+            setAvailability(true);
+            setShowOnSpecial(false);
+            setOnlyOnSpecial(false);
+        }
+    }, [updateObject]);
+
+    const handleSubmition = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        setEmptyFields(false);
+        setNoImage(false);
+        setDescError(false);
+        setGarnetError(false);
+        setError(false);
+        setSpecialError(false);
+        setUploadImageTooLarge(false);
+
+        if (name.length === 0 || price === 0 || price == undefined || price == null 
+            || price == 0 || !gID || !cID || gID.length === 0 || cID.length === 0) {
+            setEmptyFields(true);
+            setPopUp('Κενά Πεδία!');
+            const int = window.setInterval(() => {
+                setPopUp('');
+                window.clearInterval(int);
+            }, 5000);
+            return;
+        }
+
+        if ((showDesc && !desc) || (showDesc && desc.length === 0)) {
+            setDescError(true);
+            setPopUp('Σφάλμα Στην Περιγραφή!');
+            const int = window.setInterval(() => {
+                setPopUp('');
+                window.clearInterval(int);
+            }, 5000);
+            return;
+        }
+
+        if (showIcon && !uploadImage) {
+            setNoImage(true);
+            setPopUp('Σφάλμα Στην Εικόνα!');
+            const int = window.setInterval(() => {
+                setPopUp('');
+                window.clearInterval(int);
+            }, 5000);
+            return;
+        }
+
+        if ((showGarnet && !gID) || (showGarnet && gID.length === 0)) {
+            setGarnetError(true);
+            setPopUp('Σφάλμα Στην Γαρνιτούρα!');
+            const int = window.setInterval(() => {
+                setPopUp('');
+                window.clearInterval(int);
+            }, 5000);
+            return;
+        }
+
+        if (onlyOnSpecial && !showOnSpecial) {
+            setSpecialError(true);
+            setPopUp('Μη Διαθέσιμο στα Πιάτα Ημέρας!');
+            const int = window.setInterval(() => {
+                setPopUp('');
+                window.clearInterval(int);
+            }, 5000);
+            return;
+        }
+
+        const FD = new FormData();
+        
+        updateObject && FD.append('_id', updateObject._id ? updateObject._id : '');
+        FD.append('name', name);
+        FD.append('garnetID', gID);
+        FD.append('categoryID', cID);
+        FD.append('price', price.toString());
+        FD.append('visible', visible ? 'true' : 'false');
+        FD.append('showDesc', showDesc ? 'true' : 'false');
+        FD.append('showIcon', showIcon ? 'true' : 'false');
+        FD.append('kiloPrice', kiloPrice ? 'true' : 'false');
+        FD.append('showPrice', showPrice ? 'true' : 'false');
+        FD.append('showGarnet', showGarnet ? 'true' : 'false');
+        FD.append('availability', availability ? 'true' : 'false');
+        FD.append('showOnSpecial', showOnSpecial ? 'true' : 'false');
+        FD.append('onlyOnSpecial', onlyOnSpecial ? 'true' : 'false');
+        if (uploadImage) {FD.append('image', uploadImage)};
+        if (desc) {FD.append('desc', desc)}
+
+        var res: boolean | undefined;
+
+        if (updateObject) {
+            res = await updatePlateWithImage(token, FD);
+        } else {
+            res = await newPlate(token, FD);
+        }
+
+        if (res) {
+            setName('');
+            setPrice(0);
+            setDesc('');
+            setCID('');
+            setGID('');
+            setGarnetName('');
+            setUploadImage(undefined);
+            setUploadImageShow(undefined);
+            catContent && refetchPlates();
+            updateObject ? setPopUp('Επιτυχής Ενημέρωση Πιάτου') : setPopUp('Επιτυχής Καταχόρηση Πιάτου!');
+            updateObject && setUpdateObject(null);
+            const int = window.setInterval(() => {
+                setPopUp('');
+                window.clearInterval(int);
+            }, 5000);
+            return;
+        } else {
+            setError(true);
+            updateObject ? setPopUp('Ανεπιτυχής Ενημέρωση Πιάτου') : setPopUp('Ανεπιτυχής Καταχόρηση Πιάτου!');
+            const int = window.setInterval(() => {
+                setPopUp('');
+                window.clearInterval(int);
+            }, 5000);
+            return;
+        }
     }
 
     return (
         <div className={style.plates}>
             <div className={style.platesView}>
+                {popUp && <ErrorDiv text={popUp} />}
                 <div className={style.platesViewList}>
                     {isLoadingCategories &&
                         <div className={style.categoriesViewList_loading}>
@@ -165,37 +319,64 @@ export default function Page() {
                             </button>
                         </div>
                     }
-                    {((catContent && plates) && plates.map((pl: PlateComplex, key: number) => {
-                        return (
-                            <div 
-                                key={key}
-                                className={style.platesViewMain}
-                                // style={{
-                                //     border: (!pl.availability || pl.onlyOnSpecial || pl.showOnSpecial) ? `1px solid ${Colors.error}` : ''
-                                // }}
-                            >
-                                <p>
-                                    {pl.availability ?
-                                        <EyeOpenSVG box={1} color={Colors.black} />
-                                    :
-                                        <EyeCloseSVG box={1} color={Colors.error} />
-                                    }
-                                    {pl.name}
-                                </p>
-                                {pl.showGarnet && <span>{pl.garnet.name}</span>}
-                                {pl.showDesc && <span>{pl.desc}</span>}
-                                {pl.showPrice && 
-                                    <span className={style.platePrice}>
-                                    {handlePrice(pl.price)}&euro; {pl.kiloPrice && '/κιλό'}
-                                    </span>
-                                }
-                            </div>
-                        );
-                    }))}
+                    {(isFetchingPlates && catContent && !isLoadingPlates && !isErrorPlates) &&
+                        <div className={style.categoriesViewList_loading}>
+                            <LoadingSpinner />
+                            <p>Φόρτωση Πιάτων...</p>
+                        </div>
+                    }
+                    {(catContent && plates && !isFetchingPlates) &&
+                        <ul className={style.platesViewInner}>
+                            <li className={style.platesViewInnerButton} role='button' onClick={() => {setCatContent(undefined); refetchPlates(); setUpdateObject(null);}}>
+                                <UpSVG box={1} color={Colors.black} />
+                                Πίσω
+                            </li>
+                            {((catContent && plates) && plates.map((pl: PlateComplex, key: number) => {
+                                return (
+                                    <PlateFinal
+                                        key={key}
+                                        image={pl.image}
+                                        name={pl.name}
+                                        price={pl.price}
+                                        category={pl.category}
+                                        garnet={pl.garnet}
+                                        desc={pl.desc}
+                                        availability={pl.availability}
+                                        showIcon={pl.showIcon}
+                                        showDesc={pl.showDesc}
+                                        showPrice={pl.showPrice}
+                                        showGarnet={pl.showGarnet}
+                                        kiloPrice={pl.kiloPrice}
+                                        onlyOnSpecial={pl.onlyOnSpecial}
+                                        order={pl.order}
+                                        showOnSpecial={pl.showOnSpecial}
+                                        visible={pl.visible}
+                                        imageMimeType={pl.imageMimeType}
+                                        _id={pl._id}
+                                        object={pl}
+                                        onClick={setUpdateObject}
+                                    />
+                                );
+                            }))}
+                        </ul>
+                    }
                 </div>
                 <div className={style.platesSettings}>
                     <h2>Προσθήκη Πιατών</h2>
-                    <form>
+                    <form onSubmit={handleSubmition} autoCapitalize='off' autoComplete='off' autoCorrect='off'>
+                        <ImageInput
+                            label='image_on_plate'
+                            placeholder='Επιλογή Εικόνας'
+                            size={1.3}
+                            setUploadImage={setUploadImage}
+                            setUploadImageShow={setUploadImageShow}
+                            setUploadImageTooLarge={setUploadImageTooLarge}
+                            noImage={noImage}
+                            setNoImage={setNoImage}
+                            uploadImage={uploadImage}
+                            uploadImageShow={uploadImageShow}
+                            uploadImageTooLarge={uploadImageTooLarge}
+                        />
                         <TextInput
                             label='name'
                             placeholder='Όνομα Πιάτου...'
@@ -381,7 +562,7 @@ export default function Page() {
                             />
                         </div>
                         <div style={{ padding: '0 .5rem', marginTop: '.5rem', width: '100%' }}>
-                            <SubmitButton text='Προσθήκη' type={true} />
+                            <SubmitButton text={updateObject ? 'Ενημέρωση' : 'Προσθήκη'} type={true} />
                         </div>
                     </form>
                 </div>

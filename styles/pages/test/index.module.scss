@@ -9,7 +9,7 @@
     @include mixins.setTransBg();
     width: 100%;
     max-width: 720px;
-    height: 770px;
+    height: 820px;
     border-radius: 5px;
     overflow: hidden;
     position: relative;
@@ -121,40 +121,60 @@
           }
         }
       }
-      .platesViewMain {
-        border-radius: 5px;
-        background-color: variables.$white;
-        padding: 0.5rem;
+      .platesViewInner {
+        @include mixins.d-flex(flex-start, flex-start, column);
+        gap: .5rem 0;
         width: 100%;
-        cursor: default;
-        position: relative;
-        p {
+        overflow-y: scroll;
+        height: 100%;
+        list-style: none;
+        &::-webkit-scrollbar {
+          display: none;
+        }
+        .platesViewInnerButton {
           @include mixins.d-flex(center, flex-start, row);
           gap: 0 .5rem;
-          width: fit-content;
-          font-size: 1.1rem;
-          font-weight: 900;
-          padding-bottom: 0.4rem;
-          position: relative;
-          &::before {
-            content: "";
-            position: absolute;
-            top: 85%;
-            left: 0;
-            width: 90%;
-            height: 1px;
-            background-color: rgba($color: variables.$black, $alpha: 0.4);
+          cursor: pointer;
+          margin-bottom: .5rem;
+          svg {
+            transform: rotate(-90deg);
           }
         }
-        span {
-          display: block;
-          font-size: 0.8rem;
-          font-weight: 300;
-        }
-        .platePrice {
-          font-size: 0.8rem;
-          font-weight: 900;
-          margin-top: 0.4rem;
+        .platesViewMain {
+          border-radius: 5px;
+          background-color: variables.$white;
+          padding: 0.5rem;
+          width: 100%;
+          cursor: default;
+          position: relative;
+          p {
+            @include mixins.d-flex(center, flex-start, row);
+            gap: 0 0.5rem;
+            width: fit-content;
+            font-size: 1.1rem;
+            font-weight: 900;
+            padding-bottom: 0.4rem;
+            position: relative;
+            &::before {
+              content: "";
+              position: absolute;
+              top: 85%;
+              left: 0;
+              width: 90%;
+              height: 1px;
+              background-color: rgba($color: variables.$black, $alpha: 0.4);
+            }
+          }
+          span {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 300;
+          }
+          .platePrice {
+            font-size: 0.8rem;
+            font-weight: 900;
+            margin-top: 0.4rem;
+          }
         }
       }
     }
@@ -343,7 +363,7 @@
       }
     }
   }
-  .submitOrderChange button[type='button'] {
+  .submitOrderChange button[type="button"] {
     &:hover,
     &:focus {
       background-color: variables.$black !important;
