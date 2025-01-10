@@ -473,7 +473,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
                                         onDragEnter={(e: React.DragEvent) => dragEnter(e, key)}
                                         onDragEnd={(e: React.DragEvent) => dragEnd(e)}
                                         onDragOver={(e: React.DragEvent) => e.preventDefault()}
-                                        onClick={() => {setUpdateObject(pl); handleOrderMobile(pl);}}
+                                        onClick={() => {setUpdateObject(pl); handleOrderMobile(pl); setSettings(false);}}
                                         style={{ opacity: orderSet?._id === pl._id ? .5 : 1 }}
                                     >
                                         <PlateFinal

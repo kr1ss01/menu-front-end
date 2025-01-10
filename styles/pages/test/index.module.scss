@@ -3,13 +3,13 @@
 
 .user {
   @include mixins.page();
-  @include mixins.d-flex(center, center, row);
+  @include mixins.d-flex(flex-start, center, row);
   .userView {
     @include mixins.d-flex(center, flex-start, row);
     @include mixins.setTransBg();
     width: 100%;
     max-width: 720px;
-    height: 420px;
+    height: 500px;
     border-radius: 5px;
     overflow: hidden;
     position: relative;
@@ -25,6 +25,10 @@
       &::-webkit-scrollbar {
         display: none;
       }
+      form {
+        @include mixins.d-flex(center, flex-start, column);
+        width: 100%;
+      }
     }
     .userSettings {
       flex-basis: 40%;
@@ -39,11 +43,27 @@
         padding: 0.5rem;
         cursor: default;
       }
+      .userInfoImage {
+        @include mixins.d-flex(center, flex-start, row);
+        gap: 0 .5rem;
+        padding: .5rem 1rem;
+        border-bottom: 1px solid variables.$grey;
+        p {
+          cursor: default;
+          font-size: 1.2rem;
+          font-weight: 900;
+        }
+        img {
+          display: block;
+          border-radius: 50%;
+          background-position: center;
+        }
+      }
       .userSettingsInfo {
         padding: 1rem 1rem;
-        margin-top: 1rem;
-        border-top: 1px solid variables.$black;
-        border-bottom: 1px solid variables.$black;
+        margin-top: .2rem;
+        // border-top: 1px solid variables.$black;
+        // border-bottom: 1px solid variables.$black;
         p {
           @include mixins.d-flex(flex-start, space-between, row);
           font-size: 0.8rem;
@@ -56,6 +76,53 @@
           font-weight: 300;
         }
       }
+      .changeUserActions {
+        @include mixins.d-flex(center, flex-start, row);
+        gap: .3rem;
+        flex-wrap: wrap;
+        padding: .5rem;
+        .changeButtons {
+          @include mixins.d-flex(center, center, row);
+          font-size: 1rem;
+          font-weight: 600;
+          border-radius: 5px;
+          padding: .3rem .9rem;
+          background-color: rgba($color: variables.$black, $alpha: .6);
+          border: none;
+          outline: none;
+          text-transform: uppercase;
+          cursor: pointer;
+          width: calc(100% / 2 - .3rem);
+          color: variables.$white;
+          aspect-ratio: 1/1;
+        }
+      }
     }
+  }
+}
+
+@media screen and (max-width: 620px) {
+  .userView {
+    flex-direction: column-reverse !important;
+    width: 400px !important;
+    height: fit-content !important;
+  }
+  .userViewList,
+  .userSettings {
+    flex-basis: auto !important;
+  }
+  .errorHandlingDiv {
+    width: 95% !important;
+    margin: 0 !important;
+    right: 10px !important;
+    left: 10px !important;
+  }
+  .userSettings {
+    width: 100%;
+    padding: 0.5rem 1rem;
+  }
+  .userViewList {
+    width: 100%;
+    height: 500px !important;
   }
 }

@@ -4,7 +4,7 @@
 
 .categories {
   @include mixins.page();
-  @include mixins.d-flex(center, center, row);
+  @include mixins.d-flex(flex-start, center, row);
   .categoriesView {
     @include mixins.d-flex(center, flex-start, row);
     @include mixins.setTransBg();

@@ -4,7 +4,7 @@
 
 .garnets {
   @include mixins.page();
-  @include mixins.d-flex(center, center, row);
+  @include mixins.d-flex(flex-start, center, row);
   .garnetsView {
     @include mixins.d-flex(center, flex-start, row);
     @include mixins.setTransBg();
