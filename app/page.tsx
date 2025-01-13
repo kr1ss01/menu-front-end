@@ -70,13 +70,13 @@ export default function Home() {
 
   return (
     <div className={styles.index}>
-      {isLoadingPlates && 
+      {/* {isLoadingPlates && 
         <div className={styles.loading}>
           <LoadingSpinner />
           <p>Φόρτωση...</p>
         </div>
-      }
-      {(isErrorPlates || isError) &&
+      } */}
+      {/* {(isErrorPlates || isError) &&
         <div className={styles.loading}>
           <div className={styles.bugDiv}>
             <BugSVG box={3} color={Colors.black} />
@@ -86,8 +86,8 @@ export default function Home() {
             Προσπαθήστε Ξανά
           </button>
         </div>
-      }
-      {(categories && !isLoading && !isError && !isLoadingPlates && !isErrorPlates) &&
+      } */}
+      {(categories && !isLoading && !isError) &&
       <div className={styles.categories}>
           {categories.map((cat: Category, key: number) => {
             if (!cat.visible) return;

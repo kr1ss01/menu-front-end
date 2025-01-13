@@ -23,3 +23,7 @@ export const getPlatesByCategorySimple = async () => {
 export const getPlatesByCategoryStrickt = async (id: string) => {
     return (await api.get(`/plates/categories/${id}`)).data
 }
+
+export const getSpecialPlates = async () => {
+    return (await api.get('/special')).data;
+}
