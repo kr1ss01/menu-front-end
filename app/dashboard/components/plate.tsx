@@ -21,7 +21,7 @@ import { PlateComplex, PlateFixOrder, PlateStats } from '@/types/plate';
 import { getPlatesByCategoryStrickt } from '@/axios/complex';
 import { PlateFinal } from '@/helpers/plate';
 import { fixPlateOrder, getPlateStats, newPlate, updatePlateWithImage } from '@/axios/plates';
-import ErrorDiv from '@/helpers/components/error.div';
+import ErrorDiv, { SetStateTypeObject, SuccessDiv } from '@/helpers/components/error.div';
 
 const Plate = ({ token }: { token: string | undefined }) => {
     // ? Render Category Content
@@ -87,7 +87,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
     const [uploadImageTooLarge ,setUploadImageTooLarge] = React.useState<boolean>(false);
 
     // ? Pop Up For Addresing Issues
-    const [popUp, setPopUp] = React.useState<string>('');
+    const [popUp, setPopUp] = React.useState<SetStateTypeObject>();
 
     // ? Image States
     const [uploadImage, setUploadImage] = React.useState<File>();
@@ -188,9 +188,9 @@ const Plate = ({ token }: { token: string | undefined }) => {
         if (name.length === 0 || price === 0 || price == undefined || price == null 
             || price == 0 || !gID || !cID || gID.length === 0 || cID.length === 0) {
             setEmptyFields(true);
-            setPopUp('Κενά Πεδία!');
+            setPopUp({ text: 'Κενά Πεδία!', type: 'error' });
             const int = window.setInterval(() => {
-                setPopUp('');
+                setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
             return;
@@ -198,9 +198,9 @@ const Plate = ({ token }: { token: string | undefined }) => {
 
         if ((showDesc && !desc) || (showDesc && desc.length === 0)) {
             setDescError(true);
-            setPopUp('Σφάλμα Στην Περιγραφή!');
+            setPopUp({ text: 'Σφάλμα Στην Περιγραφή!', type: 'error' });
             const int = window.setInterval(() => {
-                setPopUp('');
+                setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
             return;
@@ -208,9 +208,9 @@ const Plate = ({ token }: { token: string | undefined }) => {
 
         if (showIcon && !uploadImage) {
             setNoImage(true);
-            setPopUp('Σφάλμα Στην Εικόνα!');
+            setPopUp({ text: 'Σφάλμα Στην Εικόνα!', type: 'error' });
             const int = window.setInterval(() => {
-                setPopUp('');
+                setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
             return;
@@ -218,9 +218,9 @@ const Plate = ({ token }: { token: string | undefined }) => {
 
         if ((showGarnet && !gID) || (showGarnet && gID.length === 0)) {
             setGarnetError(true);
-            setPopUp('Σφάλμα Στην Γαρνιτούρα!');
+            setPopUp({ text: 'Σφάλμα Στην Γαρνιτούρα!', type: 'error' });
             const int = window.setInterval(() => {
-                setPopUp('');
+                setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
             return;
@@ -228,9 +228,9 @@ const Plate = ({ token }: { token: string | undefined }) => {
 
         if (onlyOnSpecial && !showOnSpecial) {
             setSpecialError(true);
-            setPopUp('Μη Διαθέσιμο στα Πιάτα Ημέρας!');
+            setPopUp({ text: 'Μη Διαθέσιμο στα Πιάτα Ημέρας!', type: 'error' });
             const int = window.setInterval(() => {
-                setPopUp('');
+                setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
             return;
@@ -273,18 +273,18 @@ const Plate = ({ token }: { token: string | undefined }) => {
             setUploadImage(undefined);
             setUploadImageShow(undefined);
             catContent && refetchPlates();
-            updateObject ? setPopUp('Επιτυχής Ενημέρωση Πιάτου') : setPopUp('Επιτυχής Καταχώρηση Πιάτου!');
+            updateObject ? setPopUp({ text: 'Επιτυχής Ενημέρωση Πιάτου!', type: 'success' }) : setPopUp({ text: 'Επιτυχής Καταχώρηση Πιάτου!', type: 'success' });
             updateObject && setUpdateObject(null);
             const int = window.setInterval(() => {
-                setPopUp('');
+                setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
             return;
         } else {
             setError(true);
-            updateObject ? setPopUp('Ανεπιτυχής Ενημέρωση Πιάτου') : setPopUp('Ανεπιτυχής Καταχώρηση Πιάτου!');
+            updateObject ? setPopUp({ text: 'Ανεπιτυχής Ενημέρωση Πιάτου!', type: 'error' }) : setPopUp({ text: 'Ανεπιτυχής Καταχώρηση Πιάτου!', type: 'error' });
             const int = window.setInterval(() => {
-                setPopUp('');
+                setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
             return;
@@ -313,18 +313,18 @@ const Plate = ({ token }: { token: string | undefined }) => {
         if (res) {
             refetchPlates();
             setOrderLoading(false);
-            setPopUp('Επιτυχής Αλλαγή Σειράς!');
+            setPopUp({ text: 'Επιτυχής Αλλαγή Σειράς!', type: "success" });
             const int = window.setInterval(() => {
-                setPopUp('');
+                setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
             return;
         } else {
             setOrder(true);
             setOrderLoading(false);
-            setPopUp('Ανεπιτυχής Αλλαγή Σειράς!');
+            setPopUp({ text: 'Ανεπιτυχής Αλλαγή Σειράς!', type: 'success' });
             const int = window.setInterval(() => {
-                setPopUp('');
+                setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
             return;
@@ -387,7 +387,8 @@ const Plate = ({ token }: { token: string | undefined }) => {
     return (
         <div className={style.plates}>
             <div className={style.platesView}>
-                {popUp && <ErrorDiv text={popUp} />}
+                {(popUp && popUp.type === 'error') && <ErrorDiv text={popUp.text} />}
+                {(popUp && popUp.type === 'success') && <SuccessDiv text={popUp.text} />}
                 <div className={style.platesViewList}>
                     {isLoadingCategories &&
                         <div className={style.categoriesViewList_loading}>

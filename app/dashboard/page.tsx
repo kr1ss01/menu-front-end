@@ -10,6 +10,7 @@ import Garnets from './components/garnet';
 import { useAuthContext } from '../context/auth.contexts';
 import Plate from './components/plate';
 import LoadingSpinner from '@/helpers/loading';
+import { redirect } from 'next/navigation';
 
 enum Dashboard {
     user = "user",
@@ -19,15 +20,30 @@ enum Dashboard {
 }
 
 export default function Page() {
-    const { token, auth } = useAuthContext();
+    const { token, auth, loading } = useAuthContext();
 
     const [active, setActive] = React.useState<Dashboard>(Dashboard.user);
 
     // ? Check Authentication
-    // React.useEffect(() => {
-    //     if (!auth) redirect('/login');
-    // });
+    React.useEffect(() => {
+        if (!loading && !auth) {
+            redirect('/');
+        }
+    }, [loading]);
 
+
+    if (loading) {
+        return (
+            <div className={style.dashboardNav}>
+                <div className={style.dashboard}>
+                    <div className={style.loading}>
+                        <LoadingSpinner width={200} />
+                        <p>Φόρτωση</p>
+                    </div>
+                </div>
+            </div>
+        )
+    }
     return (
         <>
             <div className={style.dashboardNav}>

@@ -3,6 +3,7 @@ export default interface AuthContextInterface {
     token: string | undefined,
     username: string | undefined,
     fullName: string | undefined,
+    loading: boolean,
     image: string | undefined,
     login: (at: string, rt: string) => void,
     logout: () => void,

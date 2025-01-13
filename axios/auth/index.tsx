@@ -2,7 +2,7 @@ import axios from "axios";
 import BASE from "../base";
 
 import JWTResponseType from "@/types/tokens";
-import SafeUser from "@/types/auth";
+import SafeUser, { InfoUser } from "@/types/auth";
 
 const api = axios.create({
     baseURL: `${BASE}auth`,
@@ -50,7 +50,7 @@ export const logout = async (at: string): Promise<void> => {
     }
 }
 
-export const getInfo = async (at: string): Promise<SafeUser | undefined> => {
+export const getInfo = async (at: string): Promise<InfoUser | undefined> => {
     try {
         const token = 'Bearer ' + at;
         const res = await api.get('/user', {
@@ -60,12 +60,11 @@ export const getInfo = async (at: string): Promise<SafeUser | undefined> => {
         });
         return res.data;
     } catch (e) {
-        console.log(e);
         return;
     }
 }
 
-export const changeUsersImage = async (at: string, fd: FormData, size: number): Promise<boolean | undefined> => {
+export const changeUsersImage = async (at: string | undefined, fd: FormData, size: number): Promise<boolean | undefined> => {
     try {
         const token = 'Bearer ' + at;
         const res = await api.put('/image', fd, {
@@ -77,6 +76,7 @@ export const changeUsersImage = async (at: string, fd: FormData, size: number): 
         });
         return res.data;
     } catch (e) {
+        console.log(e);
         return;
     }
 }
@@ -99,7 +99,7 @@ export const changeUsersEmail = async (at: string | undefined, oldEmail: string,
     }
 }
 
-export const changeUsersName = async (at: string, name: string): Promise<boolean | undefined> => {
+export const changeUsersName = async (at: string | undefined, name: string): Promise<boolean | undefined> => {
     try {
         const token = 'Bearer ' + at;
         const res = await api.put('fullname', {

@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from 'react';
-import Image from "next/image";
 import styles from "@/styles/pages/index/index.module.scss";
 import { useQuery } from "@tanstack/react-query";
 import Category from "@/types/categories";
@@ -11,6 +10,8 @@ import { BugSVG } from "@/svg";
 import Colors from "@/types/colors";
 import { PlateCategoriesSimple, PlateComplex } from '@/types/plate';
 import { getPlatesByCategorySimple } from '@/axios/complex';
+import { redirect } from 'next/navigation';
+import Link from 'next/link';
 
 export default function Home() {
   const { data: categories, isLoading, isError, refetch: refetchCat } = useQuery<Category[]>({
@@ -92,9 +93,11 @@ export default function Home() {
             if (!cat.visible) return;
             return (
               <section key={key}>
-                <div id={`${cat.order}`} className={styles.categoriesView} onClick={() => handleClickOnCategory(cat)}>
-                  {cat.name}
-                </div>
+                <Link href={'/#' + key} passHref>
+                  <div id={`${cat.order}`} className={styles.categoriesView} onClick={() => handleClickOnCategory(cat)}>
+                    {cat.name}
+                  </div>
+                </Link>
                 {(active?._id === cat._id && activePlates) &&
                   <ul className={styles.plateContainer}>
                     {activePlates.map((pl: PlateComplex, key: number) => {

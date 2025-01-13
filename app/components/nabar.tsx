@@ -12,6 +12,7 @@ import LoadingSpinner from '@/helpers/loading';
 import Colors from '@/types/colors';
 import Link from 'next/link';
 import useOutsideHook from '@/helpers/hooks';
+import { redirect } from 'next/navigation';
 
 
 export default function Navbar() {
@@ -27,6 +28,7 @@ export default function Navbar() {
     const sideNavRef = React.useRef<HTMLDivElement>(null);
 
     const [openSide, setOpenSide] = React.useState<boolean>(false);
+    const [red, setRed] = React.useState<boolean>(false);
     
     useOutsideHook(sideNavRef, setOpenSide);
 
@@ -41,6 +43,12 @@ export default function Navbar() {
     }
 
     const { touchX, onTouchMove, setTouchX } = useTouchMove();
+
+    React.useEffect(() => {
+        if (red) {
+            redirect('/');
+        }
+    }, [red]);
 
     React.useEffect(() => {
         var cx: number;
@@ -124,7 +132,7 @@ export default function Navbar() {
                             </ul>
                         }
                         {auth &&
-                            <button onClick={() => {logout(); setOpenSide(false);}} role='button' type='button' className={style.logOutButton}>Αποσύνδεση</button>
+                            <button onClick={() => {logout(); setOpenSide(false); setRed(true);}} role='button' type='button' className={style.logOutButton}>Αποσύνδεση</button>
                         }
                     </div>
                 </div>

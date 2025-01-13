@@ -10,7 +10,7 @@ import { login as lg} from '@/axios/auth';
 import { useAuthContext } from '../context/auth.contexts';
 import { redirect } from 'next/navigation';
 import TextInput from '@/helpers/inputs/text.input';
-import { PasswordSVG, UserSVG } from '@/svg';
+import { UserSVG } from '@/svg';
 import PasswordInput from '@/helpers/inputs/password.input';
 
 export default function Page() {
@@ -18,9 +18,6 @@ export default function Page() {
 
     const [uid, setUID] = React.useState<string>('');
     const [pwd, setPWD] = React.useState<string>('');
-
-    const uidRef = React.useRef<HTMLDivElement>(null);
-    const pwdRef = React.useRef<HTMLInputElement>(null);
 
     const [emptyFields, setEmptyFields] = React.useState<boolean>(false);
     const [error, setError] = React.useState<boolean>(false);
@@ -38,7 +35,7 @@ export default function Page() {
     // ? Catch Redirect Status
     React.useEffect(() => {
         if (red) {
-            setRed(false);
+            // setRed(false);
             redirect('/dashboard');
         }
     }, [red]);
@@ -93,7 +90,7 @@ export default function Page() {
                         label='username_or_email'
                         size={1.2}
                         maxChars={100}
-                        icon={<UserSVG box={1.2} color={Colors.black} />}
+                        icon={<UserSVG box={1.2} color={(emptyFields || error) ? Colors.error : Colors.black} />}
                         value={uid}
                         setValue={setUID}
                         emptyFields={emptyFields}

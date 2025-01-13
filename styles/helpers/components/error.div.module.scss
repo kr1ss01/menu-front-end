@@ -1,7 +1,8 @@
 @use "../../mixins";
 @use "../../variables";
 
-.errorHandlingDiv {
+.errorHandlingDiv,
+.successHandlingDiv {
   @include mixins.d-flex(center, space-between, row);
   @include mixins.setTransBg();
   position: absolute;
@@ -12,7 +13,7 @@
   border-radius: 5px;
   padding: 0.5rem 1rem;
   animation: slideDown 250ms linear 1 forwards;
-  cursor: pointer;
+  cursor: default;
   z-index: 800;
   overflow: hidden;
   p {
@@ -21,7 +22,7 @@
     font-size: 1rem;
     font-weight: 700;
     color: variables.$error;
-    cursor: pointer;
+    cursor: default;
   }
   &::before {
     content: "";
@@ -30,8 +31,26 @@
     left: 0px;
     right: 0px;
     height: 1px;
-    background-color: variables.$error;
+    // background-color: variables.$error;
     animation: timer 5000ms linear 1 forwards;
+  }
+}
+
+.successHandlingDiv::before {
+  background-color: variables.$green;
+}
+
+.errorHandlingDiv::before {
+  background-color: variables.$error;
+}
+
+@media screen and (max-width: 620px) {
+  .errorHandlingDiv,
+  .successHandlingDiv {
+    width: 95% !important;
+    margin: 0 !important;
+    right: 10px !important;
+    left: 10px !important;
   }
 }
 

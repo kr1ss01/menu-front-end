@@ -10,7 +10,7 @@ import Colors from '@/types/colors';
 import { BinSVG, BugSVG, EditSVG, GarnetSVG, WarningSVG, XCircleNoFillIcon } from '@/svg';
 import SubmitButton from '@/helpers/components/submit.button';
 import LoadingSpinner from '@/helpers/loading';
-import ErrorDiv from '@/helpers/components/error.div';
+import ErrorDiv, { SetStateTypeObject, SuccessDiv } from '@/helpers/components/error.div';
 
 const Garnets = ({ token }: { token: string | undefined }) => {
     const { data: garnets, isLoading, isError, refetch } = useQuery<Garnet[]>({
@@ -31,7 +31,7 @@ const Garnets = ({ token }: { token: string | undefined }) => {
     const [error, setError] = React.useState<boolean>(false);
 
     // ? Pop Up For Addresing Issues
-    const [popUp, setPopUp] = React.useState<string>('');
+    const [popUp, setPopUp] = React.useState<SetStateTypeObject>();
 
     // ? Update States
     const [updateObj, setUpdateObject] = React.useState<Garnet>();
@@ -64,16 +64,16 @@ const Garnets = ({ token }: { token: string | undefined }) => {
 
         if (res) {
             refetch();
-            setPopUp('Επιτυχής Διαγραφή.');
+            setPopUp({ text: 'Επιτυχής Διαγραφή!', type: 'success' });
             const int = window.setInterval(() => {
-                setPopUp('');
+                setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
             return;
         } else {
-            setPopUp('Ανεπυτιχής Διαγραφή.');
+            setPopUp({ text: 'Ανεπυτιχής Διαγραφή!', type: 'error' });
             const int = window.setInterval(() => {
-                setPopUp('');
+                setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
             return;
@@ -88,9 +88,9 @@ const Garnets = ({ token }: { token: string | undefined }) => {
 
         if (name.length === 0) {
             setEmptyFields(true);
-            setPopUp('Κενά Πεδία.')
+            setPopUp({ text: 'Κενά Πεδία!', type: 'error' })
             const int = window.setInterval(() => {
-                setPopUp('');
+                setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
             return;
@@ -103,17 +103,17 @@ const Garnets = ({ token }: { token: string | undefined }) => {
             setEmptyFields(false);
             setError(false);
             refetch();
-            setPopUp('Επιτυχής Προσθήκη.');
+            setPopUp({ text: 'Επιτυχής Προσθήκη!', type: 'success' });
             const int = window.setInterval(() => {
-                setPopUp('');
+                setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
             return;
         } else {
             setError(true);
-            setPopUp('Απροσδιόριστο Σφάλμα.');
+            setPopUp({ text: 'Απροσδιόριστο Σφάλμα!', type: 'error' });
             const int = window.setInterval(() => {
-                setPopUp('');
+                setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
             return;
@@ -129,9 +129,9 @@ const Garnets = ({ token }: { token: string | undefined }) => {
 
         if (name.length === 0) {
             setEmptyFields(true);
-            setPopUp('Κενά Πεδία.')
+            setPopUp({ text: 'Κενά Πεδία!', type: 'error' })
             const int = window.setInterval(() => {
-                setPopUp('');
+                setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
             return;
@@ -148,17 +148,17 @@ const Garnets = ({ token }: { token: string | undefined }) => {
             setEmptyFields(false);
             setError(false);
             refetch();
-            setPopUp('Επιτυχής Ενημέρωση.');
+            setPopUp({ text: 'Επιτυχής Ενημέρωση!', type: 'success' });
             const int = window.setInterval(() => {
-                setPopUp('');
+                setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
             return;
         } else {
             setError(true);
-            setPopUp('Απροσδιόριστο Σφάλμα.');
+            setPopUp({ text: 'Απροσδιόριστο Σφάλμα!', type: 'error' });
             const int = window.setInterval(() => {
-                setPopUp('');
+                setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
             return;
@@ -169,7 +169,8 @@ const Garnets = ({ token }: { token: string | undefined }) => {
     return (
         <div className={style.garnets}>
             <div className={style.garnetsView}>
-                {popUp && <ErrorDiv text={popUp} />}
+                {(popUp && popUp.type === 'error') && <ErrorDiv text={popUp.text} />}
+                {(popUp && popUp.type === 'success') && <SuccessDiv text={popUp.text} />}
                 <div className={style.garnetsViewList}>
                     {isLoading &&
                         <div className={style.garnetsViewList_loading}>

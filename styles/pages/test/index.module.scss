@@ -3,7 +3,7 @@
 
 .user {
   @include mixins.page();
-  @include mixins.d-flex(flex-start, center, row);
+  @include mixins.d-flex(center, center, row);
   .userView {
     @include mixins.d-flex(center, flex-start, row);
     @include mixins.setTransBg();
@@ -28,6 +28,59 @@
       form {
         @include mixins.d-flex(center, flex-start, column);
         width: 100%;
+        .passwordVerify {
+          @include mixins.d-flex(center, center, row);
+          gap: 0 0.5rem;
+          width: 100%;
+          margin-top: 0.5rem;
+          margin-bottom: 1rem;
+          .passwordVerifyDiv_inactive,
+          .passwordVerifyDiv_active {
+            flex-basis: 12.5%;
+            height: 20px;
+            background-color: variables.$grey;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            border: none;
+            outline: none;
+            &::before {
+              content: "";
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              background-color: variables.$green;
+              // transform: translateX(-120%);
+              transition: 200ms linear transform;
+            }
+          }
+          .passwordVerifyDiv_inactive::before {
+            transform: translateX(-120%);
+          }
+          .passwordVerifyDiv_active::before {
+            transform: translateX(0);
+          }
+        }
+        .passwordVerifyRules {
+          @include mixins.d-flex(flex-start, flex-start, column);
+          gap: 0.3rem 0;
+          padding: 0 1rem;
+          margin-top: 0.5rem;
+          margin-bottom: 1rem;
+          p {
+            font-size: 0.8rem;
+            width: 100%;
+            background-color: variables.$white;
+            color: variables.$error;
+            font-weight: 600;
+            text-align: left;
+            padding: 0.3rem;
+            border-radius: 5px;
+            cursor: default;
+          }
+        }
       }
     }
     .userSettings {
@@ -45,8 +98,8 @@
       }
       .userInfoImage {
         @include mixins.d-flex(center, flex-start, row);
-        gap: 0 .5rem;
-        padding: .5rem 1rem;
+        gap: 0 0.5rem;
+        padding: 0.5rem 1rem;
         border-bottom: 1px solid variables.$grey;
         p {
           cursor: default;
@@ -61,7 +114,7 @@
       }
       .userSettingsInfo {
         padding: 1rem 1rem;
-        margin-top: .2rem;
+        margin-top: 0.2rem;
         // border-top: 1px solid variables.$black;
         // border-bottom: 1px solid variables.$black;
         p {
@@ -72,27 +125,31 @@
         }
         span {
           text-align: right;
-          font-size: .8rem;
+          font-size: 0.8rem;
           font-weight: 300;
         }
       }
       .changeUserActions {
         @include mixins.d-flex(center, flex-start, row);
-        gap: .3rem;
+        gap: 0.3rem;
         flex-wrap: wrap;
-        padding: .5rem;
+        padding: 0.5rem;
         .changeButtons {
           @include mixins.d-flex(center, center, row);
           font-size: 1rem;
           font-weight: 600;
           border-radius: 5px;
-          padding: .3rem .9rem;
-          background-color: rgba($color: variables.$black, $alpha: .6);
+          padding: 0.3rem 0.9rem;
+          background-color: rgba($color: variables.$black, $alpha: 0.6);
           border: none;
           outline: none;
           text-transform: uppercase;
+          // background-image: url('../../../public/mail.png');
+          background-position: center;
+          background-repeat: no-repeat;
+          // background-size: cover;
           cursor: pointer;
-          width: calc(100% / 2 - .3rem);
+          width: calc(100% / 2 - 0.3rem);
           color: variables.$white;
           aspect-ratio: 1/1;
         }

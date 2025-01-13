@@ -10,3 +10,10 @@ export interface OwnUser {
     auth: boolean;
     name: string;
 };
+
+export interface InfoUser {
+    username: string;
+    fullName: string;
+    image: Buffer;
+    imageMimeType: string;
+}
