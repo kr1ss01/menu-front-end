@@ -40,6 +40,14 @@ export default function Page() {
     const [error, setError] = React.useState<boolean>(false);
     const [emptyFields, setEmptyFields] = React.useState<boolean>(false);
 
+    const handleDisplay = (dis: DisplayEnum) => {
+        if (dis === display) {
+            setDisplay(DisplayEnum.def);
+        } else {
+            setDisplay(dis);
+        }
+    }
+
 
     return (
         <div className={style.user}>
@@ -86,7 +94,7 @@ export default function Page() {
                             type='button'
                             role='button'
                             className={style.changeButtons}
-                            onClick={() => setDisplay(DisplayEnum.name)}
+                            onClick={() => handleDisplay(DisplayEnum.name)}
                             style={{ opacity: display === DisplayEnum.name ? .5 : 1 }}
                         > 
                             Αλλαγή Ονόματος
@@ -95,7 +103,7 @@ export default function Page() {
                             type='button'
                             role='button'
                             className={style.changeButtons}
-                            onClick={() => setDisplay(DisplayEnum.image)}
+                            onClick={() => handleDisplay(DisplayEnum.image)}
                             style={{ opacity: display === DisplayEnum.image ? .5 : 1 }}
                         > 
                             Αλλαγή Εικόνας
@@ -104,7 +112,7 @@ export default function Page() {
                             type='button'
                             role='button'
                             className={style.changeButtons}
-                            onClick={() => setDisplay(DisplayEnum.pwd)}
+                            onClick={() => handleDisplay(DisplayEnum.pwd)}
                             style={{ opacity: display === DisplayEnum.pwd ? .5 : 1 }}
                         > 
                             Αλλαγή Κωδικού Πρόσβασης
@@ -113,7 +121,7 @@ export default function Page() {
                             type='button'
                             role='button'
                             className={style.changeButtons}
-                            onClick={() => setDisplay(DisplayEnum.mail)}
+                            onClick={() => handleDisplay(DisplayEnum.mail)}
                             style={{ opacity: display === DisplayEnum.mail ? .5 : 1 }}
                         >
                             Αλλαγή E-Mail

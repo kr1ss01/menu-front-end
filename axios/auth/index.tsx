@@ -99,6 +99,23 @@ export const changeUsersEmail = async (at: string | undefined, oldEmail: string,
     }
 }
 
+export const changeUsersName = async (at: string, name: string): Promise<boolean | undefined> => {
+    try {
+        const token = 'Bearer ' + at;
+        const res = await api.put('fullname', {
+            nName: name,
+        },
+        {
+            headers: {
+                'Authorization': `${token}`,
+            }
+        });
+        return res.data;
+    } catch (e) {
+        return;
+    }
+}
+
 export const changeUsersPassword = async (at: string | undefined, oldPwd: string, newPwd: string) => {
     try {
         const token = 'Bearer ' + at;
