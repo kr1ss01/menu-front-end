@@ -206,7 +206,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
             return;
         }
 
-        if (showIcon && !uploadImage) {
+        if (showIcon && !uploadImage && !updateObject) {
             setNoImage(true);
             setPopUp({ text: 'Σφάλμα Στην Εικόνα!', type: 'error' });
             const int = window.setInterval(() => {
@@ -253,6 +253,10 @@ const Plate = ({ token }: { token: string | undefined }) => {
         FD.append('showOnSpecial', showOnSpecial ? 'true' : 'false');
         FD.append('onlyOnSpecial', onlyOnSpecial ? 'true' : 'false');
         if (uploadImage) {FD.append('image', uploadImage)};
+        // if (updateObject) {
+        //     if (uploadImage) {FD.append('image', uploadImage)};
+        //     if (!uploadImage) {FD.append('image', updateObject.image)}
+        // }
         if (desc) {FD.append('desc', desc)}
 
         var res: boolean | undefined;

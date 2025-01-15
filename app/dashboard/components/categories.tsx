@@ -177,7 +177,7 @@ const Categories = ({ token }: { token: string | undefined }) => {
         setEmptyFields(false);
         setError(false);
 
-        if (name.length === 0) {
+        if (updateName.length === 0) {
             setEmptyFields(true);
             setPopUp({ text: 'Κενά Πεδία!', type: 'error' })
             const int = window.setInterval(() => {
@@ -187,7 +187,7 @@ const Categories = ({ token }: { token: string | undefined }) => {
             return;
         }
 
-        if (!visible) {
+        if (!updateVisible) {
             const c = confirm('Η κατηγορία δεν θα είναι εμφανής! Θέλετε να συνεχίσετε;');
             if (!c) return;
         }
