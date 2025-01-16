@@ -4,13 +4,15 @@ import * as React from 'react';
 import style from '@/styles/pages/dashboard/components/garnets.module.scss';
 import Garnet from '@/types/garnets';
 import { useQuery } from '@tanstack/react-query';
-import { deleteGarnet, getGarnets, newGarnet, updateGarnet } from '@/axios/garnets';
+import { getGarnets, newGarnet, updateGarnet } from '@/axios/garnets';
 import TextInput from '@/helpers/inputs/text.input';
 import Colors from '@/types/colors';
 import { BinSVG, BugSVG, EditSVG, GarnetSVG, WarningSVG, XCircleNoFillIcon } from '@/svg';
 import SubmitButton from '@/helpers/components/submit.button';
 import LoadingSpinner from '@/helpers/loading';
 import ErrorDiv, { SetStateTypeObject, SuccessDiv } from '@/helpers/components/error.div';
+import { deleteGarnet } from '@/axios/complex';
+import DeleteInterface from '@/types/delete';
 
 const Garnets = ({ token }: { token: string | undefined }) => {
     const { data: garnets, isLoading, isError, refetch } = useQuery<Garnet[]>({
@@ -60,9 +62,9 @@ const Garnets = ({ token }: { token: string | undefined }) => {
         const ans = confirm("Είστε σίγουρος πως θέλετε να διαγράψετε την γαρνιτούρα: \"" + obj.name + "\"");
         if (!ans) return;
 
-        const res = await deleteGarnet(token, obj._id);
+        const res: DeleteInterface | undefined = await deleteGarnet(token, obj._id);
 
-        if (res) {
+        if (res?.deletionOK) {
             refetch();
             setPopUp({ text: 'Επιτυχής Διαγραφή!', type: 'success' });
             const int = window.setInterval(() => {
@@ -71,12 +73,21 @@ const Garnets = ({ token }: { token: string | undefined }) => {
             }, 5000);
             return;
         } else {
-            setPopUp({ text: 'Ανεπυτιχής Διαγραφή!', type: 'error' });
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            return;
+            if (res?.hasPlates) {
+                setPopUp({ text: 'Ανεπυτιχής Διαγραφή! Υπάρχουν πιάτα στην γαρνιτούρα!', type: 'error' });
+                const int = window.setInterval(() => {
+                    setPopUp(undefined);
+                    window.clearInterval(int);
+                }, 5000);
+                return;
+            } else {
+                setPopUp({ text: 'Ανεπυτιχής Διαγραφή!', type: 'error' });
+                const int = window.setInterval(() => {
+                    setPopUp(undefined);
+                    window.clearInterval(int);
+                }, 5000);
+                return;
+            }
         }
     }
 

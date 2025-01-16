@@ -43,16 +43,16 @@ export const updateGarnet = async (at: string | undefined, obj: Garnet): Promise
     }
 }
 
-export const deleteGarnet = async (at: string | undefined, id: string): Promise<boolean | undefined> => {
-    try {
-        const token = 'Bearer ' + at;
-        const res = await api.delete(`/delete/${id}`, {
-            headers: {
-                'Authorization': `${token}`,
-            },
-        });
-        return res.data;
-    } catch (e) {
-        return;
-    }
-}
+// export const deleteGarnet = async (at: string | undefined, id: string): Promise<boolean | undefined> => {
+//     try {
+//         const token = 'Bearer ' + at;
+//         const res = await api.delete(`/delete/${id}`, {
+//             headers: {
+//                 'Authorization': `${token}`,
+//             },
+//         });
+//         return res.data;
+//     } catch (e) {
+//         return;
+//     }
+// }

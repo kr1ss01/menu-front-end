@@ -42,19 +42,19 @@ export const updateCateogry = async (at: string | undefined, obj: CategoryUpdate
     }
 }
 
-export const deleteCategory = async (at: string | undefined, id: string): Promise<boolean | undefined> => {
-    try {
-        const token = 'Bearer ' + at;
-        const res = await api.delete(`/delete/${id}`, {
-            headers: {
-                'Authorization': `${token}`,
-            },
-        });
-        return res.data;
-    } catch (e) {
-        return;
-    }
-}
+// export const deleteCategory = async (at: string | undefined, id: string): Promise<boolean | undefined> => {
+//     try {
+//         const token = 'Bearer ' + at;
+//         const res = await api.delete(`/delete/${id}`, {
+//             headers: {
+//                 'Authorization': `${token}`,
+//             },
+//         });
+//         return res.data;
+//     } catch (e) {
+//         return;
+//     }
+// }
 
 // ! PROVIDE ALL THE CATEGORIES TO THE API!!
 export const orderFixOnCategory = async (at: string | undefined, obj: CategoryOrder[]): Promise<boolean[] | undefined> => {

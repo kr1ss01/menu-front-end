@@ -7,11 +7,13 @@ import { BinSVG, BugSVG, CategorySVG, EditSVG, EyeCloseSVG, EyeOpenSVG, ResetSVG
 import Colors from '@/types/colors';
 import ToggleSwitch from '@/helpers/inputs/toggle.input';
 import SubmitButton from '@/helpers/components/submit.button';
-import { deleteCategory, getCategories, getStatsCategories, newCategory, orderFixOnCategory, updateCateogry } from '@/axios/categories';
+import { getCategories, getStatsCategories, newCategory, orderFixOnCategory, updateCateogry } from '@/axios/categories';
 import { useQuery } from '@tanstack/react-query';
 import Category, { CategoryStats } from '@/types/categories';
 import LoadingSpinner from '@/helpers/loading';
 import ErrorDiv, { SetStateTypeObject, SuccessDiv } from '@/helpers/components/error.div';
+import { deleteCategory } from '@/axios/complex';
+import DeleteInterface from '@/types/delete';
 
 const Categories = ({ token }: { token: string | undefined }) => {
     const { data: categories, isLoading, isError, refetch } = useQuery<Category[]>({
@@ -104,9 +106,9 @@ const Categories = ({ token }: { token: string | undefined }) => {
         const ans = confirm("Είστε σίγουρος πως θέλετε να διαγράψετε την κατηγορία \"" + obj.name + "\"");
         if (!ans) return;
 
-        const res = await deleteCategory(token, obj._id);
+        const res: DeleteInterface | undefined = await deleteCategory(token, obj._id);
 
-        if (res) {
+        if (res?.deletionOK) {
             refetch();
             setPopUp({ text: 'Επιτυχής Διαγραφή!', type: "success" });
             const int = window.setInterval(() => {
@@ -115,12 +117,21 @@ const Categories = ({ token }: { token: string | undefined }) => {
             }, 5000);
             return;
         } else {
-            setPopUp({ text: 'Ανεπυτιχής Διαγραφή!', type: "error" });
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            return;
+            if (res?.hasPlates) {
+                setPopUp({ text: 'Ανεπυτιχής Διαγραφή! Υπάρχουν πιάτα στην κατηγορία!', type: "error" });
+                const int = window.setInterval(() => {
+                    setPopUp(undefined);
+                    window.clearInterval(int);
+                }, 5000);
+                return;
+            } else {
+                setPopUp({ text: 'Ανεπυτιχής Διαγραφή!', type: "error" });
+                const int = window.setInterval(() => {
+                    setPopUp(undefined);
+                    window.clearInterval(int);
+                }, 5000);
+                return;
+            }
         }
     }
 

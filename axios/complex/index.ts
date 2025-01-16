@@ -1,5 +1,6 @@
 import axios from "axios";
 import BASE from "../base";
+import DeleteInterface from "@/types/delete";
 
 const api = axios.create({
     baseURL: `${BASE}complex`,
@@ -26,4 +27,32 @@ export const getPlatesByCategoryStrickt = async (id: string) => {
 
 export const getSpecialPlates = async () => {
     return (await api.get('/special')).data;
+}
+
+export const deleteCategory = async (at: string | undefined, id: string): Promise<DeleteInterface | undefined> => {
+    try {
+        const token = 'Bearer ' + at;
+        const res = await api.delete(`/delete/category/${id}`, {
+            headers: {
+                'Authorization': `${token}`,
+            },
+        });
+        return res.data;
+    } catch (e) {
+        return;
+    }
+}
+
+export const deleteGarnet = async (at: string | undefined, id: string): Promise<DeleteInterface | undefined> => {
+    try {
+        const token = 'Bearer ' + at;
+        const res = await api.delete(`/delete/garnet/${id}`, {
+            headers: {
+                'Authorization': `${token}`,
+            },
+        });
+        return res.data;
+    } catch (e) {
+        return;
+    }
 }
