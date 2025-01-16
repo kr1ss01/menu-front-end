@@ -29,15 +29,15 @@
         color: variables.$black;
         background-color: variables.$white;
         border-bottom: 1px solid variables.$grey;
-        padding: .5rem;
+        padding: 0.5rem;
         cursor: default;
       }
       .specialPopUp_showSpecialCont {
         @include mixins.d-flex(center, flex-start, column);
         width: 100%;
-        padding: .5rem;
+        padding: 0.5rem;
         list-style: none;
-        gap: .5rem 0;
+        gap: 0.5rem 0;
         overflow-y: scroll;
         &::-webkit-scrollbar {
           display: none;
@@ -109,20 +109,45 @@
     @include mixins.d-flex(center, flex-start, column);
     width: 100%;
     max-width: 1440px;
-    gap: .5rem 0;
+    gap: 0.5rem 0;
     list-style: none;
     padding: 0 1rem;
     padding-top: 1rem;
     margin: 0 auto;
     .categoryItem {
       @include mixins.d-flex(center, flex-start, row);
-      gap: 0 .5rem;
+      gap: 0 0.5rem;
       width: 100%;
       background-color: transparent;
-      a, p {
+      a {
+        @include mixins.d-flex(center, flex-start, row);
+        gap: 0 0.5rem;
+        border-bottom: 2px dotted variables.$black;
+        border-radius: 0 !important;
+      }
+      .cross {
+        @include mixins.d-flex(center, center, row);
+        position: relative;
+        // background-color: #000;
+        overflow: hidden;
+        width: 30px;
+        height: 30px;
+        span {
+          position: absolute;
+          width: 17px;
+          height: 1px;
+          background-color: variables.$black;
+          transition: all 200ms linear;
+          &:nth-child(2) {
+            transform: rotate(90deg);
+          }
+        }
+      }
+      a,
+      p {
         width: 100%;
-        background-color: variables.$white2;
-        padding: .5rem 1.5rem;
+        // background-color: variables.$white2;
+        padding: 0.5rem 1.5rem;
         border-radius: 5px;
         font-weight: 700;
         font-size: 1.2rem;
@@ -133,12 +158,11 @@
     }
     .platesView {
       @include mixins.d-flex(center, flex-start, column);
-      gap: .5rem 0;
+      gap: 0.5rem 0;
       width: 100%;
       padding: 0 1rem;
     }
   }
-
 }
 
 @media screen and (min-width: 768px) {

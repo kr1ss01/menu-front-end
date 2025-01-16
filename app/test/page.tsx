@@ -157,6 +157,10 @@ export default function Page() {
                             <>
                                 <li key={key} className={style.categoryItem} onClick={() => getPlates(cat)}>
                                     <Link href={`/test/#${key === 0 ? '' : key - 1}`} passHref>
+                                        <div role='presentation' className={style.cross}>
+                                            <span role='presentation'></span>
+                                            <span role='presentation' style={{ transform: active?._id === cat._id ? 'rotate(0)' : '' }} ></span>
+                                        </div>
                                         <p>{cat.name}</p>
                                     </Link>
                                 </li>
