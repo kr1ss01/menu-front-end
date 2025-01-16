@@ -1,4 +1,5 @@
-import cookie from 'cookie';
+// import cookie from 'cookie';
+import * as cookie from 'cookie';
 
 export async function POST (request: Request) {
     return new Response('success', {

@@ -118,6 +118,48 @@ const Plate = ({ token }: { token: string | undefined }) => {
     let todoItemDrag = React.useRef<number>(0);
 
     React.useEffect(() => {
+        if (visibleOnly && nonVisibleOnly) {
+            setNonVisibleOnly(false);
+            setVisibleOnly(true);
+        }
+    }, [visibleOnly]);
+
+    React.useEffect(() => {
+        if (visibleOnly && nonVisibleOnly) {
+            setNonVisibleOnly(true);
+            setVisibleOnly(false);
+        }
+    }, [nonVisibleOnly]);
+
+    React.useEffect(() => {
+        if (availableOnly && nonAvailableOnly) {
+            setNonAvailableOnly(false);
+            setAvailableOnly(true);
+        }
+    }, [availableOnly]);
+
+    React.useEffect(() => {
+        if (availableOnly && nonAvailableOnly) {
+            setAvailableOnly(false);
+            setNonAvailableOnly(true);
+        }
+    }, [nonAvailableOnly]);
+
+    React.useEffect(() => {
+        if (dayPlateOnly && exclDayPlateOnly) {
+            setDayPlateOnly(true);
+            setExclDayPlateOnly(false);
+        }
+    }, [dayPlateOnly]);
+
+    React.useEffect(() => {
+        if (dayPlateOnly && exclDayPlateOnly) {
+            setDayPlateOnly(false);
+            setExclDayPlateOnly(true);
+        }
+    }, [exclDayPlateOnly]);
+
+    React.useEffect(() => {
         if (categories) {
             setAllCategories(categories);
         }

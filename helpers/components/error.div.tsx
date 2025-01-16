@@ -3,26 +3,38 @@
 import style from '@/styles/helpers/components/error.div.module.scss';
 import { TickCircleFillIcon, WarningSVG } from "@/svg";
 import Colors from "@/types/colors";
+import React from 'react';
 
-export type SetStateTypeObject = {
-    type: "error" | "success",
-    text: string,
+interface DialogDivType {
+    text: string;
+    // intID: number;
+    // setPopUp: React.Dispatch<React.SetStateAction<SetStateTypeObject | undefined>>;
 }
 
-const ErrorDiv = ({ text, icon, textColor }: { text: string, icon?: JSX.Element, textColor?: Colors }) => {
+export interface SetStateTypeObject extends DialogDivType {
+    type: "error" | "success";
+}
+
+const ErrorDiv = ({ text }: DialogDivType) => {
+    // const handleClick = (id: number) => {
+    //     window.clearInterval(id);
+    //     setPopUp(undefined);
+    // }
+
     return (
         <div className={style.errorHandlingDiv}>
-            <p style={{ color: textColor ? textColor : Colors.error }}>{text}</p>
-            {icon ? 
-                icon 
-            :
-                <WarningSVG box={2} color={Colors.error} />
-            }
+            <p>{text}</p>
+            <WarningSVG box={2} color={Colors.error} />
         </div>
     )
 }
 
-export const SuccessDiv = ({ text }: { text: string }) => {
+export const SuccessDiv = ({ text }: DialogDivType) => {
+    // const handleClick = (id: number) => {
+    //     window.clearInterval(id);
+    //     setPopUp(undefined);
+    // }
+
     return (
         <div className={style.successHandlingDiv}>
             <p style={{ color: Colors.green }}>{text}</p>
