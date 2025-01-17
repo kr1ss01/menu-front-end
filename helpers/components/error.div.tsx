@@ -7,36 +7,28 @@ import React from 'react';
 
 interface DialogDivType {
     text: string;
-    // intID: number;
-    // setPopUp: React.Dispatch<React.SetStateAction<SetStateTypeObject | undefined>>;
+    intID: number;
+    setPopUp: React.Dispatch<React.SetStateAction<SetStateTypeObject | undefined>>;
 }
 
-export interface SetStateTypeObject extends DialogDivType {
+export interface SetStateTypeObject {
     type: "error" | "success";
+    text: string;
+    intID: number;
 }
 
-const ErrorDiv = ({ text }: DialogDivType) => {
-    // const handleClick = (id: number) => {
-    //     window.clearInterval(id);
-    //     setPopUp(undefined);
-    // }
-
+const ErrorDiv = ({ text, intID, setPopUp }: DialogDivType) => {
     return (
-        <div className={style.errorHandlingDiv}>
+        <div className={style.errorHandlingDiv} onClick={() => {window.clearInterval(intID); setPopUp(undefined);}} style={{ cursor: 'pointer' }}>
             <p>{text}</p>
             <WarningSVG box={2} color={Colors.error} />
         </div>
     )
 }
 
-export const SuccessDiv = ({ text }: DialogDivType) => {
-    // const handleClick = (id: number) => {
-    //     window.clearInterval(id);
-    //     setPopUp(undefined);
-    // }
-
+export const SuccessDiv = ({ text, intID, setPopUp }: DialogDivType) => {
     return (
-        <div className={style.successHandlingDiv}>
+        <div className={style.successHandlingDiv} onClick={() => {window.clearInterval(intID); setPopUp(undefined);}} style={{ cursor: 'pointer' }}>
             <p style={{ color: Colors.green }}>{text}</p>
             <TickCircleFillIcon box={2} color={Colors.green} />
         </div>

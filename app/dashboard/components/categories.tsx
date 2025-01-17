@@ -14,6 +14,7 @@ import LoadingSpinner from '@/helpers/loading';
 import ErrorDiv, { SetStateTypeObject, SuccessDiv } from '@/helpers/components/error.div';
 import { deleteCategory } from '@/axios/complex';
 import DeleteInterface from '@/types/delete';
+import SearchInput from '@/helpers/inputs/search.input';
 
 const Categories = ({ token }: { token: string | undefined }) => {
     const { data: categories, isLoading, isError, refetch } = useQuery<Category[]>({
@@ -57,6 +58,8 @@ const Categories = ({ token }: { token: string | undefined }) => {
 
     // ? Drag N Drop State Mobile
     const [orderSet, setOrderSet] = React.useState<Category>();
+
+    const [search, setSearch] = React.useState<string>('');
 
     // ? Drag N Drop Refs
     let todoItemDragOver = React.useRef<number>(0);
@@ -110,26 +113,26 @@ const Categories = ({ token }: { token: string | undefined }) => {
 
         if (res?.deletionOK) {
             refetch();
-            setPopUp({ text: 'Επιτυχής Διαγραφή!', type: "success" });
             const int = window.setInterval(() => {
                 setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
+            setPopUp({ text: 'Επιτυχής Διαγραφή!', type: "success", intID: int });
             return;
         } else {
             if (res?.hasPlates) {
-                setPopUp({ text: 'Ανεπυτιχής Διαγραφή! Υπάρχουν πιάτα στην κατηγορία!', type: "error" });
                 const int = window.setInterval(() => {
                     setPopUp(undefined);
                     window.clearInterval(int);
                 }, 5000);
+                setPopUp({ text: 'Ανεπυτιχής Διαγραφή! Υπάρχουν πιάτα στην κατηγορία!', type: "error", intID: int });
                 return;
             } else {
-                setPopUp({ text: 'Ανεπυτιχής Διαγραφή!', type: "error" });
                 const int = window.setInterval(() => {
                     setPopUp(undefined);
                     window.clearInterval(int);
                 }, 5000);
+                setPopUp({ text: 'Ανεπυτιχής Διαγραφή!', type: "error", intID: int });
                 return;
             }
         }
@@ -143,11 +146,11 @@ const Categories = ({ token }: { token: string | undefined }) => {
 
         if (name.length === 0) {
             setEmptyFields(true);
-            setPopUp({ text: 'Κενά Πεδία!', type: 'error' })
             const int = window.setInterval(() => {
                 setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
+            setPopUp({ text: 'Κενά Πεδία!', type: 'error', intID: int });
             return;
         }
 
@@ -164,19 +167,19 @@ const Categories = ({ token }: { token: string | undefined }) => {
             setEmptyFields(false);
             setError(false);
             refetch();
-            setPopUp({ text: 'Επιτυχής Προσθήκη!', type: 'success' });
             const int = window.setInterval(() => {
                 setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
+            setPopUp({ text: 'Επιτυχής Προσθήκη!', type: 'success', intID: int });
             return;
         } else {
             setError(true);
-            setPopUp({ text: 'Απροσδιόριστο Σφάλμα!', type: 'error' });
             const int = window.setInterval(() => {
                 setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
+            setPopUp({ text: 'Απροσδιόριστο Σφάλμα!', type: 'error', intID: int });
             return;
         }
     }
@@ -190,11 +193,11 @@ const Categories = ({ token }: { token: string | undefined }) => {
 
         if (updateName.length === 0) {
             setEmptyFields(true);
-            setPopUp({ text: 'Κενά Πεδία!', type: 'error' })
             const int = window.setInterval(() => {
                 setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
+            setPopUp({ text: 'Κενά Πεδία!', type: 'error', intID: int });
             return;
         }
 
@@ -216,19 +219,19 @@ const Categories = ({ token }: { token: string | undefined }) => {
             setEmptyFields(false);
             setError(false);
             refetch();
-            setPopUp({ text: 'Επιτυχής Ενημέρωση!', type: 'success' });
             const int = window.setInterval(() => {
                 setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
+            setPopUp({ text: 'Επιτυχής Ενημέρωση!', type: 'success', intID: int });
             return;
         } else {
             setError(true);
-            setPopUp({ text: 'Απροσδιόριστο Σφάλμα!', type: 'error' });
             const int = window.setInterval(() => {
                 setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
+            setPopUp({ text: 'Απροσδιόριστο Σφάλμα!', type: 'error', intID: int });
             return;
         }
     }
@@ -267,20 +270,20 @@ const Categories = ({ token }: { token: string | undefined }) => {
         if (res) {
             setLoadingCategories(false);
             refetch();
-            setPopUp({ text: 'Επιτυχής Αλλαγή Σειράς!', type: 'success' });
             const int = window.setInterval(() => {
                 setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
+            setPopUp({ text: 'Επιτυχής Αλλαγή Σειράς!', type: 'success', intID: int });
             return;
         } else {
             setOrder(true);
             setLoadingCategories(false);
-            setPopUp({ text: 'Ανεπιτυχής Αλλαγή Σειράς!', type: 'error' });
             const int = window.setInterval(() => {
                 setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
+            setPopUp({ text: 'Ανεπιτυχής Αλλαγή Σειράς!', type: 'error', intID: int });
             return;
         }
     }
@@ -318,8 +321,8 @@ const Categories = ({ token }: { token: string | undefined }) => {
     return (
         <div className={style.categories}>
             <div className={style.categoriesView}>
-                {(popUp && popUp.type === 'error') && <ErrorDiv text={popUp.text} />}
-                {(popUp && popUp.type === 'success') && <SuccessDiv text={popUp.text} />}
+                {(popUp && popUp.type === 'error') && <ErrorDiv text={popUp.text} intID={popUp.intID} setPopUp={setPopUp} />}
+                {(popUp && popUp.type === 'success') && <SuccessDiv text={popUp.text} intID={popUp.intID} setPopUp={setPopUp} />}
                 <div className={style.categoriesViewList}>
                     {isLoading &&
                         <div className={style.categoriesViewList_loading}>
@@ -336,8 +339,20 @@ const Categories = ({ token }: { token: string | undefined }) => {
                             </button>
                         </div>
                     }
+                    {allCategories &&
+                        <div className={style.garnet_filters} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                            <SearchInput
+                                tabIndex={0}
+                                label='search'
+                                placeholder='Αναζήτηση...'
+                                value={search}
+                                setValue={setSearch}
+                            />
+                        </div>
+                    }
                     {allCategories && allCategories.map((cat: Category, key: number) => {
                         if ((onlyVisible && cat.visible) || (onlyNonVisible && !cat.visible) || (!onlyNonVisible && !onlyVisible)) {
+                            if (search.length > 0 && !cat.name.toLowerCase().includes(search.toLowerCase())) return;
                             return (
                                 <div 
                                     className={style.categoryView}

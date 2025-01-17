@@ -1,6 +1,12 @@
 @use "../../mixins";
 @use "../../variables";
 
+$use_breakpoint_desktop: 768px;
+$use_breakpoint_mobile: 460px;
+$breakpoint_desktop_width: 420px;
+$breakpoint_mobile_width: 100%;
+$margin_mobile: 0 .5rem;
+
 @mixin initialBox() {
   width: 400px;
   height: 570px;

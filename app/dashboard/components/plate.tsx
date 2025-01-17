@@ -22,6 +22,7 @@ import { getPlatesByCategoryStrickt } from '@/axios/complex';
 import { PlateFinal } from '@/helpers/plate';
 import { fixPlateOrder, getPlateStats, newPlate, updatePlateWithImage } from '@/axios/plates';
 import ErrorDiv, { SetStateTypeObject, SuccessDiv } from '@/helpers/components/error.div';
+import SearchInput from '@/helpers/inputs/search.input';
 
 const Plate = ({ token }: { token: string | undefined }) => {
     // ? Render Category Content
@@ -112,6 +113,9 @@ const Plate = ({ token }: { token: string | undefined }) => {
     const [dayPlateOnly, setDayPlateOnly] = React.useState<boolean>(false);
     const [exclDayPlateOnly, setExclDayPlateOnly] = React.useState<boolean>(false);
     const [hasImageOnly, setHasImageOnly] = React.useState<boolean>(false);
+
+    // ? Search Filter
+    const [search, setSearch] = React.useState<string>('');
 
     // ? Drag N Drop Refs
     let todoItemDragOver = React.useRef<number>(0);
@@ -230,51 +234,51 @@ const Plate = ({ token }: { token: string | undefined }) => {
         if (name.length === 0 || price === 0 || price == undefined || price == null 
             || price == 0 || !gID || !cID || gID.length === 0 || cID.length === 0) {
             setEmptyFields(true);
-            setPopUp({ text: 'Κενά Πεδία!', type: 'error' });
             const int = window.setInterval(() => {
                 setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
+            setPopUp({ text: 'Κενά Πεδία!', type: 'error', intID: int });
             return;
         }
 
         if ((showDesc && !desc) || (showDesc && desc.length === 0)) {
             setDescError(true);
-            setPopUp({ text: 'Σφάλμα Στην Περιγραφή!', type: 'error' });
             const int = window.setInterval(() => {
                 setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
+            setPopUp({ text: 'Σφάλμα Στην Περιγραφή!', type: 'error', intID: int });
             return;
         }
 
         if (showIcon && !uploadImage && !updateObject) {
             setNoImage(true);
-            setPopUp({ text: 'Σφάλμα Στην Εικόνα!', type: 'error' });
             const int = window.setInterval(() => {
                 setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
+            setPopUp({ text: 'Σφάλμα Στην Εικόνα!', type: 'error', intID: int });
             return;
         }
 
         if ((showGarnet && !gID) || (showGarnet && gID.length === 0)) {
             setGarnetError(true);
-            setPopUp({ text: 'Σφάλμα Στην Γαρνιτούρα!', type: 'error' });
             const int = window.setInterval(() => {
                 setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
+            setPopUp({ text: 'Σφάλμα Στην Γαρνιτούρα!', type: 'error', intID: int });
             return;
         }
 
         if (onlyOnSpecial && !showOnSpecial) {
             setSpecialError(true);
-            setPopUp({ text: 'Μη Διαθέσιμο στα Πιάτα Ημέρας!', type: 'error' });
             const int = window.setInterval(() => {
                 setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
+            setPopUp({ text: 'Μη Διαθέσιμο στα Πιάτα Ημέρας!', type: 'error', intID: int });
             return;
         }
 
@@ -295,10 +299,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
         FD.append('showOnSpecial', showOnSpecial ? 'true' : 'false');
         FD.append('onlyOnSpecial', onlyOnSpecial ? 'true' : 'false');
         if (uploadImage) {FD.append('image', uploadImage)};
-        // if (updateObject) {
-        //     if (uploadImage) {FD.append('image', uploadImage)};
-        //     if (!uploadImage) {FD.append('image', updateObject.image)}
-        // }
+
         if (desc) {FD.append('desc', desc)}
 
         var res: boolean | undefined;
@@ -319,20 +320,20 @@ const Plate = ({ token }: { token: string | undefined }) => {
             setUploadImage(undefined);
             setUploadImageShow(undefined);
             catContent && refetchPlates();
-            updateObject ? setPopUp({ text: 'Επιτυχής Ενημέρωση Πιάτου!', type: 'success' }) : setPopUp({ text: 'Επιτυχής Καταχώρηση Πιάτου!', type: 'success' });
             updateObject && setUpdateObject(null);
             const int = window.setInterval(() => {
                 setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
+            updateObject ? setPopUp({ text: 'Επιτυχής Ενημέρωση Πιάτου!', type: 'success', intID: int }) : setPopUp({ text: 'Επιτυχής Καταχώρηση Πιάτου!', type: 'success', intID: int });
             return;
         } else {
             setError(true);
-            updateObject ? setPopUp({ text: 'Ανεπιτυχής Ενημέρωση Πιάτου!', type: 'error' }) : setPopUp({ text: 'Ανεπιτυχής Καταχώρηση Πιάτου!', type: 'error' });
             const int = window.setInterval(() => {
                 setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
+            updateObject ? setPopUp({ text: 'Ανεπιτυχής Ενημέρωση Πιάτου!', type: 'error', intID: int }) : setPopUp({ text: 'Ανεπιτυχής Καταχώρηση Πιάτου!', type: 'error', intID: int });
             return;
         }
     }
@@ -359,20 +360,20 @@ const Plate = ({ token }: { token: string | undefined }) => {
         if (res) {
             refetchPlates();
             setOrderLoading(false);
-            setPopUp({ text: 'Επιτυχής Αλλαγή Σειράς!', type: "success" });
             const int = window.setInterval(() => {
                 setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
+            setPopUp({ text: 'Επιτυχής Αλλαγή Σειράς!', type: "success", intID: int });
             return;
         } else {
             setOrder(true);
             setOrderLoading(false);
-            setPopUp({ text: 'Ανεπιτυχής Αλλαγή Σειράς!', type: 'success' });
             const int = window.setInterval(() => {
                 setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
+            setPopUp({ text: 'Ανεπιτυχής Αλλαγή Σειράς!', type: 'success', intID: int });
             return;
         }
     }
@@ -433,8 +434,8 @@ const Plate = ({ token }: { token: string | undefined }) => {
     return (
         <div className={style.plates}>
             <div className={style.platesView}>
-                {(popUp && popUp.type === 'error') && <ErrorDiv text={popUp.text} />}
-                {(popUp && popUp.type === 'success') && <SuccessDiv text={popUp.text} />}
+                {(popUp && popUp.type === 'error') && <ErrorDiv text={popUp.text} intID={popUp.intID} setPopUp={setPopUp} />}
+                {(popUp && popUp.type === 'success') && <SuccessDiv text={popUp.text} intID={popUp.intID} setPopUp={setPopUp} />}
                 <div className={style.platesViewList}>
                     {isLoadingCategories &&
                         <div className={style.categoriesViewList_loading}>
@@ -499,10 +500,19 @@ const Plate = ({ token }: { token: string | undefined }) => {
                     }
                     {(catContent && plate && !isFetchingPlates) &&
                         <ul className={style.platesViewInner}>
-                            <li className={style.platesViewInnerButton} role='button' onClick={() => {setCatContent(undefined); refetchPlates(); setUpdateObject(null); setAllPlates(undefined);}}>
-                                <UpSVG box={1} color={Colors.black} />
-                                Πίσω
-                            </li>
+                            <div className={style.platesViewInner_filters}>
+                                <button className={style.platesViewInnerButton} role='button' type='button' onClick={() => {setCatContent(undefined); refetchPlates(); setUpdateObject(null); setAllPlates(undefined);}}>
+                                    <UpSVG box={1} color={Colors.black} />
+                                    Πίσω
+                                </button>
+                                <SearchInput
+                                    tabIndex={0}
+                                    label='search'
+                                    placeholder='Αναζήτηση...'
+                                    value={search}
+                                    setValue={setSearch}
+                                />
+                            </div>
                             {((catContent && plate) && plate.map((pl: PlateComplex, key: number) => {
                                 if (hasImageOnly && !pl.image) return;
                                 if (visibleOnly && !pl.visible) return;
@@ -511,6 +521,12 @@ const Plate = ({ token }: { token: string | undefined }) => {
                                 if (nonAvailableOnly && pl.availability) return;
                                 if (dayPlateOnly && !pl.showOnSpecial) return;
                                 if (exclDayPlateOnly && !pl.onlyOnSpecial) return;
+                                if (search.length > 0 && 
+                                    !pl.name.toLowerCase().includes(search.toLowerCase()) &&
+                                    !pl.garnet.name.toLowerCase().includes(search.toLowerCase()) &&
+                                    !pl.category.name.toLowerCase().includes(search.toLowerCase()) &&
+                                    (pl.desc && !pl.desc.toLowerCase().includes(search.toLowerCase()))
+                                ) return;
                                 return (
                                     <li 
                                         key={key}
@@ -630,6 +646,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
                                         setClicked={setNonVisibleOnly}
                                     />
                                 </div>
+                                <hr />
                                 <div className={style.toggleDiv}>
                                     <label htmlFor="showOnlyAvailables">Δείτε Πιάτα Που Είναι Διαθέσιμα: </label>
                                     <ToggleSwitch
@@ -650,6 +667,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
                                         setClicked={setNonAvailableOnly}
                                     />
                                 </div>
+                                <hr />
                                 <div className={style.toggleDiv}>
                                     <label htmlFor="showOnlyDayPlates">Δείτε Πιάτα Που Είναι Ημέρας: </label>
                                     <ToggleSwitch
@@ -670,6 +688,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
                                         setClicked={setExclDayPlateOnly}
                                     />
                                 </div>
+                                <hr />
                                 <div className={style.toggleDiv}>
                                     <label htmlFor="showPlatesWithImage">Δείτε Πιάτα Που Έχουν Εικόνα: </label>
                                     <ToggleSwitch
@@ -680,6 +699,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
                                         setClicked={setHasImageOnly}
                                     />
                                 </div>
+                                <hr />
                                 <button type='button' role='button' onClick={() => setSettings(false)} className={style.backSettingsButton}>
                                     <UpSVG box={1} color={Colors.black} />
                                     Πίσω

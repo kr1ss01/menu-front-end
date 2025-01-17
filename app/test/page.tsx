@@ -107,7 +107,7 @@ export default function Page() {
 
     return (
         <main className={style.main}>
-            {(specialPlates && showSpecial) &&
+            {(specialPlates && showSpecial && specialPlates.length >= 1) &&
                 <div className={style.specialPopUp}>
                     <div className={style.specialPopUpInner}>
                         <h2>Πιάτα Ημέρας</h2>

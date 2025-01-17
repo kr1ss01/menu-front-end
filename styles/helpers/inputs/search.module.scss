@@ -1,0 +1,21 @@
+@use "../../mixins";
+@use "../../variables";
+
+.inputDivSearch {
+  @include mixins.d-flex(center, flex-start, row);
+  gap: 0.2rem;
+  padding: 0.5rem;
+  background-color: variables.$white;
+  border-radius: 5px;
+  max-width: variables.$max_width_input;
+  input {
+    border: none;
+    outline: none;
+    background-color: inherit;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-left: 1ch;
+    margin-right: auto;
+    width: 100%;
+  }
+}

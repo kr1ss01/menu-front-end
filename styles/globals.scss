@@ -18,9 +18,10 @@ a {
   cursor: pointer;
 }
 
-// input {
-//   font-family: "Jura", sans-serif !important;
-// }
+button, 
+input {
+  font-family: inherit !important;
+}
 
 .dNone {
   display: none !important;

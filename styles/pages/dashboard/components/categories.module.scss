@@ -217,21 +217,15 @@
   }
 }
 
-@media screen and (max-width: 620px) {
+@media screen and (max-width: dashboard.$use_breakpoint_desktop) {
   .categoriesView {
     flex-direction: column-reverse !important;
-    width: 400px !important;
+    width: dashboard.$breakpoint_desktop_width !important;
     height: fit-content !important;
   }
   .categoriesViewList,
   .categoriesSettings {
     flex-basis: auto !important;
-  }
-  .errorHandlingDiv {
-    width: 95% !important;
-    margin: 0 !important;
-    right: 10px !important;
-    left: 10px !important;
   }
   .categoriesSettings {
     width: 100%;
@@ -243,7 +237,7 @@
   }
 }
 
-@media screen and (min-width: 620px) {
+@media screen and (min-width: dashboard.$use_breakpoint_desktop) {
   .resetOrderDiv {
     button {
       svg {
@@ -262,5 +256,12 @@
     &:focus {
       background-color: variables.$black !important;
     }
+  }
+}
+
+@media screen and (max-width: dashboard.$use_breakpoint_mobile) {
+  .categoriesView {
+    width: dashboard.$breakpoint_mobile_width !important;
+    margin: dashboard.$margin_mobile !important;
   }
 }
