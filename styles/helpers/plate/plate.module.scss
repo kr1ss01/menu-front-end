@@ -145,7 +145,8 @@
   background-color: variables.$white;
   padding: 0.5rem;
   width: 100%;
-  cursor: pointer;
+  max-width: variables.$max_plate_width;
+  cursor: default;
   position: relative;
   // overflow: hidden;
   .imageBackface {
@@ -154,7 +155,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    filter: blur(0px) opacity(0.4) grayscale(.4);
+    filter: blur(0px) opacity(0.3) grayscale(.4);
     background-position: center;
     border-radius: 5px;
   }
@@ -166,6 +167,47 @@
     font-weight: 900;
     padding-bottom: 0.4rem;
     position: relative;
+    cursor: default;
+    &::before {
+      content: "";
+      position: absolute;
+      top: 85%;
+      left: 0;
+      width: 90%;
+      height: 1px;
+      background-color: rgba($color: variables.$black, $alpha: 0.4);
+    }
+  }
+  span {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: default;
+  }
+  .platePrice {
+    font-size: 0.8rem;
+    font-weight: 900;
+    margin-top: 0.4rem;
+    cursor: default;
+  }
+}
+
+.plateClient {
+  border-radius: 5px;
+  background-color: variables.$white;
+  padding: 0.5rem;
+  width: 100%;
+  // border: 1px solid variables.$black;
+  max-width: variables.$max_plate_width;
+  p {
+    @include mixins.d-flex(center, flex-start, row);
+    gap: 0 0.5rem;
+    width: fit-content;
+    font-size: 1.1rem;
+    font-weight: 900;
+    padding-bottom: 0.4rem;
+    position: relative;
+    cursor: default;
     &::before {
       content: "";
       position: absolute;
@@ -180,10 +222,95 @@
     display: block;
     font-size: 0.8rem;
     font-weight: 300;
+    cursor: default;
   }
   .platePrice {
     font-size: 0.8rem;
     font-weight: 900;
     margin-top: 0.4rem;
+    cursor: default;
+  }
+}
+
+.plateClientImage {
+  display: grid; 
+  grid-template-columns: 20% 80%; 
+  grid-template-rows: 1fr; 
+  grid-template-areas: 
+    ". ."; 
+  gap: 0 .5rem;
+  border-radius: 5px;
+  background-color: variables.$white;
+  width: 100%;
+  max-width: variables.$max_plate_width;
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+  // border: 1px solid variables.$black;
+  .plateClientImage_imgbox {
+    @include mixins.d-flex(center, center, row);
+    width: 100%;
+    // max-width: 120px;
+    position: relative;
+    // height: 120px;
+  }
+  .imageBackface {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    filter: blur(0px) opacity(0.4) grayscale(.4);
+    background-position: center;
+    border-radius: 5px;
+  }
+  .infoDiv {
+    @include mixins.d-flex(flex-start, flex-start, column);
+    padding: .5rem;
+    padding-right: 1rem;
+    height: 100%;
+  }
+  p {
+    @include mixins.d-flex(center, flex-start, row);
+    gap: 0 0.5rem;
+    width: fit-content;
+    font-size: 1.1rem;
+    font-weight: 900;
+    padding-bottom: 0.4rem;
+    position: relative;
+    cursor: default;
+    &::before {
+      content: "";
+      position: absolute;
+      top: 85%;
+      left: 0;
+      width: 90%;
+      height: 1px;
+      background-color: rgba($color: variables.$black, $alpha: 0.4);
+    }
+  }
+  span {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 300;
+    cursor: default;
+  }
+  .platePrice {
+    font-size: 0.8rem;
+    font-weight: 900;
+    margin-top: auto;
+    cursor: default;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .plateClientImage {
+    grid-template-columns: 30% 70% !important; 
+  }
+}
+
+@media screen and (max-width: 420px) {
+  .plateClientImage {
+    grid-template-columns: 40% 60% !important; 
   }
 }

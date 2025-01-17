@@ -112,3 +112,9 @@ export interface PlateStats {
     availability: number;
     hasImage: number;
 }
+
+export enum PlateImagePositionEnum {
+    left = "left",
+    right = "right",
+    bg = "background",
+}

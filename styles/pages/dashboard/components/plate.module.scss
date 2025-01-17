@@ -119,6 +119,17 @@
             }
           }
         }
+        .platesViewInner_imagePosition {
+          @include mixins.d-flex(center, flex-end, row);
+          gap: 0 .5rem;
+          width: 100%;
+          border-bottom: 1px solid variables.$black;
+          padding-bottom: .5rem;
+          button[type='button'] {
+            @include mixins.naturalButton();
+            @include mixins.d-flex(center, center, row);
+          }
+        }
         .platesViewMain {
           border-radius: 5px;
           background-color: variables.$white;

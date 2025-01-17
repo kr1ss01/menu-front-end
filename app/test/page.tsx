@@ -9,9 +9,9 @@ import LoadingSpinner from '@/helpers/loading';
 import Colors from '@/types/colors';
 import { BugSVG, XCircleFillIcon, XCircleNoFillIcon } from '@/svg';
 import Link from 'next/link';
-import { PlateComplex } from '@/types/plate';
+import { PlateComplex, PlateImagePositionEnum } from '@/types/plate';
 import { getPlatesByCategoryStrickt, getSpecialPlates } from '@/axios/complex';
-import { PlateFinal } from '@/helpers/plate';
+import { PlateClient, PlateFinal } from '@/helpers/plate';
 import Image from 'next/image';
 
 import SPECIAL from '@/public/menu.png';
@@ -181,30 +181,45 @@ export default function Page() {
                                         {currentPlates.map((pl: PlateComplex, key: number) => {
                                             if (!pl.visible || !pl.availability || pl.onlyOnSpecial) return;
                                             return (
-                                                <PlateFinal
+                                                <PlateClient 
                                                     key={key}
                                                     image={pl.image}
                                                     name={pl.name}
                                                     price={pl.price}
-                                                    category={pl.category}
                                                     garnet={pl.garnet}
                                                     desc={pl.desc}
-                                                    availability={pl.availability}
                                                     showIcon={pl.showIcon}
                                                     showDesc={pl.showDesc}
                                                     showPrice={pl.showPrice}
                                                     kiloPrice={pl.kiloPrice}
-                                                    onlyOnSpecial={pl.onlyOnSpecial}
-                                                    order={pl.order}
-                                                    showOnSpecial={pl.showOnSpecial}
-                                                    visible={pl.visible}
                                                     imageMimeType={pl.imageMimeType}
                                                     showGarnet={pl.showGarnet}
-                                                    _id={pl._id}
-                                                    object={pl}
-                                                    showOrder={false}
-                                                    onClick={() => {return;}}
+                                                    imagePosition={PlateImagePositionEnum.left}
                                                 />
+                                                // <PlateFinal
+                                                //     key={key}
+                                                //     image={pl.image}
+                                                //     name={pl.name}
+                                                //     price={pl.price}
+                                                //     category={pl.category}
+                                                //     garnet={pl.garnet}
+                                                //     desc={pl.desc}
+                                                //     availability={pl.availability}
+                                                //     showIcon={pl.showIcon}
+                                                //     showDesc={pl.showDesc}
+                                                //     showPrice={pl.showPrice}
+                                                //     kiloPrice={pl.kiloPrice}
+                                                //     onlyOnSpecial={pl.onlyOnSpecial}
+                                                //     order={pl.order}
+                                                //     showOnSpecial={pl.showOnSpecial}
+                                                //     visible={pl.visible}
+                                                //     imageMimeType={pl.imageMimeType}
+                                                //     showGarnet={pl.showGarnet}
+                                                //     _id={pl._id}
+                                                //     object={pl}
+                                                //     showOrder={false}
+                                                //     onClick={() => {return;}}
+                                                // />
                                             );
                                         })}
                                     </section>

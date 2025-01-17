@@ -3,7 +3,8 @@
 import * as React from 'react';
 import style from '@/styles/helpers/plate/plate.module.scss';
 import Image from 'next/image';
-import { PlateComplex } from '@/types/plate';
+import { PlateComplex, PlateImagePositionEnum } from '@/types/plate';
+import Garnet from '@/types/garnets';
 
 interface PlateViewDashboardProps extends PlateComplex {
     onClick: React.Dispatch<React.SetStateAction<PlateComplex | null>>,
@@ -191,4 +192,110 @@ export const PlateFinal = ({
             }
         </div>
     );
+}
+
+export const PlateClient = ({
+    image,
+    name,
+    price,
+    garnet,
+    desc,
+    showIcon,
+    showDesc,
+    showPrice,
+    kiloPrice,
+    imageMimeType,
+    showGarnet,
+    imagePosition,
+    onClick,
+    object,
+    showOrder,
+    order,
+}: {
+    image: Buffer | undefined,
+    name: string,
+    price: number,
+    garnet: Garnet,
+    desc?: string,
+    showIcon: boolean,
+    showDesc: boolean,
+    kiloPrice: boolean,
+    showPrice: boolean,
+    imageMimeType?: string,
+    showGarnet: boolean, 
+    imagePosition: PlateImagePositionEnum,
+    onClick?: React.Dispatch<React.SetStateAction<PlateComplex | null>>,
+    object?: PlateComplex,
+    showOrder?: boolean,
+    order?: number,
+}) => {
+    const handlePrice = (price: number) => {
+        if (price % 1 == 0) return `${price}.00`;
+        return `${price}0`;
+    }
+
+    if (image && showIcon && imageMimeType) {
+        return (
+            <div
+                className={
+                    imagePosition === PlateImagePositionEnum.left ||
+                    imagePosition === PlateImagePositionEnum.right ? 
+                    style.plateClientImage : style.plateWithImage
+                }
+                style={{ 
+                    direction: imagePosition === PlateImagePositionEnum.left ?
+                        'ltr' : imagePosition === PlateImagePositionEnum.right ?
+                            'rtl' : 'ltr',
+                    cursor: (onClick && object) ? 'pointer' : 'default',
+                }}
+                onClick={() => { (onClick && object) ? onClick(object) : null }}
+            >
+                {(imagePosition === PlateImagePositionEnum.left || imagePosition === PlateImagePositionEnum.right) && 
+                    <div className={style.plateClientImage_imgbox}>
+                        <Image
+                            src={`data:${imageMimeType};base64,${Buffer.from(image).toString('base64')}`}
+                            alt={`${name} image`}
+                            objectFit='cover'
+                            fill
+                        />
+                    </div>
+                }
+                {imagePosition === PlateImagePositionEnum.bg &&
+                    <div
+                    className={style.imageBackface}
+                    style={{ 
+                        backgroundImage: `url(data:${imageMimeType};base64,${Buffer.from(image).toString('base64')})`,
+                        backgroundSize: 'cover',
+                        WebkitBackgroundSize: 'cover',
+
+                    }}
+                    role='presentation'
+                    ></div>
+                }
+                <div
+                    className={style.infoDiv}
+                    style={{ cursor: (onClick && object) ? 'pointer' : 'default' }}
+                    onClick={() => { (onClick && object) ? onClick(object) : null }}
+                >
+                    <p className={style.infoDivName}>{(showOrder && order) && `(${order})`} {name}</p>
+                    {showGarnet && <span className={style.infoDivGarnet}>Συνοδευεται με: {garnet.name === 'Καμία' ? '-' : garnet.name}</span>}
+                    {showDesc && <span className={style.infoDivDesc}>{desc}</span>}
+                    {showPrice && <span className={style.platePrice}>{handlePrice(price)}&euro;{kiloPrice ? '/κιλο' : ''}</span>}
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className={style.plateClient}>
+            <p>{(showOrder && order) && `(${order})`} {name}</p>
+            {showGarnet && <span>Συνοδευεται με: {garnet.name}</span>}
+            {showDesc && <span>{desc}</span>}
+            {showPrice && 
+                <span className={style.platePrice}>
+                    {handlePrice(price)}&euro; {kiloPrice && '/κιλό'}
+                </span>
+            }
+        </div>
+    )
 }

@@ -264,3 +264,41 @@ export function SearchSVG({box, color}: SVGProps): JSX.Element {
         </svg>
     )
 }
+
+export function BlockBGSVG({box, color}: SVGProps): JSX.Element {
+    return (
+        <svg height={`${box}em`} fill={color} viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+            <rect height={`${box}em`} fill={color}/>
+            <path d="M1 1.5H17" stroke={color}/>
+            <line x1="1" y1="3.5" x2="17" y2="3.5" stroke={color}/>
+            <line x1="1" y1="8.5" x2="17" y2="8.5" stroke={color}/>
+            <line x1="1" y1="5.5" x2="17" y2="5.5" stroke={color}/>
+        </svg>
+    )
+}
+
+export function BlockLeftSVG({box, color}: SVGProps): JSX.Element {
+    return (
+        <svg height={`${box}em`} fill={color} viewBox="0 0 20 10" xmlns="http://www.w3.org/2000/svg">
+            <rect height={`${box}em`} fill={color}/>
+            <rect x="1" y="1" width="8" height="8" fill={color}/>
+            <line x1="10" y1="1.5" x2="19" y2="1.5" stroke={color}/>
+            <line x1="10" y1="3.5" x2="19" y2="3.5" stroke={color}/>
+            <line x1="10" y1="8.5" x2="19" y2="8.5" stroke={color}/>
+            <line x1="10" y1="5.5" x2="19" y2="5.5" stroke={color}/>
+        </svg>
+    )
+}
+
+export function BlockRightSVG({box, color}: SVGProps): JSX.Element {
+    return (
+        <svg height={`${box}em`} fill={color} viewBox="0 0 20 10" xmlns="http://www.w3.org/2000/svg">
+            <rect height={`${box}em`} fill={color}/>
+            <rect x="11" y="1" width="8" height="8" fill={color}/>
+            <path d="M1 1.5H10" stroke={color}/>
+            <line x1="1" y1="3.5" x2="10" y2="3.5" stroke={color}/>
+            <line x1="1" y1="8.5" x2="10" y2="8.5" stroke={color}/>
+            <line x1="1" y1="5.5" x2="10" y2="5.5" stroke={color}/>
+        </svg>
+    )
+}

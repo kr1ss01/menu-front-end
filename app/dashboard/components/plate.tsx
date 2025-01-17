@@ -7,7 +7,7 @@ import { skipToken, useQuery } from '@tanstack/react-query';
 import LoadingSpinner from '@/helpers/loading';
 import { getCategories } from '@/axios/categories';
 import Category from '@/types/categories';
-import { BugSVG, CategorySVG, ExpandSVG, EyeCloseSVG, EyeOpenSVG, GarnetSVG, PlateSVG, ResetSVG, SettingsSVG, UpSVG } from '@/svg';
+import { BlockBGSVG, BlockLeftSVG, BlockRightSVG, BugSVG, CategorySVG, ExpandSVG, EyeCloseSVG, EyeOpenSVG, GarnetSVG, PlateSVG, ResetSVG, SettingsSVG, UpSVG } from '@/svg';
 import ImageInput from '@/helpers/inputs/image.input';
 import TextInput from '@/helpers/inputs/text.input';
 import NumberInput from '@/helpers/inputs/number.input';
@@ -17,9 +17,9 @@ import ToggleSwitch from '@/helpers/inputs/toggle.input';
 import SubmitButton from '@/helpers/components/submit.button';
 import Garnet from '@/types/garnets';
 import { getGarnets } from '@/axios/garnets';
-import { PlateComplex, PlateFixOrder, PlateStats } from '@/types/plate';
+import { PlateComplex, PlateFixOrder, PlateImagePositionEnum, PlateStats } from '@/types/plate';
 import { getPlatesByCategoryStrickt } from '@/axios/complex';
-import { PlateFinal } from '@/helpers/plate';
+import { PlateClient, PlateFinal } from '@/helpers/plate';
 import { fixPlateOrder, getPlateStats, newPlate, updatePlateWithImage } from '@/axios/plates';
 import ErrorDiv, { SetStateTypeObject, SuccessDiv } from '@/helpers/components/error.div';
 import SearchInput from '@/helpers/inputs/search.input';
@@ -116,6 +116,9 @@ const Plate = ({ token }: { token: string | undefined }) => {
 
     // ? Search Filter
     const [search, setSearch] = React.useState<string>('');
+
+    // ? Plate Position
+    const [imagePosition, setImagePosition] = React.useState<PlateImagePositionEnum>(PlateImagePositionEnum.left);
 
     // ? Drag N Drop Refs
     let todoItemDragOver = React.useRef<number>(0);
@@ -513,6 +516,17 @@ const Plate = ({ token }: { token: string | undefined }) => {
                                     setValue={setSearch}
                                 />
                             </div>
+                            <div className={style.platesViewInner_imagePosition}>
+                                <button type='button' role='button' title='Η εικόνα θα εμφανίζεται αριστερά' onClick={() => setImagePosition(PlateImagePositionEnum.left)}>
+                                    <BlockLeftSVG box={2} color={imagePosition === PlateImagePositionEnum.left ? Colors.green : Colors.grey} />
+                                </button>
+                                <button type='button' role='button' title='Η εικόνα θα εμφανίζεται στο παρασκείνηο' onClick={() => setImagePosition(PlateImagePositionEnum.bg)}>
+                                    <BlockBGSVG box={2} color={imagePosition === PlateImagePositionEnum.bg ? Colors.green : Colors.grey} />
+                                </button>
+                                <button type='button' role='button' title='Η εικόνα θα εμφανίζεται δεξιά' onClick={() => setImagePosition(PlateImagePositionEnum.right)}>
+                                    <BlockRightSVG box={2} color={imagePosition === PlateImagePositionEnum.right ? Colors.green : Colors.grey} />
+                                </button>
+                            </div>
                             {((catContent && plate) && plate.map((pl: PlateComplex, key: number) => {
                                 if (hasImageOnly && !pl.image) return;
                                 if (visibleOnly && !pl.visible) return;
@@ -539,7 +553,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
                                         onClick={() => {setUpdateObject(pl); handleOrderMobile(pl); setSettings(false);}}
                                         style={{ opacity: orderSet?._id === pl._id ? .5 : 1 }}
                                     >
-                                        <PlateFinal
+                                        {/* <PlateFinal
                                             image={pl.image}
                                             name={pl.name}
                                             price={pl.price}
@@ -561,6 +575,24 @@ const Plate = ({ token }: { token: string | undefined }) => {
                                             object={pl}
                                             onClick={setUpdateObject}
                                             showOrder={order}
+                                        /> */}
+                                        <PlateClient
+                                            image={pl.image}
+                                            name={pl.name}
+                                            price={pl.price}
+                                            garnet={pl.garnet}
+                                            desc={pl.desc}
+                                            showIcon={pl.showIcon}
+                                            showDesc={pl.showDesc}
+                                            showPrice={pl.showPrice}
+                                            kiloPrice={pl.kiloPrice}
+                                            imageMimeType={pl.imageMimeType}
+                                            showGarnet={pl.showGarnet}
+                                            imagePosition={imagePosition}
+                                            object={pl}
+                                            onClick={setUpdateObject}
+                                            showOrder={order}
+                                            order={pl.order}
                                         />
                                     </li>
                                 );
