@@ -3,6 +3,22 @@
 
 .main {
   @include mixins.page();
+  .backgroundImageTop {
+    width: 100%;
+    height: 40vh;
+    background-color: #000;
+    position: relative;
+    h1 {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      width: 100%;
+      text-align: center;
+      color: variables.$white;
+      font-size: 3.5rem;
+    }
+  }
   .specialPopUp {
     @include mixins.setTransBg();
     @include mixins.d-flex(center, center, row);
@@ -11,6 +27,7 @@
     right: 0;
     left: 0;
     bottom: 0;
+    z-index: 700;
     .specialPopUpInner {
       // padding: 1rem;
       border-radius: 5px;
@@ -45,7 +62,7 @@
         li {
           @include mixins.d-flex(center, space-between, row);
           width: 100%;
-          border-bottom: 1px dotted variables.$black;
+          border-bottom: 2px dotted variables.$black;
           p {
             font-size: 1rem;
             font-weight: 500;
@@ -118,6 +135,7 @@
       @include mixins.d-flex(center, flex-start, row);
       gap: 0 0.5rem;
       width: 100%;
+      max-width: variables.$max_width_category_item;
       background-color: transparent;
       a {
         @include mixins.d-flex(center, flex-start, row);

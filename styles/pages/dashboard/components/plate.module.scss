@@ -128,6 +128,12 @@
           button[type='button'] {
             @include mixins.naturalButton();
             @include mixins.d-flex(center, center, row);
+            border-radius: 5px;
+            background-color: variables.$white;
+            padding: .3rem;
+            svg {
+              transition: all 200ms linear;
+            }
           }
         }
         .platesViewMain {

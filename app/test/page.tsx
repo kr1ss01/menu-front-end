@@ -15,6 +15,7 @@ import { PlateClient, PlateFinal } from '@/helpers/plate';
 import Image from 'next/image';
 
 import SPECIAL from '@/public/menu.png';
+import BACKGROUND from '@/public/mp_bgbackground.jpg';
 
 type PlateArrayType = {
     catID: string,
@@ -107,6 +108,10 @@ export default function Page() {
 
     return (
         <main className={style.main}>
+            <div className={style.backgroundImageTop}>
+                <Image src={BACKGROUND} alt='Mavro Piperi Inside' objectFit='cover' fill priority/>
+                <h1>ΜΑΥΡΟ ΠΙΠΕΡΙ</h1>
+            </div>
             {(specialPlates && showSpecial && specialPlates.length >= 1) &&
                 <div className={style.specialPopUp}>
                     <div className={style.specialPopUpInner}>
@@ -194,7 +199,7 @@ export default function Page() {
                                                     kiloPrice={pl.kiloPrice}
                                                     imageMimeType={pl.imageMimeType}
                                                     showGarnet={pl.showGarnet}
-                                                    imagePosition={PlateImagePositionEnum.left}
+                                                    imagePosition={PlateImagePositionEnum.right}
                                                 />
                                                 // <PlateFinal
                                                 //     key={key}
