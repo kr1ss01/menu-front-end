@@ -159,8 +159,8 @@ export default function Page() {
                     {categories.map((cat: Category, key: number) => {
                         if (!cat.visible) return;
                         return (
-                            <>
-                                <li key={key} className={style.categoryItem} onClick={() => getPlates(cat)}>
+                            <React.Fragment key={cat._id}>
+                                <li className={style.categoryItem} onClick={() => getPlates(cat)}>
                                     <Link href={`/test/#${key === 0 ? '' : key - 1}`} passHref>
                                         <div role='presentation' className={style.cross}>
                                             <span role='presentation'></span>
@@ -170,24 +170,24 @@ export default function Page() {
                                     </Link>
                                 </li>
                                 {(loadingPlates && active?._id === cat._id && !errorPlates) &&
-                                    <div className={style.loading} key={cat._id + 1000}>
+                                    <div className={style.loading}>
                                         <LoadingSpinner />
                                         <p>Φόρτωση Πιάτων...</p>
                                     </div>
                                 }
                                 {(errorPlates && active?._id === cat._id) &&
-                                    <div className={style.loading} key={cat._id + 1000}>
+                                    <div className={style.loading}>
                                         <LoadingSpinner />
                                         <p>Σφάλμα!</p>
                                     </div>
                                 }
                                 {(active?._id === cat._id && !errorPlates && !loadingPlates && currentPlates) &&
-                                    <section className={style.platesView}>
-                                        {currentPlates.map((pl: PlateComplex, key: number) => {
+                                    <section className={style.platesView} key={key}>
+                                        {currentPlates.map((pl: PlateComplex, key2: number) => {
                                             if (!pl.visible || !pl.availability || pl.onlyOnSpecial) return;
                                             return (
                                                 <PlateClient 
-                                                    key={key}
+                                                    key={pl._id}
                                                     image={pl.image}
                                                     name={pl.name}
                                                     price={pl.price}
@@ -229,7 +229,7 @@ export default function Page() {
                                         })}
                                     </section>
                                 }
-                            </>
+                            </React.Fragment>
                         );
                     })}
                 </ul>

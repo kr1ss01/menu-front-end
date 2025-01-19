@@ -32,6 +32,41 @@ export default function Navbar() {
     
     useOutsideHook(sideNavRef, setOpenSide);
 
+    React.useEffect(() => {
+        let altPress = false;
+        let keyPress = false;
+
+        const handleKeyBind = (e: KeyboardEvent) => {
+            if (e.code === "AltLeft") {
+                altPress = true;
+            }
+
+            if (e.code == "KeyB") {
+                keyPress = true;
+            }
+        }
+
+        const handleKeyUp = (e: KeyboardEvent) => {
+            if (keyPress && altPress) {
+                setOpenSide(curr => !curr);
+            }
+
+            if (e.code === "AltLeft") {
+                altPress = false;
+            }
+
+            keyPress = false;
+        }
+
+        document.addEventListener('keydown', handleKeyBind);
+        document.addEventListener('keyup', handleKeyUp);
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyBind)
+            document.removeEventListener('keyup', handleKeyUp)
+        };
+    }, []);
+
     function useTouchMove() {
         const [touchX, setTouchX] = React.useState<number>(0);
 

@@ -100,20 +100,14 @@ export default function Home() {
                 </Link>
                 {(active?._id === cat._id && activePlates) &&
                   <ul className={styles.plateContainer}>
-                    {activePlates.map((pl: PlateComplex, key: number) => {
+                    {activePlates.map((pl: PlateComplex, key2: number) => {
                       if (!pl.visible || !pl.availability || pl.onlyOnSpecial) return;
                       if (pl.showIcon && pl.image && pl.imageMimeType) {
                         // ! RETURN PLATE WITH IMAGE
                         return (
                           <li
-                            key={key}
+                            key={key2}
                             className={styles.plateWithImage}
-                            // style={{ 
-                            //   backgroundImage: `url(data:${pl.imageMimeType};base64,${Buffer.from(pl.image).toString('base64')})`,
-                            //   backgroundSize: 'cover',
-                            //   WebkitBackgroundSize: 'cover',
-
-                            // }}
                             >
                               <div
                                 className={styles.imageBackface}

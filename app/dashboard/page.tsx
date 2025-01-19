@@ -31,6 +31,59 @@ export default function Page() {
         }
     }, [loading]);
 
+    React.useEffect(() => {
+        let digitPress: boolean = false;
+        let altPress: boolean = false;
+        let caseDigit: 'Digit1' | 'Digit2' | 'Digit3' | 'Digit4' | null = null;
+
+        const handleKeyBind = (e: KeyboardEvent) => {
+            if (e.code == "AltLeft") {
+                altPress = true;
+            }
+
+            if ((e.code == "Digit1" || e.code == "Digit2" ||
+                e.code == "Digit3" || e.code == "Digit4") && altPress) {
+                digitPress = true;
+                caseDigit = e.code;
+            }
+        }
+
+        const handleKeyUp = (e: KeyboardEvent) => {
+            console.log(e);
+            if (altPress && digitPress) {
+                switch (caseDigit) {
+                    case 'Digit1':
+                        setActive(Dashboard.user);
+                        break;
+                    case 'Digit2':
+                        setActive(Dashboard.cat);
+                        break;
+                    case 'Digit3':
+                        setActive(Dashboard.grnt);
+                        break;
+                    case 'Digit4':
+                        setActive(Dashboard.plate);
+                        break;
+                }
+            }
+
+            if (e.code === "AltLeft") {
+                altPress = false;
+            }
+
+            digitPress = false;
+            caseDigit = null;
+        }
+
+        document.addEventListener('keydown', handleKeyBind);
+        document.addEventListener('keyup', handleKeyUp);
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyBind)
+            document.removeEventListener('keyup', handleKeyUp)
+        }
+    }, []);
+
 
     if (loading) {
         return (
