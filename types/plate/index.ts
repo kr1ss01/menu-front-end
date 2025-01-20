@@ -118,3 +118,10 @@ export enum PlateImagePositionEnum {
     right = "right",
     bg = "background",
 }
+
+export enum AvailabilityOptionsEnum {
+    opacity = 'opacity',
+    hide = 'hide',
+    grey = 'greyedOut',
+    nothing = 'nothing',
+}

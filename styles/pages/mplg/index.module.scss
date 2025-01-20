@@ -7,11 +7,12 @@
   .loginCont {
     margin-top: -10%;
     width: 350px;
-    height: 570px;
+    height: 540px;
     // background-color: variables.$grey;
     border: 1px solid variables.$grey;
     border-radius: 5px;
     padding: 1rem;
+    position: relative;
     // background-color: variables.$white;
     h2 {
       text-align: center;

@@ -9,6 +9,7 @@ interface DialogDivType {
     text: string;
     intID: number;
     setPopUp: React.Dispatch<React.SetStateAction<SetStateTypeObject | undefined>>;
+    span?: boolean;
 }
 
 export interface SetStateTypeObject {
@@ -17,18 +18,38 @@ export interface SetStateTypeObject {
     intID: number;
 }
 
-const ErrorDiv = ({ text, intID, setPopUp }: DialogDivType) => {
+const ErrorDiv = ({ text, intID, setPopUp, span = false }: DialogDivType) => {
     return (
-        <div className={style.errorHandlingDiv} onClick={() => {window.clearInterval(intID); setPopUp(undefined);}} style={{ cursor: 'pointer' }}>
+        <div
+            className={style.errorHandlingDiv}
+            onClick={() => {window.clearInterval(intID); setPopUp(undefined);}}
+            style={{ 
+                cursor: 'pointer',
+                left: span ? '1rem' : '0',
+                right: span ? '1rem' : '',
+                width: span ? 'calc(100% - 2rem)' : '55%',
+                margin: span ? '0' : '0 1rem'
+            }}
+        >
             <p>{text}</p>
             <WarningSVG box={2} color={Colors.error} />
         </div>
     )
 }
 
-export const SuccessDiv = ({ text, intID, setPopUp }: DialogDivType) => {
+export const SuccessDiv = ({ text, intID, setPopUp, span = false }: DialogDivType) => {
     return (
-        <div className={style.successHandlingDiv} onClick={() => {window.clearInterval(intID); setPopUp(undefined);}} style={{ cursor: 'pointer' }}>
+        <div
+            className={style.successHandlingDiv}
+            onClick={() => {window.clearInterval(intID); setPopUp(undefined);}}
+            style={{ 
+                cursor: 'pointer',
+                left: span ? '1rem' : '0',
+                right: span ? '1rem' : '',
+                width: span ? 'calc(100% - 2rem)' : '55%',
+                margin: span ? '0' : '0 1rem'
+            }}
+        >
             <p style={{ color: Colors.green }}>{text}</p>
             <TickCircleFillIcon box={2} color={Colors.green} />
         </div>

@@ -3,7 +3,7 @@
 import * as React from 'react';
 import style from '@/styles/helpers/plate/plate.module.scss';
 import Image from 'next/image';
-import { PlateComplex, PlateImagePositionEnum } from '@/types/plate';
+import { AvailabilityOptionsEnum, PlateComplex, PlateImagePositionEnum } from '@/types/plate';
 import Garnet from '@/types/garnets';
 
 interface PlateViewDashboardProps extends PlateComplex {
@@ -204,6 +204,7 @@ export const PlateClient = ({
     showDesc,
     showPrice,
     kiloPrice,
+    availability,
     imageMimeType,
     showGarnet,
     imagePosition,
@@ -211,6 +212,7 @@ export const PlateClient = ({
     object,
     showOrder,
     order,
+    availabilityActions,
 }: {
     image: Buffer | undefined,
     name: string,
@@ -221,6 +223,7 @@ export const PlateClient = ({
     showDesc: boolean,
     kiloPrice: boolean,
     showPrice: boolean,
+    availability: boolean,
     imageMimeType?: string,
     showGarnet: boolean, 
     imagePosition: PlateImagePositionEnum,
@@ -228,6 +231,7 @@ export const PlateClient = ({
     object?: PlateComplex,
     showOrder?: boolean,
     order?: number,
+    availabilityActions: AvailabilityOptionsEnum,
 }) => {
     const handlePrice = (price: number) => {
         if (price % 1 == 0) return `${price}.00`;
@@ -241,11 +245,11 @@ export const PlateClient = ({
                     className={
                         imagePosition === PlateImagePositionEnum.left ? style.plateClientImage : style.plateWithImage
                     }
-                    style={{ 
-                        // direction: imagePosition === PlateImagePositionEnum.left ?
-                        //     'ltr' : imagePosition === PlateImagePositionEnum.right ?
-                        //         'rtl' : 'ltr',
+                    style={{
                         cursor: (onClick && object) ? 'pointer' : 'default',
+                        opacity: (!availability && AvailabilityOptionsEnum.opacity === availabilityActions) ? .3 : 1,
+                        filter: (!availability && AvailabilityOptionsEnum.grey === availabilityActions) ? 'grayscale(1) opacity(.8)' : '',
+                        display: (!availability && AvailabilityOptionsEnum.hide === availabilityActions) ? 'none' : 'grid',
                     }}
                     onClick={() => { (onClick && object) ? onClick(object) : null }}
                 >
@@ -291,7 +295,12 @@ export const PlateClient = ({
             return (
                 <div
                     className={style.plateClientImage_right}
-                    style={{ cursor: (onClick && object) ? 'pointer' : 'default' }}
+                    style={{
+                        cursor: (onClick && object) ? 'pointer' : 'default',
+                        opacity: (!availability && AvailabilityOptionsEnum.opacity === availabilityActions) ? .3 : 1,
+                        filter: (!availability && AvailabilityOptionsEnum.grey === availabilityActions) ? 'grayscale(1) opacity(.8)' : '',
+                        display: (!availability && AvailabilityOptionsEnum.hide === availabilityActions) ? 'none' : 'grid',
+                    }}
                     onClick={() => { (onClick && object) ? onClick(object) : null }}
                 >
                     <div
@@ -323,7 +332,16 @@ export const PlateClient = ({
     }
 
     return (
-        <div className={style.plateClient}>
+        <div
+            className={style.plateClient}
+            style={{
+                cursor: (onClick && object) ? 'pointer' : 'default',
+                opacity: (!availability && AvailabilityOptionsEnum.opacity === availabilityActions) ? .3 : 1,
+                filter: (!availability && AvailabilityOptionsEnum.grey === availabilityActions) ? 'grayscale(1) opacity(.3)' : '',
+                display: (!availability && AvailabilityOptionsEnum.hide === availabilityActions) ? 'none' : 'grid',
+            }}
+            onClick={() => { (onClick && object) ? onClick(object) : null }}
+        >
             <p>{(showOrder && order) && `(${order})`} {name}</p>
             {showGarnet && <span>Συνοδευεται με: {garnet.name}</span>}
             {showDesc && <span>{desc}</span>}

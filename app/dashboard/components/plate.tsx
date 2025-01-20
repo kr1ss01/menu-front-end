@@ -17,7 +17,7 @@ import ToggleSwitch from '@/helpers/inputs/toggle.input';
 import SubmitButton from '@/helpers/components/submit.button';
 import Garnet from '@/types/garnets';
 import { getGarnets } from '@/axios/garnets';
-import { PlateComplex, PlateFixOrder, PlateImagePositionEnum, PlateStats } from '@/types/plate';
+import { AvailabilityOptionsEnum, PlateComplex, PlateFixOrder, PlateImagePositionEnum, PlateStats } from '@/types/plate';
 import { getPlatesByCategoryStrickt } from '@/axios/complex';
 import { PlateClient, PlateFinal } from '@/helpers/plate';
 import { fixPlateOrder, getPlateStats, newPlate, updatePlateWithImage } from '@/axios/plates';
@@ -582,6 +582,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
                                             price={pl.price}
                                             garnet={pl.garnet}
                                             desc={pl.desc}
+                                            availability={pl.availability}
                                             showIcon={pl.showIcon}
                                             showDesc={pl.showDesc}
                                             showPrice={pl.showPrice}
@@ -593,6 +594,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
                                             onClick={setUpdateObject}
                                             showOrder={order}
                                             order={pl.order}
+                                            availabilityActions={AvailabilityOptionsEnum.nothing}
                                         />
                                     </li>
                                 );

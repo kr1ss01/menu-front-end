@@ -1,5 +1,6 @@
 @use "../../mixins";
 @use "../../variables";
+@use "../../pages/dashboard/dashboard";
 
 .errorHandlingDiv,
 .successHandlingDiv {
@@ -44,7 +45,7 @@
   background-color: variables.$error;
 }
 
-@media screen and (max-width: 620px) {
+@media screen and (max-width: dashboard.$use_breakpoint_desktop) {
   .errorHandlingDiv,
   .successHandlingDiv {
     width: 95% !important;

@@ -9,7 +9,7 @@ import LoadingSpinner from '@/helpers/loading';
 import Colors from '@/types/colors';
 import { BugSVG, XCircleFillIcon, XCircleNoFillIcon } from '@/svg';
 import Link from 'next/link';
-import { PlateComplex, PlateImagePositionEnum } from '@/types/plate';
+import { AvailabilityOptionsEnum, PlateComplex, PlateImagePositionEnum } from '@/types/plate';
 import { getPlatesByCategoryStrickt, getSpecialPlates } from '@/axios/complex';
 import { PlateClient, PlateFinal } from '@/helpers/plate';
 import Image from 'next/image';
@@ -184,7 +184,7 @@ export default function Page() {
                                 {(active?._id === cat._id && !errorPlates && !loadingPlates && currentPlates) &&
                                     <section className={style.platesView} key={key}>
                                         {currentPlates.map((pl: PlateComplex, key2: number) => {
-                                            if (!pl.visible || !pl.availability || pl.onlyOnSpecial) return;
+                                            if (!pl.visible || pl.onlyOnSpecial) return;
                                             return (
                                                 <PlateClient 
                                                     key={pl._id}
@@ -193,38 +193,16 @@ export default function Page() {
                                                     price={pl.price}
                                                     garnet={pl.garnet}
                                                     desc={pl.desc}
+                                                    availability={pl.availability}
                                                     showIcon={pl.showIcon}
                                                     showDesc={pl.showDesc}
                                                     showPrice={pl.showPrice}
                                                     kiloPrice={pl.kiloPrice}
                                                     imageMimeType={pl.imageMimeType}
                                                     showGarnet={pl.showGarnet}
-                                                    imagePosition={PlateImagePositionEnum.right}
+                                                    imagePosition={PlateImagePositionEnum.left}
+                                                    availabilityActions={AvailabilityOptionsEnum.grey}
                                                 />
-                                                // <PlateFinal
-                                                //     key={key}
-                                                //     image={pl.image}
-                                                //     name={pl.name}
-                                                //     price={pl.price}
-                                                //     category={pl.category}
-                                                //     garnet={pl.garnet}
-                                                //     desc={pl.desc}
-                                                //     availability={pl.availability}
-                                                //     showIcon={pl.showIcon}
-                                                //     showDesc={pl.showDesc}
-                                                //     showPrice={pl.showPrice}
-                                                //     kiloPrice={pl.kiloPrice}
-                                                //     onlyOnSpecial={pl.onlyOnSpecial}
-                                                //     order={pl.order}
-                                                //     showOnSpecial={pl.showOnSpecial}
-                                                //     visible={pl.visible}
-                                                //     imageMimeType={pl.imageMimeType}
-                                                //     showGarnet={pl.showGarnet}
-                                                //     _id={pl._id}
-                                                //     object={pl}
-                                                //     showOrder={false}
-                                                //     onClick={() => {return;}}
-                                                // />
                                             );
                                         })}
                                     </section>
