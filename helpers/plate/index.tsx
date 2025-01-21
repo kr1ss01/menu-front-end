@@ -214,6 +214,7 @@ export const PlateClient = ({
     order,
     availabilityActions,
     hideImage = false,
+    animationDelay = 0,
 }: {
     image: Buffer | undefined,
     name: string,
@@ -234,6 +235,7 @@ export const PlateClient = ({
     order?: number,
     availabilityActions: AvailabilityOptionsEnum,
     hideImage?: boolean,
+    animationDelay?: number,
 }) => {
     const handlePrice = (price: number) => {
         if (price % 1 == 0) return `${price}.00`;
@@ -253,6 +255,7 @@ export const PlateClient = ({
                             opacity: (!availability && AvailabilityOptionsEnum.opacity === availabilityActions) ? .3 : 1,
                             filter: (!availability && AvailabilityOptionsEnum.grey === availabilityActions) ? 'grayscale(1) opacity(.8)' : '',
                             display: (!availability && AvailabilityOptionsEnum.hide === availabilityActions) ? 'none' : 'grid',
+                            animationDelay: `${animationDelay}ms`,
                         }}
                         onClick={() => { (onClick && object) ? onClick(object) : null }}
                     >
@@ -303,6 +306,7 @@ export const PlateClient = ({
                             opacity: (!availability && AvailabilityOptionsEnum.opacity === availabilityActions) ? .3 : 1,
                             filter: (!availability && AvailabilityOptionsEnum.grey === availabilityActions) ? 'grayscale(1) opacity(.8)' : '',
                             display: (!availability && AvailabilityOptionsEnum.hide === availabilityActions) ? 'none' : 'grid',
+                            animationDelay: `${animationDelay}ms`,
                         }}
                         onClick={() => { (onClick && object) ? onClick(object) : null }}
                     >
@@ -343,6 +347,7 @@ export const PlateClient = ({
                 opacity: (!availability && AvailabilityOptionsEnum.opacity === availabilityActions) ? .3 : 1,
                 filter: (!availability && AvailabilityOptionsEnum.grey === availabilityActions) ? 'grayscale(1) opacity(.3)' : '',
                 display: (!availability && AvailabilityOptionsEnum.hide === availabilityActions) ? 'none' : 'grid',
+                animationDelay: `${animationDelay}ms`,
             }}
             onClick={() => { (onClick && object) ? onClick(object) : null }}
         >

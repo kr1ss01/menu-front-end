@@ -125,3 +125,37 @@ export enum AvailabilityOptionsEnum {
     grey = 'greyedOut',
     nothing = 'nothing',
 }
+
+export const PlateImagePostionObject = [
+    {
+        name: PlateImagePositionEnum.left,
+        display: 'Αριστερά',
+    },
+    {
+        name: PlateImagePositionEnum.right,
+        display: 'Δεξιά',
+    },
+    {
+        name: PlateImagePositionEnum.bg,
+        display: 'Παρασκήνιο',
+    },
+];
+
+export const AvailabilityOptionsObject = [
+    {
+        name: AvailabilityOptionsEnum.nothing,
+        display: 'Τίποτα',
+    },
+    {
+        name: AvailabilityOptionsEnum.opacity,
+        display: 'Αδιαφάνεια',
+    },
+    {
+        name: AvailabilityOptionsEnum.grey,
+        display: 'Γκριζο-ποιηση',
+    },
+    {
+        name: AvailabilityOptionsEnum.hide,
+        display: 'Κρυφό',
+    },
+]

@@ -14,22 +14,22 @@ export const getSettings = async (): Promise<Settings> => {
     return (await api.get('')).data;
 }
 
-export const updateImageSettings = async (value: PlateImagePositionEnum): Promise<boolean> => {
-    return (await api.put('/update/image', { value: value })).data;
+export const updateImageSettings = async (value: PlateImagePositionEnum | undefined, token: string | undefined): Promise<boolean> => {
+    return (await api.put('/update/image', { value: value }, { headers: { 'Authorization': `Bearer ${token}` } })).data;
 }
 
-export const updateAvailabiltySettings = async (value: AvailabilityOptionsEnum): Promise<boolean> => {
-    return (await api.put('/update/availability', { value: value })).data;
+export const updateAvailabiltySettings = async (value: AvailabilityOptionsEnum | undefined, token: string | undefined): Promise<boolean> => {
+    return (await api.put('/update/availability', { value: value }, { headers: { 'Authorization': `Bearer ${token}` } })).data;
 }
 
-export const updateHideSettings = async (value: boolean): Promise<boolean> => {
-    return (await api.put('/update/hide', { value: value })).data;
+export const updateHideSettings = async (value: boolean | undefined, token: string | undefined): Promise<boolean> => {
+    return (await api.put('/update/hide', { value: value }, { headers: { 'Authorization': `Bearer ${token}` } })).data;
 }
 
-export const updateSpecialSettings = async (value: boolean): Promise<boolean> => {
-    return (await api.put('/update/special', { value: value })).data;
+export const updateSpecialSettings = async (value: boolean | undefined, token: string | undefined): Promise<boolean> => {
+    return (await api.put('/update/special', { value: value }, { headers: { 'Authorization': `Bearer ${token}` } })).data;
 }
 
-export const updateBackgroundImageSettings = async (value: boolean): Promise<boolean> => {
-    return (await api.put('/update/bgimage', { value: value })).data;
+export const updateBackgroundImageSettings = async (value: boolean | undefined, token: string | undefined): Promise<boolean> => {
+    return (await api.put('/update/bgimage', { value: value }, { headers: { 'Authorization': `Bearer ${token}` } })).data;
 }

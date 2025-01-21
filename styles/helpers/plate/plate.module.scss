@@ -148,7 +148,8 @@
   max-width: variables.$max_plate_width;
   cursor: default;
   position: relative;
-  // overflow: hidden;
+  transform: translateX(-110%);
+  animation: slideIn 250ms linear 1 forwards;
   .imageBackface {
     position: absolute;
     top: 0;
@@ -198,6 +199,8 @@
   padding: 0.5rem;
   width: 100%;
   max-width: variables.$max_plate_width;
+  transform: translateX(-110%);
+  animation: slideIn 250ms linear 1 forwards;
   p {
     @include mixins.d-flex(center, flex-start, row);
     gap: 0 0.5rem;
@@ -244,7 +247,8 @@
   position: relative;
   overflow: hidden;
   cursor: default;
-  // border: 1px solid variables.$black;
+  transform: translateX(-110%);
+  animation: slideIn 250ms linear 1 forwards;
   .plateClientImage_imgbox {
     @include mixins.d-flex(center, center, row);
     width: 100%;
@@ -336,5 +340,16 @@
   }
   .plateClientImage_right {
     grid-template-columns: 60% 40% !important;
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateX(-100%);
+    opacity: .8 !important;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1 !important;
   }
 }

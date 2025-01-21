@@ -172,7 +172,7 @@ export default function Page() {
                         return (
                             <React.Fragment key={cat._id}>
                                 <li className={style.categoryItem} onClick={() => getPlates(cat)}>
-                                    <Link href={`/test/#${key === 0 ? '' : key - 1}`} passHref>
+                                    <Link href={`/test/#${cat._id}`} passHref>
                                         <div role='presentation' className={style.cross}>
                                             <span role='presentation'></span>
                                             <span role='presentation' style={{ transform: active?._id === cat._id ? 'rotate(0)' : '' }} ></span>
@@ -214,6 +214,7 @@ export default function Page() {
                                                     imagePosition={globalSettings ? globalSettings.imagePosition : PlateImagePositionEnum.left}
                                                     availabilityActions={globalSettings ? globalSettings.availabilitySettings : AvailabilityOptionsEnum.grey}
                                                     hideImage={globalSettings?.hideAllImages}
+                                                    animationDelay={key2 * 100}
                                                 />
                                             );
                                         })}

@@ -595,6 +595,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
                                             showOrder={order}
                                             order={pl.order}
                                             availabilityActions={AvailabilityOptionsEnum.nothing}
+                                            animationDelay={key * 100}
                                         />
                                     </li>
                                 );

@@ -6,7 +6,7 @@ import { useQuery, skipToken } from '@tanstack/react-query';
 import { changeUsersEmail, changeUsersImage, changeUsersName, changeUsersPassword, getInfo, getOwn } from '@/axios/auth';
 import { InfoUser, OwnUser } from '@/types/auth';
 import Image from 'next/image';
-import { UserSVG } from '@/svg';
+import { ImageSVG, InfoSVG, UserSVG } from '@/svg';
 import Colors from '@/types/colors';
 import TextInput from '@/helpers/inputs/text.input';
 import SubmitButton from '@/helpers/components/submit.button';
@@ -20,6 +20,11 @@ import MAIL from '@/public/mail.png';
 import PHOTO from '@/public/photo.png';
 import IDCARD from '@/public/id-card.png';
 import PADLOCK from '@/public/padlock.png';
+import ToggleSwitch from '@/helpers/inputs/toggle.input';
+import { Settings } from '@/types/settings';
+import { getSettings, updateAvailabiltySettings, updateBackgroundImageSettings, updateHideSettings, updateImageSettings, updateSpecialSettings } from '@/axios/settings';
+import { AvailabilityOptionsEnum, AvailabilityOptionsObject, PlateImagePositionEnum, PlateImagePostionObject } from '@/types/plate';
+import DropDownInput from '@/helpers/inputs/dropdown.input';
 
 enum DisplayEnum {
     pwd = 'pwd',
@@ -27,6 +32,7 @@ enum DisplayEnum {
     image = 'image',
     name = 'name',
     def = 'default',
+    stg = 'settings',
 };
 
 const User = ({ token }: { token: string | undefined }) => {
@@ -43,6 +49,13 @@ const User = ({ token }: { token: string | undefined }) => {
             return await getInfo(token);
         } : skipToken,
     });
+
+    const { data: globalSettings, refetch: refetchGlobalSettings } = useQuery<Settings>({
+        queryKey: ['get-global-settings-admin'],
+        queryFn: async () => {
+            return await getSettings();
+        }
+    })
 
     // ? Main Page States
     const [display, setDisplay] = React.useState<DisplayEnum>(DisplayEnum.def);
@@ -83,8 +96,22 @@ const User = ({ token }: { token: string | undefined }) => {
     // ? Password Bars
     const [bars, setBars] = React.useState<number>(0);
 
-    // ? Intervals
-    const [intervals, setIntervals] = React.useState<number[]>([]);
+    // ? Settings State
+    const [bgImage, setBgImage] = React.useState<boolean>();
+    const [avSettings, setAvSettings] = React.useState<AvailabilityOptionsEnum>();
+    const [imgPosSettings, setImgPosSettings] = React.useState<PlateImagePositionEnum>();
+    const [specialSettings, setSpecialSettings] = React.useState<boolean>();
+    const [hideImgs, setHideImgs] = React.useState<boolean>();
+
+    React.useEffect(() => {
+        if (globalSettings) {
+            setBgImage(globalSettings.backgroundImageVisibility);
+            setAvSettings(globalSettings.availabilitySettings);
+            setImgPosSettings(globalSettings.imagePosition);
+            setSpecialSettings(globalSettings.showOnSpecialVisibility);
+            setHideImgs(globalSettings.hideAllImages);
+        }
+    }, [globalSettings]);
 
     React.useEffect(() => {
         const a = chechCharachters();
@@ -371,6 +398,76 @@ const User = ({ token }: { token: string | undefined }) => {
         }
     }
 
+    const handleSettingsSubmition = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (!globalSettings) return;
+
+        let resBgImage;
+        let resAvSettings;
+        let resHideImgs;
+        let resImgPosSettings;
+        let resSpecialSettings;
+
+        if (globalSettings.backgroundImageVisibility !== bgImage) {
+            resBgImage = await updateBackgroundImageSettings(bgImage, token);
+
+            if (resBgImage) { 
+                const int = window.setInterval(() => {
+                    setPopUp(undefined);
+                    window.clearInterval(int);
+                }, 5000);
+                setPopUp({ text: 'Επιτυχής Ενημέρωη Αρχικής Εικόνας!', type: 'success', intID: int });
+            }
+            if (!resBgImage) { 
+                const int = window.setInterval(() => {
+                    setPopUp(undefined);
+                    window.clearInterval(int);
+                }, 5000);
+                setPopUp({ text: 'Απροσδιόριστο Σφάλμα Στην Αλλαγή Αρχικής Εικόνας!', type: 'error', intID: int });
+            }
+        }
+
+        if (globalSettings.availabilitySettings !== avSettings) {
+            resAvSettings = await updateAvailabiltySettings(avSettings, token);
+
+            if (resAvSettings) { 
+                const int = window.setInterval(() => {
+                    setPopUp(undefined);
+                    window.clearInterval(int);
+                }, 5000);
+                setPopUp({ text: 'Επιτυχής Ενημέρωη Διαθεσιμότητας!', type: 'success', intID: int });
+            }
+            if (!resAvSettings) { 
+                const int = window.setInterval(() => {
+                    setPopUp(undefined);
+                    window.clearInterval(int);
+                }, 5000);
+                setPopUp({ text: 'Απροσδιόριστο Σφάλμα Στην Διαθεσιμότητα!', type: 'error', intID: int });
+            }
+        }
+
+        if (globalSettings.hideAllImages !== hideImgs) {
+            resHideImgs = await updateHideSettings(hideImgs, token);
+
+            if (resHideImgs) { resHideImgs = true; }
+            if (!resHideImgs) { resHideImgs = false; }
+        }
+
+        if (globalSettings.imagePosition !== imgPosSettings) {
+            resImgPosSettings = await updateImageSettings(imgPosSettings, token);
+
+            if (resImgPosSettings) { resImgPosSettings = true; }
+            if (!resImgPosSettings) { resImgPosSettings = false; }
+        }
+
+        if (globalSettings.showOnSpecialVisibility !== specialSettings) {
+            resSpecialSettings = await updateSpecialSettings(specialSettings, token);
+
+            if (resSpecialSettings) { resSpecialSettings = true; }
+            if (!resSpecialSettings) { resSpecialSettings = false; }
+        }
+    }
+
     return (
         <div className={style.user}>
             <div className={style.userView}>
@@ -538,23 +635,137 @@ const User = ({ token }: { token: string | undefined }) => {
                             </div>
                         </form>
                     }
+                    {(display === DisplayEnum.stg && globalSettings) &&
+                        <form className={style.appSettings} onSubmit={handleSettingsSubmition}>
+                            <h2>Αλλαγή Ρυθμίσεων Εφαρμογής</h2>
+                            <div className={style.chooseDivOuter}>
+                                <div className={style.chooseDiv}>
+                                    <p>Διάταξη Εικόνας: </p>
+                                    <DropDownInput 
+                                        icon={<ImageSVG box={1.2} color={Colors.black} />}
+                                        text='Επιλογή Διάταξης'
+                                        content={PlateImagePostionObject}
+                                        // @ts-ignore
+                                        value={imgPosSettings}
+                                        // @ts-ignore
+                                        setValue={setImgPosSettings}
+                                        takeForComp='name'
+                                        takeForDisplay='display'
+                                    />
+                                </div>
+                                <div className={style.chooseDivInfo}>
+                                    <div>
+                                        <InfoSVG box={1.8} color={Colors.grey} />
+                                    </div>
+                                    <p>Επιλέξτε σε ποιο σημείο θα εμφανίζεται η εικόνα στο μενού στα πιάτα.</p>
+                                </div>
+                            </div>
+                            <div className={style.chooseDivOuter}>
+                                <div className={style.chooseDiv}>
+                                    <p>Επιλογές Διαθεσιμότητας: </p>
+                                    <DropDownInput 
+                                        icon={<ImageSVG box={1.2} color={Colors.black} />}
+                                        text='Επιλογές Διαθεσιμότητας'
+                                        content={AvailabilityOptionsObject}
+                                        // @ts-ignore
+                                        value={avSettings}
+                                        // @ts-ignore
+                                        setValue={setAvSettings}
+                                        takeForComp='name'
+                                        takeForDisplay='display'
+                                    />
+                                </div>
+                                <div className={style.chooseDivInfo}>
+                                    <div>
+                                        <InfoSVG box={1.8} color={Colors.grey} />
+                                    </div>
+                                    <p>Επιλέξτε πως θα εμφανίζονται τα μη διαθέσμια πιάτα στο μενού ή αν δεν θα εμφανίζονται καθόλου.</p>
+                                </div>
+                            </div>
+                            <div className={style.toggleDivOuter}>
+                                <div className={style.toggleDiv}>
+                                    <label htmlFor='bgimage'>Εικόνα Αρχικής Σελίδας: </label>
+                                    <ToggleSwitch
+                                        banner=''
+                                        hasInfo={false}
+                                        label='bgimage'
+                                        // @ts-ignore
+                                        clicked={bgImage}
+                                        // @ts-ignore
+                                        setClicked={setBgImage}
+                                    />
+                                </div>
+                                <div className={style.toggleDivInfo}>
+                                    <div>
+                                        <InfoSVG box={1.8} color={Colors.grey} />
+                                    </div>
+                                    <p>Μπορείτε να κρύψετε ή να εμφανίσεται την κύρια εικόνα της εφαρμογής στην αρχική σελίδα.</p>
+                                </div>
+                            </div>
+                            <div className={style.toggleDivOuter}>
+                                <div className={style.toggleDiv}>
+                                    <label htmlFor='spsettings'>Εμφάνηση Πιάτων Ημέρας: </label>
+                                    <ToggleSwitch
+                                        banner=''
+                                        hasInfo={false}
+                                        label='spsettings'
+                                        // @ts-ignore
+                                        clicked={specialSettings}
+                                        // @ts-ignore
+                                        setClicked={setSpecialSettings}
+                                    />
+                                </div>
+                                <div className={style.toggleDivInfo}>
+                                    <div>
+                                        <InfoSVG box={1.8} color={Colors.grey} />
+                                    </div>
+                                    <p>Αν ένα πιάτο δεν είναι ΜΌΝΟ στα ημέρας αλλά είναι σαν πιάτο ημέρας, καθορίζεται το αν θα εμφανίζεται στα Πιάτα Ημέρας.</p>
+                                </div>
+                            </div>
+                            <div className={style.toggleDivOuter}>
+                                <div className={style.toggleDiv}>
+                                    <label htmlFor='hideimgs'>Προβολή Εικόνων: </label>
+                                    <ToggleSwitch
+                                        banner=''
+                                        hasInfo={false}
+                                        label='hideimgs'
+                                        // @ts-ignore
+                                        clicked={hideImgs}
+                                        // @ts-ignore
+                                        setClicked={setHideImgs}
+                                    />
+                                </div>
+                                <div className={style.toggleDivInfo}>
+                                    <div>
+                                        <InfoSVG box={1.8} color={Colors.grey} />
+                                    </div>
+                                    <p>Μπορείτε με ένα κλίκ να απενεργοποιήσεται όλες τις εικόνες. Δεν επιρεάζει τις ίδιες τις εικόνες, απλά δεν εμφανίζονται στο μενού.</p>
+                                </div>
+                            </div>
+                            <div style={{ padding: '0 .5rem', marginTop: '1rem', width: '100%' }}>
+                                <SubmitButton text={'Ενημέρωση'} type={true} />
+                            </div>
+                        </form>
+                    }
                 </div>
                 <div className={style.userSettings}>
-                    <div className={style.userInfoImage} onClick={() => console.log(intervals)}>
-                        {(userInfo && userInfo.image && userInfo.imageMimeType) ?
-                            <Image src={`data:${userInfo.imageMimeType};base64,${Buffer.from(userInfo.image).toString('base64')}`} alt='User Image' width={50} height={50} />
-                            :
-                            <UserSVG box={2.5} color={Colors.black} />
-                        }
-                        <p>{userInfo && userInfo.username}</p>
+                    <div className={style.userInfoImage}>
+                        <div className={style.userInfoImage_inner}>
+                            {(userInfo && userInfo.image && userInfo.imageMimeType) ?
+                                <Image src={`data:${userInfo.imageMimeType};base64,${Buffer.from(userInfo.image).toString('base64')}`} alt='User Image' width={50} height={50} />
+                                :
+                                <UserSVG box={2.5} color={Colors.black} />
+                            }
+                            <p>{userInfo && userInfo.username}</p>
+                        </div>
+                        <div className={style.userSettingsInfo}>
+                            <p>Όνομα: <span>{user && user.name}</span></p>
+                            <p>E-mail: <span>{user && user.email}</span></p>
+                            <p>Αλλαγή Κωδικού: <span>{user && user.pwdChange}</span></p>
+                            <p>Διαχειριστής: <span>{user && user.auth ? 'Ναι' : 'Όχι'}</span></p>
+                        </div>
                     </div>
-                    <h2>Ρυθμίσεις Χρήστη</h2>
-                    <div className={style.userSettingsInfo}>
-                        <p>Όνομα: <span>{user && user.name}</span></p>
-                        <p>E-mail: <span>{user && user.email}</span></p>
-                        <p>Αλλαγή Κωδικού: <span>{user && user.pwdChange}</span></p>
-                        <p>Διαχειριστής: <span>{user && user.auth ? 'Ναι' : 'Όχι'}</span></p>
-                    </div>
+                    {/* <h2>Ρυθμίσεις Χρήστη</h2> */}
                     <div className={style.changeUserActions}>
                         <button
                             type='button'
@@ -563,11 +774,11 @@ const User = ({ token }: { token: string | undefined }) => {
                             onClick={() => handleDisplay(DisplayEnum.name)}
                             style={{ opacity: display === DisplayEnum.name ? .5 : 1 }}
                         >
-                            {display === DisplayEnum.name ?
-                                <Image src={IDCARD} alt='Flaticon Image | ID Card Icon' width={64} height={64} />
+                            {/* {display === DisplayEnum.name ?
+                                <Image src={IDCARD} alt='Flaticon Image | ID Card Icon' width={32} height={32} />
                             :
-                                <p>Αλλαγή Ονόματος</p>
-                            }
+                        } */}
+                            <p>Αλλαγή Ονόματος</p>
                         </button>
                         <button 
                             type='button'
@@ -576,11 +787,11 @@ const User = ({ token }: { token: string | undefined }) => {
                             onClick={() => handleDisplay(DisplayEnum.image)}
                             style={{ opacity: display === DisplayEnum.image ? .5 : 1 }}
                         >
-                            {display === DisplayEnum.image ?
+                            {/* {display === DisplayEnum.image ?
                                 <Image src={PHOTO} alt='Flaticon Image | Photo Image Icon' width={64} height={64} />
                             :
-                                <p>Αλλαγή Εικόνας</p>
-                            }
+                            } */}
+                            <p>Αλλαγή Εικόνας</p>
                         </button>
                         <button
                             type='button'
@@ -589,11 +800,11 @@ const User = ({ token }: { token: string | undefined }) => {
                             onClick={() => handleDisplay(DisplayEnum.pwd)}
                             style={{ opacity: display === DisplayEnum.pwd ? .5 : 1 }}
                         > 
-                            {display === DisplayEnum.pwd ?
+                            {/* {display === DisplayEnum.pwd ?
                                 <Image src={PADLOCK} alt='Flaticon Image | Padlock Icon' width={64} height={64} />
                             :
-                                <p>Αλλαγή Κωδικού Πρόσβασης</p>
-                            }
+                            } */}
+                            <p>Αλλαγή Κωδικού Πρόσβασης</p>
                         </button>
                         <button
                             type='button'
@@ -602,11 +813,20 @@ const User = ({ token }: { token: string | undefined }) => {
                             onClick={() => handleDisplay(DisplayEnum.mail)}
                             style={{ opacity: display === DisplayEnum.mail ? .5 : 1 }}
                         >
-                            {display === DisplayEnum.mail ?
+                            {/* {display === DisplayEnum.mail ?
                                 <Image src={MAIL} alt='Flaticon Image | Envelope Icon' width={64} height={64} />
                             :
-                                <p>Αλλαγή E-Mail</p>
-                            }
+                            } */}
+                            <p>Αλλαγή E-Mail</p>
+                        </button>
+                        <button
+                            type='button'
+                            role='button'
+                            className={style.changeButtons}
+                            onClick={() => handleDisplay(DisplayEnum.stg)}
+                            style={{ opacity: display === DisplayEnum.stg ? .5 : 1 }}
+                        >
+                            <p>Ρυθμίσεις Εφαρμογής</p>
                         </button>
                     </div>
                 </div>
