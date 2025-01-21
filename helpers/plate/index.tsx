@@ -362,3 +362,47 @@ export const PlateClient = ({
         </div>
     )
 }
+
+export const PlateSpecial = ({
+    image,
+    name,
+    price,
+    garnet,
+    desc,
+    showIcon,
+    showDesc,
+    kiloPrice,
+    showPrice,
+    availability,
+    imageMimeType,
+    showGarnet,
+    imagePosition,
+    availabilityActions,
+    hideImage,
+    animationDelay,
+    globalSpecial,
+}:{
+    image: Buffer | undefined,
+    name: string,
+    price: number,
+    garnet: Garnet,
+    desc?: string,
+    showIcon: boolean,
+    showDesc: boolean,
+    kiloPrice: boolean,
+    showPrice: boolean,
+    availability: boolean,
+    imageMimeType?: string,
+    showGarnet: boolean, 
+    imagePosition: PlateImagePositionEnum,
+    availabilityActions: AvailabilityOptionsEnum,
+    hideImage?: boolean,
+    animationDelay?: number,
+    globalSpecial: boolean,
+}) => {
+    return (
+        <li className={style.specialPlateNoImage}>
+
+        </li>
+    );
+}
