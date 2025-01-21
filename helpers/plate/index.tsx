@@ -213,6 +213,7 @@ export const PlateClient = ({
     showOrder,
     order,
     availabilityActions,
+    hideImage = false,
 }: {
     image: Buffer | undefined,
     name: string,
@@ -232,28 +233,94 @@ export const PlateClient = ({
     showOrder?: boolean,
     order?: number,
     availabilityActions: AvailabilityOptionsEnum,
+    hideImage?: boolean,
 }) => {
     const handlePrice = (price: number) => {
         if (price % 1 == 0) return `${price}.00`;
         return `${price}0`;
     }
 
-    if (image && showIcon && imageMimeType) {
-        if (imagePosition === PlateImagePositionEnum.left || imagePosition === PlateImagePositionEnum.bg) {
-            return (
-                <div
-                    className={
-                        imagePosition === PlateImagePositionEnum.left ? style.plateClientImage : style.plateWithImage
-                    }
-                    style={{
-                        cursor: (onClick && object) ? 'pointer' : 'default',
-                        opacity: (!availability && AvailabilityOptionsEnum.opacity === availabilityActions) ? .3 : 1,
-                        filter: (!availability && AvailabilityOptionsEnum.grey === availabilityActions) ? 'grayscale(1) opacity(.8)' : '',
-                        display: (!availability && AvailabilityOptionsEnum.hide === availabilityActions) ? 'none' : 'grid',
-                    }}
-                    onClick={() => { (onClick && object) ? onClick(object) : null }}
-                >
-                    {imagePosition === PlateImagePositionEnum.left && 
+    if (!hideImage) {
+        if (image && showIcon && imageMimeType) {
+            if (imagePosition === PlateImagePositionEnum.left || imagePosition === PlateImagePositionEnum.bg) {
+                return (
+                    <div
+                        className={
+                            imagePosition === PlateImagePositionEnum.left ? style.plateClientImage : style.plateWithImage
+                        }
+                        style={{
+                            cursor: (onClick && object) ? 'pointer' : 'default',
+                            opacity: (!availability && AvailabilityOptionsEnum.opacity === availabilityActions) ? .3 : 1,
+                            filter: (!availability && AvailabilityOptionsEnum.grey === availabilityActions) ? 'grayscale(1) opacity(.8)' : '',
+                            display: (!availability && AvailabilityOptionsEnum.hide === availabilityActions) ? 'none' : 'grid',
+                        }}
+                        onClick={() => { (onClick && object) ? onClick(object) : null }}
+                    >
+                        {imagePosition === PlateImagePositionEnum.left && 
+                            <div className={style.plateClientImage_imgbox}>
+                                <Image
+                                    src={`data:${imageMimeType};base64,${Buffer.from(image).toString('base64')}`}
+                                    alt={`${name} image`}
+                                    objectFit='cover'
+                                    fill
+                                />
+                            </div>
+                        }
+                        {imagePosition === PlateImagePositionEnum.bg &&
+                            <div
+                            className={style.imageBackface}
+                            style={{ 
+                                backgroundImage: `url(data:${imageMimeType};base64,${Buffer.from(image).toString('base64')})`,
+                                backgroundSize: 'cover',
+                                WebkitBackgroundSize: 'cover',
+        
+                            }}
+                            role='presentation'
+                            ></div>
+                        }
+                        <div
+                            className={style.infoDiv}
+                            style={{ cursor: (onClick && object) ? 'pointer' : 'default' }}
+                            onClick={() => { (onClick && object) ? onClick(object) : null }}
+                        >
+                            <p className={style.infoDivName}>{(showOrder && order) && `(${order})`} {name}</p>
+                            {showGarnet && <span className={style.infoDivGarnet}>Συνοδευεται με: {garnet.name === 'Καμία' ? '-' : garnet.name}</span>}
+                            {showDesc && <span className={style.infoDivDesc}>{desc}</span>}
+                            {showPrice && 
+                                <span className={style.platePrice}>
+                                    {handlePrice(price)}&euro;{kiloPrice && '/κιλό'}
+                                </span>
+                            }
+                        </div>
+                    </div>
+                );
+            } else {
+                return (
+                    <div
+                        className={style.plateClientImage_right}
+                        style={{
+                            cursor: (onClick && object) ? 'pointer' : 'default',
+                            opacity: (!availability && AvailabilityOptionsEnum.opacity === availabilityActions) ? .3 : 1,
+                            filter: (!availability && AvailabilityOptionsEnum.grey === availabilityActions) ? 'grayscale(1) opacity(.8)' : '',
+                            display: (!availability && AvailabilityOptionsEnum.hide === availabilityActions) ? 'none' : 'grid',
+                        }}
+                        onClick={() => { (onClick && object) ? onClick(object) : null }}
+                    >
+                        <div
+                            className={style.infoDiv}
+                            style={{ cursor: (onClick && object) ? 'pointer' : 'default' }}
+                            onClick={() => { (onClick && object) ? onClick(object) : null }}
+                        >
+                            <p className={style.infoDivName}>{(showOrder && order) && `(${order})`} {name}</p>
+                            {showGarnet && <span className={style.infoDivGarnet}>Συνοδευεται με: {garnet.name === 'Καμία' ? '-' : garnet.name}</span>}
+                            {showDesc && <span className={style.infoDivDesc}>{desc}</span>}
+                            {showPrice && 
+                                <span className={style.platePrice}>
+                                    {handlePrice(price)}&euro;{kiloPrice && '/κιλό'}
+                                </span>
+                            }
+                        </div>
+    
                         <div className={style.plateClientImage_imgbox}>
                             <Image
                                 src={`data:${imageMimeType};base64,${Buffer.from(image).toString('base64')}`}
@@ -261,73 +328,10 @@ export const PlateClient = ({
                                 objectFit='cover'
                                 fill
                             />
-                        </div>
-                    }
-                    {imagePosition === PlateImagePositionEnum.bg &&
-                        <div
-                        className={style.imageBackface}
-                        style={{ 
-                            backgroundImage: `url(data:${imageMimeType};base64,${Buffer.from(image).toString('base64')})`,
-                            backgroundSize: 'cover',
-                            WebkitBackgroundSize: 'cover',
-    
-                        }}
-                        role='presentation'
-                        ></div>
-                    }
-                    <div
-                        className={style.infoDiv}
-                        style={{ cursor: (onClick && object) ? 'pointer' : 'default' }}
-                        onClick={() => { (onClick && object) ? onClick(object) : null }}
-                    >
-                        <p className={style.infoDivName}>{(showOrder && order) && `(${order})`} {name}</p>
-                        {showGarnet && <span className={style.infoDivGarnet}>Συνοδευεται με: {garnet.name === 'Καμία' ? '-' : garnet.name}</span>}
-                        {showDesc && <span className={style.infoDivDesc}>{desc}</span>}
-                        {showPrice && 
-                            <span className={style.platePrice}>
-                                {handlePrice(price)}&euro;{kiloPrice && '/κιλό'}
-                            </span>
-                        }
+                        </div>  
                     </div>
-                </div>
-            );
-        } else {
-            return (
-                <div
-                    className={style.plateClientImage_right}
-                    style={{
-                        cursor: (onClick && object) ? 'pointer' : 'default',
-                        opacity: (!availability && AvailabilityOptionsEnum.opacity === availabilityActions) ? .3 : 1,
-                        filter: (!availability && AvailabilityOptionsEnum.grey === availabilityActions) ? 'grayscale(1) opacity(.8)' : '',
-                        display: (!availability && AvailabilityOptionsEnum.hide === availabilityActions) ? 'none' : 'grid',
-                    }}
-                    onClick={() => { (onClick && object) ? onClick(object) : null }}
-                >
-                    <div
-                        className={style.infoDiv}
-                        style={{ cursor: (onClick && object) ? 'pointer' : 'default' }}
-                        onClick={() => { (onClick && object) ? onClick(object) : null }}
-                    >
-                        <p className={style.infoDivName}>{(showOrder && order) && `(${order})`} {name}</p>
-                        {showGarnet && <span className={style.infoDivGarnet}>Συνοδευεται με: {garnet.name === 'Καμία' ? '-' : garnet.name}</span>}
-                        {showDesc && <span className={style.infoDivDesc}>{desc}</span>}
-                        {showPrice && 
-                            <span className={style.platePrice}>
-                                {handlePrice(price)}&euro;{kiloPrice && '/κιλό'}
-                            </span>
-                        }
-                    </div>
-
-                    <div className={style.plateClientImage_imgbox}>
-                        <Image
-                            src={`data:${imageMimeType};base64,${Buffer.from(image).toString('base64')}`}
-                            alt={`${name} image`}
-                            objectFit='cover'
-                            fill
-                        />
-                    </div>  
-                </div>
-            );
+                );
+            }
         }
     }
 

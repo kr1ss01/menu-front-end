@@ -197,7 +197,6 @@
   background-color: variables.$white;
   padding: 0.5rem;
   width: 100%;
-  // border: 1px solid variables.$black;
   max-width: variables.$max_plate_width;
   p {
     @include mixins.d-flex(center, flex-start, row);

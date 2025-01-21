@@ -16,6 +16,8 @@ import Image from 'next/image';
 
 import SPECIAL from '@/public/menu.png';
 import BACKGROUND from '@/public/mp_bgbackground.jpg';
+import { Settings } from '@/types/settings';
+import { getSettings } from '@/axios/settings';
 
 type PlateArrayType = {
     catID: string,
@@ -37,6 +39,13 @@ export default function Page() {
         queryKey: ['get-all-special-plates-main'],
         queryFn: async () => {
             return await getSpecialPlates();
+        }
+    });
+
+    const { data: globalSettings } = useQuery<Settings>({
+        queryKey: ['get-settings-main'],
+        queryFn: async () => {
+            return await getSettings();
         }
     });
 
@@ -108,16 +117,18 @@ export default function Page() {
 
     return (
         <main className={style.main}>
-            <div className={style.backgroundImageTop}>
-                <Image src={BACKGROUND} alt='Mavro Piperi Inside' objectFit='cover' fill priority/>
-                <h1>ΜΑΥΡΟ ΠΙΠΕΡΙ</h1>
-            </div>
-            {(specialPlates && showSpecial && specialPlates.length >= 1) &&
+            {(globalSettings && globalSettings.backgroundImageVisibility) &&
+                <div className={style.backgroundImageTop}>
+                    <Image src={BACKGROUND} alt='Mavro Piperi Inside' objectFit='cover' fill priority/>
+                </div>
+            }
+            {(specialPlates && showSpecial && specialPlates.length >= 1 && globalSettings) &&
                 <div className={style.specialPopUp}>
                     <div className={style.specialPopUpInner}>
                         <h2>Πιάτα Ημέρας</h2>
                         <ul className={style.specialPopUp_showSpecialCont}>
                             {specialPlates.map((sp: PlateComplex, key: number) => {
+                                if (!sp.onlyOnSpecial && globalSettings.showOnSpecialVisibility) return
                                 return (
                                     <li key={key}>
                                         <p>{sp.name}</p>
@@ -200,8 +211,9 @@ export default function Page() {
                                                     kiloPrice={pl.kiloPrice}
                                                     imageMimeType={pl.imageMimeType}
                                                     showGarnet={pl.showGarnet}
-                                                    imagePosition={PlateImagePositionEnum.left}
-                                                    availabilityActions={AvailabilityOptionsEnum.grey}
+                                                    imagePosition={globalSettings ? globalSettings.imagePosition : PlateImagePositionEnum.left}
+                                                    availabilityActions={globalSettings ? globalSettings.availabilitySettings : AvailabilityOptionsEnum.grey}
+                                                    hideImage={globalSettings?.hideAllImages}
                                                 />
                                             );
                                         })}
