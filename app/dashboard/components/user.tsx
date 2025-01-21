@@ -21,8 +21,8 @@ import PHOTO from '@/public/photo.png';
 import IDCARD from '@/public/id-card.png';
 import PADLOCK from '@/public/padlock.png';
 import ToggleSwitch from '@/helpers/inputs/toggle.input';
-import { Settings } from '@/types/settings';
-import { getSettings, updateAvailabiltySettings, updateBackgroundImageSettings, updateHideSettings, updateImageSettings, updateSpecialSettings } from '@/axios/settings';
+import { Settings, UpdateSettings } from '@/types/settings';
+import { getSettings, updateAll } from '@/axios/settings';
 import { AvailabilityOptionsEnum, AvailabilityOptionsObject, PlateImagePositionEnum, PlateImagePostionObject } from '@/types/plate';
 import DropDownInput from '@/helpers/inputs/dropdown.input';
 
@@ -402,69 +402,28 @@ const User = ({ token }: { token: string | undefined }) => {
         e.preventDefault();
         if (!globalSettings) return;
 
-        let resBgImage;
-        let resAvSettings;
-        let resHideImgs;
-        let resImgPosSettings;
-        let resSpecialSettings;
+        const updateObjectSettings: UpdateSettings = {
+            availabilitySettings: avSettings as AvailabilityOptionsEnum,
+            hideImagesSettings: hideImgs as boolean, 
+            imagePosition: imgPosSettings as PlateImagePositionEnum,
+            specialSettings: specialSettings as boolean,
+            mainImage: bgImage as boolean,
+        };
 
-        if (globalSettings.backgroundImageVisibility !== bgImage) {
-            resBgImage = await updateBackgroundImageSettings(bgImage, token);
+        const res = await updateAll(updateObjectSettings, token);
 
-            if (resBgImage) { 
-                const int = window.setInterval(() => {
-                    setPopUp(undefined);
-                    window.clearInterval(int);
-                }, 5000);
-                setPopUp({ text: 'Επιτυχής Ενημέρωη Αρχικής Εικόνας!', type: 'success', intID: int });
-            }
-            if (!resBgImage) { 
-                const int = window.setInterval(() => {
-                    setPopUp(undefined);
-                    window.clearInterval(int);
-                }, 5000);
-                setPopUp({ text: 'Απροσδιόριστο Σφάλμα Στην Αλλαγή Αρχικής Εικόνας!', type: 'error', intID: int });
-            }
-        }
-
-        if (globalSettings.availabilitySettings !== avSettings) {
-            resAvSettings = await updateAvailabiltySettings(avSettings, token);
-
-            if (resAvSettings) { 
-                const int = window.setInterval(() => {
-                    setPopUp(undefined);
-                    window.clearInterval(int);
-                }, 5000);
-                setPopUp({ text: 'Επιτυχής Ενημέρωη Διαθεσιμότητας!', type: 'success', intID: int });
-            }
-            if (!resAvSettings) { 
-                const int = window.setInterval(() => {
-                    setPopUp(undefined);
-                    window.clearInterval(int);
-                }, 5000);
-                setPopUp({ text: 'Απροσδιόριστο Σφάλμα Στην Διαθεσιμότητα!', type: 'error', intID: int });
-            }
-        }
-
-        if (globalSettings.hideAllImages !== hideImgs) {
-            resHideImgs = await updateHideSettings(hideImgs, token);
-
-            if (resHideImgs) { resHideImgs = true; }
-            if (!resHideImgs) { resHideImgs = false; }
-        }
-
-        if (globalSettings.imagePosition !== imgPosSettings) {
-            resImgPosSettings = await updateImageSettings(imgPosSettings, token);
-
-            if (resImgPosSettings) { resImgPosSettings = true; }
-            if (!resImgPosSettings) { resImgPosSettings = false; }
-        }
-
-        if (globalSettings.showOnSpecialVisibility !== specialSettings) {
-            resSpecialSettings = await updateSpecialSettings(specialSettings, token);
-
-            if (resSpecialSettings) { resSpecialSettings = true; }
-            if (!resSpecialSettings) { resSpecialSettings = false; }
+        if (res) {
+            const int = window.setInterval(() => {
+                setPopUp(undefined);
+                window.clearInterval(int);
+            }, 5000);
+            setPopUp({ text: 'Επιτυχής Ενημέρωη Ρυθμίσεων!', type: 'success', intID: int });
+        } else {
+            const int = window.setInterval(() => {
+                setPopUp(undefined);
+                window.clearInterval(int);
+            }, 5000);
+            setPopUp({ text: 'Απροσδιόριστο Σφάλμα Στην Ενημέρωη Ρυθμίσεων!', type: 'error', intID: int });
         }
     }
 

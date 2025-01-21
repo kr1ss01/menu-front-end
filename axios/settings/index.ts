@@ -1,6 +1,6 @@
 import axios from "axios";
 import BASE from "../base";
-import { Settings } from "@/types/settings";
+import { Settings, UpdateSettings } from "@/types/settings";
 import { AvailabilityOptionsEnum, PlateImagePositionEnum } from "@/types/plate";
 
 const api = axios.create({
@@ -32,4 +32,18 @@ export const updateSpecialSettings = async (value: boolean | undefined, token: s
 
 export const updateBackgroundImageSettings = async (value: boolean | undefined, token: string | undefined): Promise<boolean> => {
     return (await api.put('/update/bgimage', { value: value }, { headers: { 'Authorization': `Bearer ${token}` } })).data;
+}
+
+export const updateAll = async (values: UpdateSettings, at: string | undefined): Promise<boolean> => {
+    try {
+        const token = `Bearer ${at}`;
+        const res =  await api.put('/update/all', values, {
+            headers: {
+                'Authorization': `${token}`,
+            },
+        });
+        return res.data;
+    } catch (e) {
+        return false;
+    }
 }

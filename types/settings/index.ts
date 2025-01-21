@@ -7,3 +7,11 @@ export interface Settings {
     availabilitySettings: AvailabilityOptionsEnum;
     hideAllImages: boolean;
 };
+
+export interface UpdateSettings {
+    imagePosition: PlateImagePositionEnum;
+    availabilitySettings: AvailabilityOptionsEnum;
+    specialSettings: boolean;
+    hideImagesSettings: boolean;
+    mainImage: boolean;
+};

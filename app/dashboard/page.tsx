@@ -38,18 +38,19 @@ export default function Page() {
 
         const handleKeyBind = (e: KeyboardEvent) => {
             if (e.code == "AltLeft") {
+                e.preventDefault();
                 altPress = true;
             }
 
             if ((e.code == "Digit1" || e.code == "Digit2" ||
                 e.code == "Digit3" || e.code == "Digit4") && altPress) {
+                e.preventDefault();
                 digitPress = true;
                 caseDigit = e.code;
             }
         }
 
         const handleKeyUp = (e: KeyboardEvent) => {
-            console.log(e);
             if (altPress && digitPress) {
                 switch (caseDigit) {
                     case 'Digit1':

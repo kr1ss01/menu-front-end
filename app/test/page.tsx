@@ -7,11 +7,11 @@ import Category from '@/types/categories';
 import { getCategories } from '@/axios/categories';
 import LoadingSpinner from '@/helpers/loading';
 import Colors from '@/types/colors';
-import { BugSVG, XCircleFillIcon, XCircleNoFillIcon } from '@/svg';
+import { BugSVG, XCircleFillIcon } from '@/svg';
 import Link from 'next/link';
 import { AvailabilityOptionsEnum, PlateComplex, PlateImagePositionEnum } from '@/types/plate';
 import { getPlatesByCategoryStrickt, getSpecialPlates } from '@/axios/complex';
-import { PlateClient, PlateFinal } from '@/helpers/plate';
+import { PlateClient } from '@/helpers/plate';
 import Image from 'next/image';
 
 import SPECIAL from '@/public/menu.png';
