@@ -683,7 +683,7 @@ const User = ({ token }: { token: string | undefined }) => {
                             </div>
                             <div className={style.toggleDivOuter}>
                                 <div className={style.toggleDiv}>
-                                    <label htmlFor='hideimgs'>Προβολή Εικόνων: </label>
+                                    <label htmlFor='hideimgs'>Απόκρυψη Εικόνων: </label>
                                     <ToggleSwitch
                                         banner=''
                                         hasInfo={false}

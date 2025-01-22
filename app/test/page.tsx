@@ -11,13 +11,14 @@ import { BugSVG, XCircleFillIcon } from '@/svg';
 import Link from 'next/link';
 import { AvailabilityOptionsEnum, PlateComplex, PlateImagePositionEnum } from '@/types/plate';
 import { getPlatesByCategoryStrickt, getSpecialPlates } from '@/axios/complex';
-import { PlateClient } from '@/helpers/plate';
+import { PlateClient, PlateSpecial } from '@/helpers/plate';
 import Image from 'next/image';
 
 import SPECIAL from '@/public/menu.png';
 import BACKGROUND from '@/public/mp_bgbackground.jpg';
 import { Settings } from '@/types/settings';
 import { getSettings } from '@/axios/settings';
+import useOutsideHook from '@/helpers/hooks';
 
 type PlateArrayType = {
     catID: string,
@@ -65,6 +66,11 @@ export default function Page() {
     const [errorPlates, setErrorPlates] = React.useState<boolean>(false);
 
     const [showSpecial, setShowSpecial] = React.useState<boolean>(true);
+
+    // ? Ref
+    const specialRef = React.useRef<HTMLDivElement>(null);
+
+    useOutsideHook(specialRef, setShowSpecial);
 
     // ! ADD SPECIAL PLATES
     const getPlates = async (cat: Category, t?: number) => {
@@ -124,22 +130,61 @@ export default function Page() {
             }
             {(specialPlates && showSpecial && specialPlates.length >= 1 && globalSettings) &&
                 <div className={style.specialPopUp}>
-                    <div className={style.specialPopUpInner}>
+                    <div className={style.specialPopUpInner} ref={specialRef}>
                         <h2>Πιάτα Ημέρας</h2>
                         <ul className={style.specialPopUp_showSpecialCont}>
                             {specialPlates.map((sp: PlateComplex, key: number) => {
                                 if (!sp.onlyOnSpecial && globalSettings.showOnSpecialVisibility) return
                                 return (
-                                    <li key={key}>
-                                        <p>{sp.name}</p>
-                                        <p>{handlePrice(sp.price)}&euro; {sp.kiloPrice && '/κιλό'}</p>
-                                    </li>
+                                    // <li key={key}>
+                                    //     <p>{sp.name}</p>
+                                    //     <p>{handlePrice(sp.price)}&euro; {sp.kiloPrice && '/κιλό'}</p>
+                                    // </li>
+                                    // <PlateSpecial
+                                    //     image={sp.image}
+                                    //     name={sp.name}
+                                    //     price={sp.price}
+                                    //     garnet={sp.garnet}
+                                    //     desc={sp.desc}
+                                    //     showIcon={sp.showIcon}
+                                    //     showDesc={sp.showDesc}
+                                    //     kiloPrice={sp.kiloPrice}
+                                    //     showPrice={sp.showPrice}
+                                    //     availability={sp.availability}
+                                    //     imageMimeType={sp.imageMimeType}
+                                    //     showGarnet={sp.showGarnet}
+                                    //     imagePosition={globalSettings.imagePosition}
+                                    //     availabilityActions={globalSettings.availabilitySettings}
+                                    //     hideImage={globalSettings.hideAllImages}
+                                    //     animationDelay={key * 100}
+                                    //     globalSpecial={globalSettings.showOnSpecialVisibility}
+                                    //     onlyOnSpecial={sp.onlyOnSpecial}
+                                    // />
+                                    <PlateClient 
+                                        key={sp._id}
+                                        image={sp.image}
+                                        name={sp.name}
+                                        price={sp.price}
+                                        garnet={sp.garnet}
+                                        desc={sp.desc}
+                                        availability={sp.availability}
+                                        showIcon={sp.showIcon}
+                                        showDesc={sp.showDesc}
+                                        showPrice={sp.showPrice}
+                                        kiloPrice={sp.kiloPrice}
+                                        imageMimeType={sp.imageMimeType}
+                                        showGarnet={sp.showGarnet}
+                                        imagePosition={globalSettings ? globalSettings.imagePosition : PlateImagePositionEnum.left}
+                                        availabilityActions={globalSettings ? globalSettings.availabilitySettings : AvailabilityOptionsEnum.grey}
+                                        hideImage={globalSettings?.hideAllImages}
+                                        animationDelay={key * 100}
+                                    />
                                 );
                             })}
                         </ul>
-                        <button type='button' role='button' className={style.closeButtonSpecial} onClick={() => setShowSpecial(false)}>
+                        {/* <button type='button' role='button' className={style.closeButtonSpecial} onClick={() => setShowSpecial(false)}>
                             <XCircleFillIcon box={2} color={Colors.black} />
-                        </button>
+                        </button> */}
                     </div>
                 </div>
             }

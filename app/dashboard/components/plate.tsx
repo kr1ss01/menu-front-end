@@ -553,29 +553,6 @@ const Plate = ({ token }: { token: string | undefined }) => {
                                         onClick={() => {setUpdateObject(pl); handleOrderMobile(pl); setSettings(false);}}
                                         style={{ opacity: orderSet?._id === pl._id ? .5 : 1 }}
                                     >
-                                        {/* <PlateFinal
-                                            image={pl.image}
-                                            name={pl.name}
-                                            price={pl.price}
-                                            category={pl.category}
-                                            garnet={pl.garnet}
-                                            desc={pl.desc}
-                                            availability={pl.availability}
-                                            showIcon={pl.showIcon}
-                                            showDesc={pl.showDesc}
-                                            showPrice={pl.showPrice}
-                                            showGarnet={pl.showGarnet}
-                                            kiloPrice={pl.kiloPrice}
-                                            onlyOnSpecial={pl.onlyOnSpecial}
-                                            order={pl.order}
-                                            showOnSpecial={pl.showOnSpecial}
-                                            visible={pl.visible}
-                                            imageMimeType={pl.imageMimeType}
-                                            _id={pl._id}
-                                            object={pl}
-                                            onClick={setUpdateObject}
-                                            showOrder={order}
-                                        /> */}
                                         <PlateClient
                                             image={pl.image}
                                             name={pl.name}

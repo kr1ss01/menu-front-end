@@ -381,6 +381,7 @@ export const PlateSpecial = ({
     hideImage,
     animationDelay,
     globalSpecial,
+    onlyOnSpecial,
 }:{
     image: Buffer | undefined,
     name: string,
@@ -399,10 +400,31 @@ export const PlateSpecial = ({
     hideImage?: boolean,
     animationDelay?: number,
     globalSpecial: boolean,
+    onlyOnSpecial: boolean,
 }) => {
+    const handlePrice = (price: number) => {
+        if (price % 1 == 0) return `${price}.00`;
+        return `${price}0`;
+    }
+    // if (!onlyOnSpecial && globalSpecial) return;
     return (
-        <li className={style.specialPlateNoImage}>
-
+        <li className={style.specialPlate} onClick={() => {}}>
+            <div className={style.specialPlateLine}>
+                <p>{name}</p>
+                <p>{handlePrice(price)}&euro; {kiloPrice && '/κιλό'}</p>
+            </div>
+            <div className={style.specialPlateInfo}>
+                {(image && imageMimeType && showIcon) &&
+                    <div className={style.specialPlateInfoImage}>
+                        <Image
+                            src={`data:${imageMimeType};base64,${Buffer.from(image).toString('base64')}`}
+                            alt={`${name} image`}
+                            objectFit='cover'
+                            fill
+                        />
+                    </div>
+                }
+            </div>
         </li>
     );
 }

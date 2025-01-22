@@ -325,8 +325,31 @@
   }
 }
 
-.specialPlateNoImage {
-  
+.specialPlate {
+  cursor: pointer;
+  width: 100%;
+  @include mixins.d-flex(center, flex-start, column);
+  border-bottom: 2px dotted variables.$grey;
+  .specialPlateLine {
+    @include mixins.d-flex(center, space-between, row);
+    width: 100%;
+    padding: .3rem .9rem;
+    p {
+      cursor: inherit;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+  }
+  .specialPlateInfo {
+    width: 100%;
+    padding: .3rem .9rem;
+    .specialPlateInfoImage {
+      position: relative;
+      width: 50px;
+      height: 50px;
+      aspect-ratio: 1/1;
+    }
+  }
 }
 
 @media screen and (max-width: 600px) {
