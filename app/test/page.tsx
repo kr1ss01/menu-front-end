@@ -116,11 +116,6 @@ export default function Page() {
         }
     }
 
-    const handlePrice = (price: number) => {
-        if (price % 1 == 0) return `${price}.00`;
-        return `${price}0`;
-    }
-
     return (
         <main className={style.main}>
             {(globalSettings && globalSettings.backgroundImageVisibility) &&

@@ -25,6 +25,10 @@ import { Settings, UpdateSettings } from '@/types/settings';
 import { getSettings, updateAll } from '@/axios/settings';
 import { AvailabilityOptionsEnum, AvailabilityOptionsObject, PlateImagePositionEnum, PlateImagePostionObject } from '@/types/plate';
 import DropDownInput from '@/helpers/inputs/dropdown.input';
+import { getImage, getImageName, newImage } from '@/axios/backgroundImage';
+import { BackgroundImage } from '@/types/backgroundImage';
+import bufferToImage from '@/helpers/bufferToImage';
+import BASE from '@/axios/base';
 
 enum DisplayEnum {
     pwd = 'pwd',
@@ -33,9 +37,11 @@ enum DisplayEnum {
     name = 'name',
     def = 'default',
     stg = 'settings',
+    bgImage = 'backgroundImage',
 };
 
 const User = ({ token }: { token: string | undefined }) => {
+
     const { data: user, isLoading: isLoadingOwn, isError: isErrorOwn, refetch: refetchOwn } = useQuery<OwnUser>({
         queryKey: ['get-admin'],
         queryFn: token ? async () => {
@@ -55,6 +61,20 @@ const User = ({ token }: { token: string | undefined }) => {
         queryFn: async () => {
             return await getSettings();
         }
+    });
+
+    const { data: bgImageFile, refetch: refetchBgImageFile } = useQuery({
+        queryKey: ['get-background-image-file-admin'],
+        queryFn: async () => {
+            return await getImage();
+        }
+    });
+
+    const { data: bgImageInfo, refetch: refetchBgImageInfo } = useQuery<BackgroundImage>({
+        queryKey: ['get-background-image-info-admin'],
+        queryFn: async () => {
+            return await getImageName(token);
+        }
     })
 
     // ? Main Page States
@@ -72,7 +92,9 @@ const User = ({ token }: { token: string | undefined }) => {
     const [error, setError] = React.useState<boolean>(false);
     const [emptyFields, setEmptyFields] = React.useState<boolean>(false);
     const [uploadImageTooLarge ,setUploadImageTooLarge] = React.useState<boolean>(false);
+    const [bgUploadImageTooLarge ,setBgUploadImageTooLarge] = React.useState<boolean>(false);
     const [noImage, setNoImage] = React.useState<boolean>(false);
+    const [noBgImage, setNoBgImage] = React.useState<boolean>(false);
     const [pwdMatch, setPwdMatch] = React.useState<boolean>(false);
     const [weakPwd, setWeakPwd] = React.useState<boolean>(false);
     const [pwdNoMatch, setPwdNoMatch] = React.useState<boolean>(false);
@@ -85,6 +107,10 @@ const User = ({ token }: { token: string | undefined }) => {
     // ? Image States
     const [uploadImage, setUploadImage] = React.useState<File>();
     const [uploadImageShow, setUploadImageShow] = React.useState<string>();
+
+    // ? Background Image States
+    const [bgUploadImage, setBgUploadImage] = React.useState<File>();
+    const [bgUploadImageShow, setBgUploadImageShow] = React.useState<string>();
 
     // ? Password Check States
     const [char, setChar] = React.useState<boolean>(false);
@@ -427,12 +453,62 @@ const User = ({ token }: { token: string | undefined }) => {
         }
     }
 
+    const handleBgImageSubmition = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        setError(false);
+        setBgUploadImageTooLarge(false);
+        setNoBgImage(false);
+
+        if (!bgUploadImage || !bgUploadImageShow) {
+            setNoBgImage(true);
+            const int = window.setInterval(() => {
+                setPopUp(undefined);
+                window.clearInterval(int);
+            }, 5000);
+            setPopUp({ text: 'Προσθέστε Εικόνα!', type: 'error', intID: int });
+            return;
+        }
+
+        const FD = new FormData();
+
+        FD.append('image', bgUploadImage);
+
+        const res = await newImage(token, FD);
+
+        if (res) {
+            // ! REFETCH HERE
+            setBgUploadImage(undefined);
+            setBgUploadImageShow(undefined);
+            const int = window.setInterval(() => {
+                setPopUp(undefined);
+                window.clearInterval(int);
+            }, 5000);
+            setPopUp({ text: 'Επιτυχής Αλλαγή!', type: 'success', intID: int });
+            return;
+        } else {
+            setBgUploadImage(undefined);
+            setBgUploadImageShow(undefined);
+            const int = window.setInterval(() => {
+                setPopUp(undefined);
+                window.clearInterval(int);
+            }, 5000);
+            setPopUp({ text: 'Απροσδιόριστο Σφάλμα!', type: 'error', intID: int });
+            return;
+        }
+    }
+
     return (
         <div className={style.user}>
             <div className={style.userView}>
                 {(popUp && popUp.type === 'error') && <ErrorDiv text={popUp.text} intID={popUp.intID} setPopUp={setPopUp} />}
                 {(popUp && popUp.type === 'success') && <SuccessDiv text={popUp.text} intID={popUp.intID} setPopUp={setPopUp} />}
-                <div className={style.userViewList}>
+                <div className={style.userViewList} style={{
+                    backgroundImage: `url(${BASE}background/)`,
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: 'cover',
+                }}>
                     {display === DisplayEnum.name &&
                         <form onSubmit={handleNameSubmition} autoCapitalize='off' autoComplete='off' autoCorrect='off'>
                             <Image src={IDCARD} alt='Flaticon Image | ID Card Image' width={64} height={64} />
@@ -706,6 +782,43 @@ const User = ({ token }: { token: string | undefined }) => {
                             </div>
                         </form>
                     }
+                    {DisplayEnum.bgImage === display &&
+                        <form onSubmit={handleBgImageSubmition}>
+                            <ImageInput 
+                                label='bg_image'
+                                placeholder='Επιλογή Κύριας Εικόνας'
+                                size={1.3}
+                                setUploadImage={setBgUploadImage}
+                                setUploadImageShow={setBgUploadImageShow}
+                                setUploadImageTooLarge={setBgUploadImageTooLarge}
+                                noImage={noBgImage}
+                                setNoImage={setNoBgImage}
+                                uploadImage={bgUploadImage}
+                                uploadImageShow={bgUploadImageShow}
+                                uploadImageTooLarge={bgUploadImageTooLarge}
+                            />
+                            <div>
+                                <SubmitButton text='Αλλαγή Εικόνας' type />
+                            </div>
+                            {bgImageInfo &&
+                                <div className={style.bgImageInfo}>
+                                    <h2>Πληροφορίες Εικόνας</h2>
+                                    <p><span>Όνομα Εικόνας:</span> {bgImageInfo.imageName}</p>
+                                    <p><span>Ημέρα Καταχώρησης:</span> {bgImageInfo.date}</p>
+                                    <p><span>Όνομα Στον Server:</span>{bgImageInfo.storedImageName}</p>
+                                    <p><span>Τύπος Εικόνας:</span>{bgImageInfo.mimeType}</p>
+                                </div>
+                            }
+                            {/* {bgImageFile &&
+                                <Image 
+                                    src={`${BASE}background/`}
+                                    alt='Κύρια Εικόνα Καταλόγου'
+                                    width={330}
+                                    height={330}
+                                />
+                            } */}
+                        </form>
+                    }
                 </div>
                 <div className={style.userSettings}>
                     <div className={style.userInfoImage}>
@@ -786,6 +899,15 @@ const User = ({ token }: { token: string | undefined }) => {
                             style={{ opacity: display === DisplayEnum.stg ? .5 : 1 }}
                         >
                             <p>Ρυθμίσεις Εφαρμογής</p>
+                        </button>
+                        <button
+                            type='button'
+                            role='button'
+                            className={style.changeButtons}
+                            onClick={() => handleDisplay(DisplayEnum.bgImage)}
+                            style={{ opacity: display === DisplayEnum.bgImage ? .5 : 1 }}
+                        >
+                            <p>Ρυθμίσεις Εικόνας Φόντου</p>
                         </button>
                     </div>
                 </div>

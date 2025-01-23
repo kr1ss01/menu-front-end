@@ -7,7 +7,7 @@ import { skipToken, useQuery } from '@tanstack/react-query';
 import LoadingSpinner from '@/helpers/loading';
 import { getCategories } from '@/axios/categories';
 import Category from '@/types/categories';
-import { BlockBGSVG, BlockLeftSVG, BlockRightSVG, BugSVG, CategorySVG, ExpandSVG, EyeCloseSVG, EyeOpenSVG, GarnetSVG, PlateSVG, ResetSVG, SettingsSVG, UpSVG } from '@/svg';
+import { BinSVG, BlockBGSVG, BlockLeftSVG, BlockRightSVG, BugSVG, CategorySVG, ExpandSVG, EyeCloseSVG, EyeOpenSVG, GarnetSVG, PlateSVG, ResetSVG, SettingsSVG, UpSVG } from '@/svg';
 import ImageInput from '@/helpers/inputs/image.input';
 import TextInput from '@/helpers/inputs/text.input';
 import NumberInput from '@/helpers/inputs/number.input';
@@ -20,9 +20,16 @@ import { getGarnets } from '@/axios/garnets';
 import { AvailabilityOptionsEnum, PlateComplex, PlateFixOrder, PlateImagePositionEnum, PlateStats } from '@/types/plate';
 import { getPlatesByCategoryStrickt } from '@/axios/complex';
 import { PlateClient, PlateFinal } from '@/helpers/plate';
-import { fixPlateOrder, getPlateStats, newPlate, updatePlateWithImage } from '@/axios/plates';
+import { deletePlate, fixPlateOrder, getPlateStats, newPlate, updatePlateWithImage } from '@/axios/plates';
 import ErrorDiv, { SetStateTypeObject, SuccessDiv } from '@/helpers/components/error.div';
 import SearchInput from '@/helpers/inputs/search.input';
+
+type PlateArrayType = {
+    catID: string,
+    plate: PlateComplex[],
+};
+
+const plateArray: PlateArrayType[] = [];
 
 const Plate = ({ token }: { token: string | undefined }) => {
     // ? Render Category Content
@@ -42,11 +49,11 @@ const Plate = ({ token }: { token: string | undefined }) => {
         }
     });
 
-    const { data: plates, isLoading: isLoadingPlates, isError: isErrorPlates, refetch: refetchPlates, isFetching: isFetchingPlates } = useQuery<PlateComplex[]>({
-        queryKey: ['get-all-plates-from-category-admin'],
-        queryFn: catContent ? () => getPlatesByCategoryStrickt(catContent._id) : skipToken,
+    // const { data: plates, isLoading: isLoadingPlates, isError: isErrorPlates, refetch: refetchPlates, isFetching: isFetchingPlates } = useQuery<PlateComplex[]>({
+    //     queryKey: ['get-all-plates-from-category-admin'],
+    //     queryFn: catContent ? () => getPlatesByCategoryStrickt(catContent._id) : skipToken,
         
-    });
+    // });
 
     const { data: stats, isLoading: isLoadingStats, isError: isErrorStats } = useQuery<PlateStats>({
         queryKey: ['get-stats-plates-admin'],
@@ -77,6 +84,13 @@ const Plate = ({ token }: { token: string | undefined }) => {
 
     // ? Fuck Me State
     const [garnetName, setGarnetName] = React.useState<string>('');
+
+    const [active, setActive] = React.useState<Category>();
+    const [currentPlates, setCurrentPlates] = React.useState<PlateComplex[]>();
+
+    // ? Error Plate States
+    const [loadingPlates, setLoadingPlates] = React.useState<boolean>(false);
+    const [errorPlates, setErrorPlates] = React.useState<boolean>(false);
 
     // ? Error Handling State
     const [error, setError] = React.useState<boolean>(false);
@@ -180,6 +194,58 @@ const Plate = ({ token }: { token: string | undefined }) => {
         }
     }, [showPrice]);
 
+    // ! ADD SPECIAL PLATES
+    const getPlates = async (cat: Category, t?: number) => {
+        if (!t) {
+            setLoadingPlates(false);
+            setErrorPlates(false);
+        }
+
+        if (t == 4) {
+            const int = window.setInterval(() => {
+                setPopUp(undefined);
+                window.clearInterval(int);
+            }, 5000);
+            setPopUp({ text: 'Απροσδιόριστο Σφάλμα Στην Λήψη Πιάτων!', type: 'error', intID: int });
+        }
+
+        if (cat._id === active?._id) {
+            setActive(undefined);
+            return;
+        }
+
+        setActive(cat);
+        setLoadingPlates(true);
+        if (plateArray.length > 0) {
+            for (let i = 0; i < plateArray.length; i++) {
+                if (plateArray[i].catID === cat._id) {
+                    setLoadingPlates(false);
+                    setAllPlates(plateArray[i].plate);
+                    setCurrentPlates(plateArray[i].plate);
+                    return;
+                }
+            }
+        }
+
+        const res = await getPlatesByCategoryStrickt(cat._id);
+
+        if (res) {
+            setLoadingPlates(false);
+            setAllPlates(res);
+            setCurrentPlates(res);
+            plateArray.push({
+                catID: cat._id,
+                plate: res,
+            });
+            return;
+        } else {
+            setLoadingPlates(false);
+            setErrorPlates(true);
+            getPlates(cat, t ? t + 1 : 1);
+            return;
+        }
+    }
+
     // ? Set Update Object Params
     React.useEffect(() => {
         if (updateObject) {
@@ -215,13 +281,13 @@ const Plate = ({ token }: { token: string | undefined }) => {
         }
     }, [updateObject]);
 
-    React.useEffect(() => {
-        if (plates) {
-            setAllPlates(plates);
-        } else {
-            setAllPlates(undefined);
-        }
-    }, [plates]);
+    // React.useEffect(() => {
+    //     if (plates) {
+    //         setAllPlates(plates);
+    //     } else {
+    //         setAllPlates(undefined);
+    //     }
+    // }, [plates]);
 
     const handleSubmition = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -322,7 +388,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
             setGarnetName('');
             setUploadImage(undefined);
             setUploadImageShow(undefined);
-            catContent && refetchPlates();
+            active && await refetchPlates();
             updateObject && setUpdateObject(null);
             const int = window.setInterval(() => {
                 setPopUp(undefined);
@@ -361,7 +427,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
         const res = await fixPlateOrder(token, orderFix);
 
         if (res) {
-            refetchPlates();
+            await refetchPlates();
             setOrderLoading(false);
             const int = window.setInterval(() => {
                 setPopUp(undefined);
@@ -434,6 +500,56 @@ const Plate = ({ token }: { token: string | undefined }) => {
         }
     }
 
+    const refetchPlates = async () => {
+        if (!active) return;
+
+        const res = await getPlatesByCategoryStrickt(active._id);
+        // console.log(res);
+        if (res) {
+            setCurrentPlates(res);
+            setAllPlates(res);
+            plateArray.length = 0;
+            plateArray.push({
+                catID: active._id,
+                plate: res,
+            });
+            return;
+        } else {
+            const int = window.setInterval(() => {
+                setPopUp(undefined);
+                window.clearInterval(int);
+            }, 5000);
+            setPopUp({ text: 'Σφάλμα Στην Επαναφώρτοση πιάτων!', type: 'error', intID: int });
+            return;
+        }
+    }
+
+    const deletePlateFE = async (id: string | undefined) => {
+        const ans = confirm("Ειστέ σίγουρος για την διαγραφή του " + updateObject?.name + ";");
+
+        if (!ans) return;
+
+        const res = await deletePlate(token, id ? id : '');
+
+        if (res) {
+            const int = window.setInterval(() => {
+                setPopUp(undefined);
+                window.clearInterval(int);
+            }, 5000);
+            setPopUp({ text: 'Επιτυχής Διαγραφή!', type: 'success', intID: int });
+            refetchPlates();
+            setUpdateObject(null);
+            return;
+        } else {
+            const int = window.setInterval(() => {
+                setPopUp(undefined);
+                window.clearInterval(int);
+            }, 5000);
+            setPopUp({ text: 'Σφάλμα Στην Διαγραφή!', type: 'error', intID: int });
+            return;
+        }
+    }
+
     return (
         <div className={style.plates}>
             <div className={style.platesView}>
@@ -455,12 +571,13 @@ const Plate = ({ token }: { token: string | undefined }) => {
                             </button>
                         </div>
                     }
-                    {(allCategories && !catContent) && allCategories.map((cat: Category, key: number) => {
+                    {(allCategories && !active) && allCategories.map((cat: Category, key: number) => {
                             return (
                                 <div
                                     className={style.categoryView}
                                     key={key}
-                                    onClick={() => {setCatContent(cat); refetchPlates();}}
+                                    // onClick={() => {setCatContent(cat); refetchPlates();}}
+                                    onClick={() => {getPlates(cat);}}
                                 >
                                     <div className={style.categoryView_left}>
                                         {cat.visible ?
@@ -476,35 +593,33 @@ const Plate = ({ token }: { token: string | undefined }) => {
                                         </button>
                                     </div>
                                 </div>
-                            )
-                        
-                            
-                        })}
-                    {(isLoadingPlates && catContent) &&
+                            );
+                    })}
+                    {(loadingPlates && active) &&
                         <div className={style.categoriesViewList_loading}>
                             <LoadingSpinner />
                             <p>Φόρτωση Πιάτων...</p>
                         </div>
                     }
-                    {(isErrorPlates && catContent) && 
+                    {(errorPlates && active) && 
                         <div className={style.categoriesViewList_error}>
                             <BugSVG box={2.5} color={Colors.black} />
                             <p>Απροσδιόριστο Σφάλμα.</p>
-                            <button type='button' role='button' onClick={() => refetchPlates()}>
+                            <button type='button' role='button' onClick={async () => await refetchPlates()}>
                                 Προσπαθήστε Ξανά
                             </button>
                         </div>
                     }
-                    {(isFetchingPlates && catContent && !isLoadingPlates && !isErrorPlates) &&
+                    {/* {(plate && !loadingPlates && !errorPlates) &&
                         <div className={style.categoriesViewList_loading}>
                             <LoadingSpinner />
                             <p>Φόρτωση Πιάτων...</p>
                         </div>
-                    }
-                    {(catContent && plate && !isFetchingPlates) &&
+                    } */}
+                    {(plate) &&
                         <ul className={style.platesViewInner}>
                             <div className={style.platesViewInner_filters}>
-                                <button className={style.platesViewInnerButton} role='button' type='button' onClick={() => {setCatContent(undefined); refetchPlates(); setUpdateObject(null); setAllPlates(undefined);}}>
+                                <button className={style.platesViewInnerButton} role='button' type='button' onClick={() => {setActive(undefined); setCurrentPlates(undefined); setUpdateObject(null); setAllPlates(undefined);}}>
                                     <UpSVG box={1} color={Colors.black} />
                                     Πίσω
                                 </button>
@@ -517,6 +632,9 @@ const Plate = ({ token }: { token: string | undefined }) => {
                                 />
                             </div>
                             <div className={style.platesViewInner_imagePosition}>
+                                <button onClick={async () => { await refetchPlates() }} type='button' role='button'>
+                                    Refetch
+                                </button>
                                 <button type='button' role='button' title='Η εικόνα θα εμφανίζεται αριστερά' onClick={() => setImagePosition(PlateImagePositionEnum.left)}>
                                     <BlockLeftSVG box={2} color={imagePosition === PlateImagePositionEnum.left ? Colors.green : Colors.grey} />
                                 </button>
@@ -527,7 +645,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
                                     <BlockRightSVG box={2} color={imagePosition === PlateImagePositionEnum.right ? Colors.green : Colors.grey} />
                                 </button>
                             </div>
-                            {((catContent && plate) && plate.map((pl: PlateComplex, key: number) => {
+                            {((plate) && plate.map((pl: PlateComplex, key: number) => {
                                 if (hasImageOnly && !pl.image) return;
                                 if (visibleOnly && !pl.visible) return;
                                 if (nonVisibleOnly && pl.visible) return;
@@ -618,7 +736,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
                                     role='button'
                                     title='Επαναφορά Πιάτων'
                                     onClick={() => {
-                                        plates && setAllPlates(plates);
+                                        plate && setAllPlates(currentPlates);
                                     }}
                                 >
                                     <ResetSVG box={1.5} color={Colors.error} />
@@ -921,6 +1039,11 @@ const Plate = ({ token }: { token: string | undefined }) => {
                                 {!updateObject &&
                                     <button type='button' role='button' title='Ρυθμίσεις' onClick={() => setSettings(curr => !curr)}>
                                         <SettingsSVG box={2} color={Colors.black} />
+                                    </button>
+                                }
+                                {updateObject &&
+                                    <button type='button' role='button' title='Διαγραφή' onClick={() => deletePlateFE(updateObject._id)}>
+                                        <BinSVG box={2} color={Colors.error} />
                                     </button>
                                 }
                                 <SubmitButton text={updateObject ? 'Ενημέρωση' : 'Προσθήκη'} type={true} />

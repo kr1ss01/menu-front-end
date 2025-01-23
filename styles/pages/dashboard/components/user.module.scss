@@ -10,7 +10,7 @@
     @include mixins.setTransBg();
     width: 100%;
     max-width: 720px;
-    height: 600px;
+    height: 670px;
     border-radius: 5px;
     overflow: hidden;
     position: relative;
@@ -22,13 +22,19 @@
       flex-basis: 60%;
       height: 100%;
       overflow-y: scroll;
-      padding: 1rem;
+      // padding: 1rem;
       &::-webkit-scrollbar {
         display: none;
       }
       form {
-        @include mixins.d-flex(center, flex-start, column);
+        @include mixins.d-flex(center, center, column);
+        background: rgba(255, 255, 255, 0.41);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
         width: 100%;
+        padding: 1rem;
+        min-height: 100%;
         .passwordVerify {
           @include mixins.d-flex(center, center, row);
           gap: 0 0.5rem;
@@ -81,6 +87,29 @@
             cursor: default;
           }
         }
+        .bgImageInfo {
+          @include mixins.d-flex(center, flex-start, column);
+          width: 100%;
+          margin-top: 1rem;
+          padding-top: 1rem;
+          border-top: 1px solid variables.$grey;
+          h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            cursor: default;
+            color: variables.$black;
+          }
+          p {
+            @include mixins.d-flex(center, space-between, row);
+            width: 100%;
+            border-bottom: 1px dotted variables.$black;
+            cursor: default;
+            span {
+              font-weight: 500;
+            }
+          }
+        }
       }
       .appSettings {
         width: 100%;
@@ -95,40 +124,40 @@
         }
         .toggleDivOuter {
           border-bottom: 1px solid variables.$grey;
-          padding-bottom: .5rem;
+          padding-bottom: 0.5rem;
           margin-bottom: 1rem;
           width: 100%;
           .toggleDiv {
             @include mixins.d-flex(center, space-between, row);
             label {
-              font-size: .9rem;
+              font-size: 0.9rem;
               font-weight: 500;
               cursor: default;
             }
           }
           .toggleDivInfo {
             @include mixins.d-flex(center, flex-start, row);
-            gap: 0 .5rem;
+            gap: 0 0.5rem;
             div {
               @include mixins.d-flex(center, center, row);
             }
             p {
-              font-size: .9rem;
+              font-size: 0.9rem;
               font-weight: 300;
-              margin-top: .3rem;
+              margin-top: 0.3rem;
               cursor: default;
             }
           }
         }
         .chooseDivOuter {
           border-bottom: 1px solid variables.$grey;
-          padding-bottom: .5rem;
+          padding-bottom: 0.5rem;
           margin-bottom: 1rem;
           width: 100%;
           .chooseDiv {
             @include mixins.d-flex(center, space-between, row);
             p {
-              font-size: .85rem;
+              font-size: 0.85rem;
               font-weight: 500;
               cursor: default;
               flex-basis: 60%;
@@ -136,14 +165,14 @@
           }
           .chooseDivInfo {
             @include mixins.d-flex(center, flex-start, row);
-            gap: 0 .5rem;
+            gap: 0 0.5rem;
             div {
               @include mixins.d-flex(center, center, row);
             }
             p {
-              font-size: .9rem;
+              font-size: 0.9rem;
               font-weight: 300;
-              margin-top: .3rem;
+              margin-top: 0.3rem;
               cursor: default;
             }
           }
@@ -170,10 +199,10 @@
         border-bottom: 1px solid variables.$grey;
         .userInfoImage_inner {
           @include mixins.d-flex(center, flex-start, column);
-          gap: .5rem;
+          gap: 0.5rem;
           width: 100%;
           border-bottom: 1px dotted variables.$grey;
-          padding-bottom: .5rem;
+          padding-bottom: 0.5rem;
           p {
             cursor: default;
             font-size: 1.2rem;
@@ -202,7 +231,7 @@
           }
         }
       }
-      
+
       .changeUserActions {
         @include mixins.d-flex(center, flex-start, row);
         gap: 0.3rem;
@@ -228,7 +257,7 @@
           font-size: 1rem;
           font-weight: 600;
           border-radius: 5px;
-          padding: .3rem .9rem;
+          padding: 0.3rem 0.9rem;
           background: variables.$grey;
           border: none;
           outline: none;
@@ -264,7 +293,7 @@
   }
   .userViewList {
     width: 100%;
-    height: 500px !important;
+    height: 670px !important;
   }
 }
 
