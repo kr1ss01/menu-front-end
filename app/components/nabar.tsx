@@ -3,7 +3,6 @@
 import * as React from 'react';
 import style from '@/styles/components/navbar/index.module.scss';
 import { useAuthContext } from '../context/auth.contexts';
-import Image from 'next/image';
 import Logo from '@/helpers/logo.help';
 import { useQuery } from '@tanstack/react-query';
 import Category from '@/types/categories';
@@ -157,7 +156,7 @@ export default function Navbar() {
                                     if (c.visible) {
                                         return (
                                             <li key={key}>
-                                                <Link href={`#${c.order}`} onClick={() => setOpenSide(false)}>
+                                                <Link href={`/#${c._id + 'order-' + key}`} onClick={() => setOpenSide(false)}>
                                                     {c.name}
                                                 </Link>
                                             </li>

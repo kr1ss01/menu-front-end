@@ -21,6 +21,10 @@ type PasswordInputProps = {
     setError3?: React.Dispatch<React.SetStateAction<boolean>>;
     error4?: boolean;
     setError4?: React.Dispatch<React.SetStateAction<boolean>>;
+    onFocus?: React.Dispatch<React.SetStateAction<any>>,
+    onBlur?: React.Dispatch<React.SetStateAction<any>>,
+    onFocusValue?: any,
+    onBlurValue?: any,
 };
 
 export default function PasswordInput({
@@ -41,13 +45,20 @@ export default function PasswordInput({
     setError3,
     error4,
     setError4,
+    onFocus,
+    onBlur,
+    onFocusValue,
+    onBlurValue,
 }: PasswordInputProps) {
     const [visible, setVisible] = React.useState<boolean>(false);
-    const [pwdMenu, setPwdMenu] = React.useState<boolean>(false);
 
-    const handleFocusAndBlur = (action: boolean): void => {
-        if (hasCheck) {
-            setPwdMenu(action);
+    const blurAndFocus = (type: 'blur' | 'focus') => {
+        if (type === 'blur') {
+            onBlur && onBlur(onBlurValue);
+        }
+
+        if (type === 'focus') {
+            onFocus && onFocus(onFocusValue);
         }
     }
 
@@ -69,8 +80,8 @@ export default function PasswordInput({
                 title={placeholder}
                 tabIndex={tabIndex}
                 value={value}
-                onFocus={() => handleFocusAndBlur(true)}
-                onBlur={() => handleFocusAndBlur(false)}
+                onFocus={() => blurAndFocus('focus')}
+                onBlur={() => blurAndFocus('blur')}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setValue(e.currentTarget.value);
                     (emptyFields && value.length === 0 && setEmptyFields) && setEmptyFields(false);

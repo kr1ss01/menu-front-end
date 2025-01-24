@@ -15,19 +15,13 @@ import { checkCapitalCharacters, checkNumber, checkSmallCharacters, checkSpecial
 import ImageInput from '@/helpers/inputs/image.input';
 import PasswordInput from '@/helpers/inputs/password.input';
 import EmailInput from '@/helpers/inputs/email.input';
-// ? Images
-import MAIL from '@/public/mail.png';
-import PHOTO from '@/public/photo.png';
-import IDCARD from '@/public/id-card.png';
-import PADLOCK from '@/public/padlock.png';
 import ToggleSwitch from '@/helpers/inputs/toggle.input';
 import { Settings, UpdateSettings } from '@/types/settings';
 import { getSettings, updateAll } from '@/axios/settings';
 import { AvailabilityOptionsEnum, AvailabilityOptionsObject, PlateImagePositionEnum, PlateImagePostionObject } from '@/types/plate';
 import DropDownInput from '@/helpers/inputs/dropdown.input';
-import { getImage, getImageName, newImage } from '@/axios/backgroundImage';
+import { getImageName, newImage } from '@/axios/backgroundImage';
 import { BackgroundImage } from '@/types/backgroundImage';
-import bufferToImage from '@/helpers/bufferToImage';
 import BASE from '@/axios/base';
 
 enum DisplayEnum {
@@ -60,13 +54,6 @@ const User = ({ token }: { token: string | undefined }) => {
         queryKey: ['get-global-settings-admin'],
         queryFn: async () => {
             return await getSettings();
-        }
-    });
-
-    const { data: bgImageFile, refetch: refetchBgImageFile } = useQuery({
-        queryKey: ['get-background-image-file-admin'],
-        queryFn: async () => {
-            return await getImage();
         }
     });
 
@@ -128,6 +115,9 @@ const User = ({ token }: { token: string | undefined }) => {
     const [imgPosSettings, setImgPosSettings] = React.useState<PlateImagePositionEnum>();
     const [specialSettings, setSpecialSettings] = React.useState<boolean>();
     const [hideImgs, setHideImgs] = React.useState<boolean>();
+
+    // ? Password Focus State
+    const [passwordFocus, setPasswordFocus] = React.useState<boolean>(true);
 
     React.useEffect(() => {
         if (globalSettings) {
@@ -439,6 +429,7 @@ const User = ({ token }: { token: string | undefined }) => {
         const res = await updateAll(updateObjectSettings, token);
 
         if (res) {
+            refetchGlobalSettings();
             const int = window.setInterval(() => {
                 setPopUp(undefined);
                 window.clearInterval(int);
@@ -477,7 +468,7 @@ const User = ({ token }: { token: string | undefined }) => {
         const res = await newImage(token, FD);
 
         if (res) {
-            // ! REFETCH HERE
+            refetchBgImageInfo();
             setBgUploadImage(undefined);
             setBgUploadImageShow(undefined);
             const int = window.setInterval(() => {
@@ -511,7 +502,7 @@ const User = ({ token }: { token: string | undefined }) => {
                 }}>
                     {display === DisplayEnum.name &&
                         <form onSubmit={handleNameSubmition} autoCapitalize='off' autoComplete='off' autoCorrect='off'>
-                            <Image src={IDCARD} alt='Flaticon Image | ID Card Image' width={64} height={64} />
+                            <h2>Αλλαγή Ονόματος Χρήστη</h2>
                             <TextInput
                                 label='name' 
                                 placeholder='Όνομα...'
@@ -531,10 +522,9 @@ const User = ({ token }: { token: string | undefined }) => {
                     }
                     {display === DisplayEnum.image &&
                         <form onSubmit={handleImageSubmition} autoCapitalize='off' autoComplete='off' autoCorrect='off'>
-                            {uploadImageShow ?
+                            <h2>Αλλαγή Εικόνας Χρήστη</h2>
+                            {uploadImageShow &&
                                 <Image src={uploadImageShow} alt="Users Image To Be Uploaded" width={64} height={64} style={{ display: 'block', borderRadius: '50%', objectFit: 'cover', marginBottom: '1rem' }} />
-                            :
-                                <Image src={PHOTO} alt='Flaticon Image | Photo Image Icon' width={64} height={64} style={{ marginBottom: '1rem' }} />
                             }
                             <ImageInput
                                 label='user_image'
@@ -556,31 +546,37 @@ const User = ({ token }: { token: string | undefined }) => {
                     }
                     {display === DisplayEnum.pwd &&
                         <form onSubmit={handleChangePassword} autoCapitalize='off' autoComplete='off' autoCorrect='off'>
-                            <div className={style.passwordVerify}>
-                                <div role='presentation' className={bars >= 1 ? style.passwordVerifyDiv_active : style.passwordVerifyDiv_inactive}></div>
-                                <div role='presentation' className={bars >= 1 ? style.passwordVerifyDiv_active : style.passwordVerifyDiv_inactive}></div>
-                                <div role='presentation' className={bars >= 1 ? style.passwordVerifyDiv_active : style.passwordVerifyDiv_inactive}></div>
-                                <div role='presentation' className={bars >= 1 ? style.passwordVerifyDiv_active : style.passwordVerifyDiv_inactive}></div>
-                                <div role='presentation' className={bars >= 1 ? style.passwordVerifyDiv_active : style.passwordVerifyDiv_inactive}></div>
-                            </div>
-                            <div className={style.passwordVerifyRules}>
-                                {!char &&
-                                    <p>Ο κωδικός πρέπει να περιέχει τουλάχιστον 8 χαρακτήρες.</p>
-                                }
-                                {!special &&
-                                    <p>Ο κωδικός πρέπει να περιέχει τουλάχιστον έναν ειδικό χαρακτήρα.</p>
-                                }
-                                {!num &&
-                                    <p>Ο κωδικός πρέπει να περιέχει τουλάχιστον έναν αριθμό.</p>
-                                }
-                                {!sLetter &&
-                                    <p>Ο κωδικός πρέπει να περιέχει τουλάχιστον ένα πέζο γράμμα.</p>
-                                }
-                                {!cLetter &&
-                                    <p>Ο κωδικός πρέπει να περιέχει τουλάχιστον ενα καιφαλαίο γράμμα.</p>
-                                }
-                            </div>
-                            <Image src={PADLOCK} alt='Flaticon Image | Padlock Icon' width={64} height={64} style={{ marginBottom: '1rem' }} />
+                            <h2>Αλλαγή Κωδικού Πρόσβασης</h2>
+                            {/* {passwordFocus && */}
+                                <div className={style.passwordVerifyCont} style={{
+                                    transform: passwordFocus ? 'translateY(0)' : 'translateY(-110%)',
+                                }}>
+                                    <div className={style.passwordVerify}>
+                                        <div role='presentation' className={bars >= 1 ? style.passwordVerifyDiv_active : style.passwordVerifyDiv_inactive}></div>
+                                        <div role='presentation' className={bars >= 2 ? style.passwordVerifyDiv_active : style.passwordVerifyDiv_inactive}></div>
+                                        <div role='presentation' className={bars >= 3 ? style.passwordVerifyDiv_active : style.passwordVerifyDiv_inactive}></div>
+                                        <div role='presentation' className={bars >= 4 ? style.passwordVerifyDiv_active : style.passwordVerifyDiv_inactive}></div>
+                                        <div role='presentation' className={bars >= 5 ? style.passwordVerifyDiv_active : style.passwordVerifyDiv_inactive}></div>
+                                    </div>
+                                    <div className={style.passwordVerifyRules}>
+                                        {!char &&
+                                            <p>Ο κωδικός πρέπει να περιέχει τουλάχιστον 8 χαρακτήρες.</p>
+                                        }
+                                        {!special &&
+                                            <p>Ο κωδικός πρέπει να περιέχει τουλάχιστον έναν ειδικό χαρακτήρα.</p>
+                                        }
+                                        {!num &&
+                                            <p>Ο κωδικός πρέπει να περιέχει τουλάχιστον έναν αριθμό.</p>
+                                        }
+                                        {!sLetter &&
+                                            <p>Ο κωδικός πρέπει να περιέχει τουλάχιστον ένα πέζο γράμμα.</p>
+                                        }
+                                        {!cLetter &&
+                                            <p>Ο κωδικός πρέπει να περιέχει τουλάχιστον ενα καιφαλαίο γράμμα.</p>
+                                        }
+                                    </div>
+                                </div>
+                            {/* } */}
                             <PasswordInput
                                 tabIndex={1}
                                 placeholder='Τρέχων Κωδικός...'
@@ -612,6 +608,10 @@ const User = ({ token }: { token: string | undefined }) => {
                                 setError2={setPwdMatch}
                                 setError3={setPwdNoMatch}
                                 setError4={setWeakPwd}
+                                onFocus={setPasswordFocus}
+                                onBlur={setPasswordFocus}
+                                onBlurValue={false}
+                                onFocusValue={true}
                             />
                             <PasswordInput
                                 tabIndex={2}
@@ -634,7 +634,7 @@ const User = ({ token }: { token: string | undefined }) => {
                     }
                     {display === DisplayEnum.mail &&
                         <form onSubmit={handleEmailSubmition} autoCapitalize='off' autoComplete='off' autoCorrect='off'>
-                            <Image src={MAIL} alt='Flaticon Image | Envelope Icon' width={64} height={64} style={{ marginBottom: '1rem' }} />
+                            <h2>Αλλαγή E-Mail</h2>
                             <EmailInput 
                                 tabIndex={1}
                                 label='old_email'
@@ -784,6 +784,7 @@ const User = ({ token }: { token: string | undefined }) => {
                     }
                     {DisplayEnum.bgImage === display &&
                         <form onSubmit={handleBgImageSubmition}>
+                            <h2>Αλλαγή Εικόνας Φόντου</h2>
                             <ImageInput 
                                 label='bg_image'
                                 placeholder='Επιλογή Κύριας Εικόνας'
@@ -796,10 +797,12 @@ const User = ({ token }: { token: string | undefined }) => {
                                 uploadImage={bgUploadImage}
                                 uploadImageShow={bgUploadImageShow}
                                 uploadImageTooLarge={bgUploadImageTooLarge}
+                                imageSize={4096 * 2160}
                             />
                             <div>
                                 <SubmitButton text='Αλλαγή Εικόνας' type />
                             </div>
+                            <small>Απαιτήται επαναφώρτοση σελίδας για να φανεί η αλλαγή στην εικόνα φόντου!</small>
                             {bgImageInfo &&
                                 <div className={style.bgImageInfo}>
                                     <h2>Πληροφορίες Εικόνας</h2>
@@ -809,14 +812,6 @@ const User = ({ token }: { token: string | undefined }) => {
                                     <p><span>Τύπος Εικόνας:</span>{bgImageInfo.mimeType}</p>
                                 </div>
                             }
-                            {/* {bgImageFile &&
-                                <Image 
-                                    src={`${BASE}background/`}
-                                    alt='Κύρια Εικόνα Καταλόγου'
-                                    width={330}
-                                    height={330}
-                                />
-                            } */}
                         </form>
                     }
                 </div>
@@ -850,7 +845,7 @@ const User = ({ token }: { token: string | undefined }) => {
                                 <Image src={IDCARD} alt='Flaticon Image | ID Card Icon' width={32} height={32} />
                             :
                         } */}
-                            <p>Αλλαγή Ονόματος</p>
+                            <p>Αλλαγή Ονόματος Χρήστη</p>
                         </button>
                         <button 
                             type='button'
@@ -863,7 +858,7 @@ const User = ({ token }: { token: string | undefined }) => {
                                 <Image src={PHOTO} alt='Flaticon Image | Photo Image Icon' width={64} height={64} />
                             :
                             } */}
-                            <p>Αλλαγή Εικόνας</p>
+                            <p>Αλλαγή Εικόνας Χρήστη</p>
                         </button>
                         <button
                             type='button'

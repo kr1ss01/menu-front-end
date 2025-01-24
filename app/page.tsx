@@ -1,23 +1,23 @@
 "use client"
 
 import * as React from 'react';
-import style from "@/styles/pages/index/index.module.scss";
+import style from '@/styles/pages/test/index.module.scss'
 import { useQuery } from '@tanstack/react-query';
 import Category from '@/types/categories';
 import { getCategories } from '@/axios/categories';
 import LoadingSpinner from '@/helpers/loading';
 import Colors from '@/types/colors';
-import { BugSVG, XCircleFillIcon } from '@/svg';
+import { BugSVG } from '@/svg';
 import Link from 'next/link';
 import { AvailabilityOptionsEnum, PlateComplex, PlateImagePositionEnum } from '@/types/plate';
 import { getPlatesByCategoryStrickt, getSpecialPlates } from '@/axios/complex';
 import { PlateClient } from '@/helpers/plate';
 import Image from 'next/image';
-
-import SPECIAL from '@/public/menu.png';
-import BACKGROUND from '@/public/mp_bgbackground.jpg';
 import { Settings } from '@/types/settings';
 import { getSettings } from '@/axios/settings';
+import useOutsideHook from '@/helpers/hooks';
+import SPECIAL from '@/public/menu.png';
+import BASE from '@/axios/base';
 
 type PlateArrayType = {
     catID: string,
@@ -66,6 +66,11 @@ export default function Home() {
 
     const [showSpecial, setShowSpecial] = React.useState<boolean>(true);
 
+    // ? Ref
+    const specialRef = React.useRef<HTMLDivElement>(null);
+
+    useOutsideHook(specialRef, setShowSpecial);
+
     // ! ADD SPECIAL PLATES
     const getPlates = async (cat: Category, t?: number) => {
         if (!t) {
@@ -110,36 +115,50 @@ export default function Home() {
         }
     }
 
-    const handlePrice = (price: number) => {
-        if (price % 1 == 0) return `${price}.00`;
-        return `${price}0`;
-    }
-
     return (
         <main className={style.main}>
             {(globalSettings && globalSettings.backgroundImageVisibility) &&
-                <div className={style.backgroundImageTop}>
-                    <Image src={BACKGROUND} alt='Mavro Piperi Inside' objectFit='cover' fill priority/>
-                </div>
+                <div
+                    className={style.backgroundImageTop}
+                    style={{
+                    backgroundImage: `url(${BASE}background/)`,
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: 'cover',
+                    }}
+                    role='presentation'
+                ></div>
             }
             {(specialPlates && showSpecial && specialPlates.length >= 1 && globalSettings) &&
                 <div className={style.specialPopUp}>
-                    <div className={style.specialPopUpInner}>
+                    <div className={style.specialPopUpInner} ref={specialRef}>
                         <h2>Πιάτα Ημέρας</h2>
                         <ul className={style.specialPopUp_showSpecialCont}>
                             {specialPlates.map((sp: PlateComplex, key: number) => {
                                 if (!sp.onlyOnSpecial && globalSettings.showOnSpecialVisibility) return
                                 return (
-                                    <li key={key}>
-                                        <p>{sp.name}</p>
-                                        <p>{handlePrice(sp.price)}&euro; {sp.kiloPrice && '/κιλό'}</p>
-                                    </li>
+                                    <PlateClient 
+                                        key={sp._id}
+                                        image={sp.image}
+                                        name={sp.name}
+                                        price={sp.price}
+                                        garnet={sp.garnet}
+                                        desc={sp.desc}
+                                        availability={sp.availability}
+                                        showIcon={sp.showIcon}
+                                        showDesc={sp.showDesc}
+                                        showPrice={sp.showPrice}
+                                        kiloPrice={sp.kiloPrice}
+                                        imageMimeType={sp.imageMimeType}
+                                        showGarnet={sp.showGarnet}
+                                        imagePosition={globalSettings ? globalSettings.imagePosition : PlateImagePositionEnum.left}
+                                        availabilityActions={globalSettings ? globalSettings.availabilitySettings : AvailabilityOptionsEnum.grey}
+                                        hideImage={globalSettings?.hideAllImages}
+                                        animationDelay={key * 100}
+                                    />
                                 );
                             })}
                         </ul>
-                        <button type='button' role='button' className={style.closeButtonSpecial} onClick={() => setShowSpecial(false)}>
-                            <XCircleFillIcon box={2} color={Colors.black} />
-                        </button>
                     </div>
                 </div>
             }
@@ -171,8 +190,8 @@ export default function Home() {
                         if (!cat.visible) return;
                         return (
                             <React.Fragment key={cat._id}>
-                                <li className={style.categoryItem} onClick={() => getPlates(cat)}>
-                                    <Link href={`/test/#${cat._id}`} passHref>
+                                <li className={style.categoryItem} onClick={() => getPlates(cat)} id={`${cat._id}order-${key}`}>
+                                    <Link href={`#${cat._id + 'order-' + key}`} passHref>
                                         <div role='presentation' className={style.cross}>
                                             <span role='presentation'></span>
                                             <span role='presentation' style={{ transform: active?._id === cat._id ? 'rotate(0)' : '' }} ></span>
@@ -193,7 +212,7 @@ export default function Home() {
                                     </div>
                                 }
                                 {(active?._id === cat._id && !errorPlates && !loadingPlates && currentPlates) &&
-                                    <section className={style.platesView} key={key}>
+                                    <section className={style.platesView} key={cat._id}>
                                         {currentPlates.map((pl: PlateComplex, key2: number) => {
                                             if (!pl.visible || pl.onlyOnSpecial) return;
                                             return (

@@ -10,7 +10,11 @@
     position: relative;
   }
   .specialPopUp {
-    @include mixins.setTransBg();
+    // @include mixins.setTransBg();
+    background: rgba(243, 244, 243, 0.05);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.9px);
     @include mixins.d-flex(center, center, row);
     position: fixed;
     top: 0;
@@ -51,16 +55,6 @@
         padding: 0.5rem;
         list-style: none;
         gap: 0.5rem 0;
-        // li {
-        //   @include mixins.d-flex(center, space-between, row);
-        //   width: 100%;
-        //   border-bottom: 2px dotted variables.$black;
-        //   p {
-        //     font-size: 1rem;
-        //     font-weight: 500;
-        //     cursor: default;
-        //   }
-        // }
       }
       .closeButtonSpecial {
         @include mixins.d-flex(center, center, row);
@@ -81,6 +75,7 @@
     @include mixins.naturalButton();
     font-size: 2rem;
     border-radius: 50%;
+    z-index: 650;
     position: fixed;
     bottom: 1rem;
     left: 1rem;

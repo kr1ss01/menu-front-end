@@ -20,6 +20,25 @@
       @include mixins.d-flex(flex-start, space-between, column);
       height: 250px;
       max-width: 250px;
+      .showUsLove {
+        border-top: 1px solid variables.$white;
+        width: 100%;
+        h2 {
+          font-size: 1rem;
+          font-weight: 500;
+          cursor: default;
+          margin-bottom: .7rem;
+        }
+        .showUsLove_icons {
+          @include mixins.d-flex(center, flex-start, row);
+          gap: 0 1rem;
+        }
+        .instagram {
+          svg {
+            fill: url(#rg) !important;
+          }
+        }
+      }
       .footerCol2Info {
         @include mixins.d-flex(flex-start, flex-start, column);
         gap: 0.5rem 0;

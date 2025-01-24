@@ -15,6 +15,7 @@ type ImageInputProps = {
     setUploadImageTooLarge: React.Dispatch<React.SetStateAction<boolean>>;
     noImage: boolean;
     setNoImage: React.Dispatch<React.SetStateAction<boolean>>;
+    imageSize?: number;
 }
 
 export default function ImageInput({
@@ -29,6 +30,7 @@ export default function ImageInput({
     setUploadImageShow,
     noImage,
     setNoImage,
+    imageSize = 1920 * 1080,
 }: ImageInputProps) {
     const handlePreUploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) return;
@@ -43,7 +45,7 @@ export default function ImageInput({
 
         if (!currFile) return;
 
-        if (currFile.size > 1920 * 1080) {
+        if (currFile.size > imageSize) {
             setUploadImageTooLarge(true);
             return;
         }

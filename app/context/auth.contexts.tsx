@@ -56,6 +56,8 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
                 const tk = getCookie(Token.RefreshTokenCookie) as string;
 
                 await handleRt(tk);
+                await handleUpdateRt(false);
+                await handleUpdateRt(true);
             }, 1000 * 60 * 14);
             setInt(int);
         } else {

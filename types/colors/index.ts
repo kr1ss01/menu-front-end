@@ -5,6 +5,8 @@ enum Colors {
     grey = '#d9d9d9',
     error = '#bc4749',
     green = '#21D19F',
+    facebook = '#4267B2',
+    tiktok = '#ff0050'
 };
 
 export default Colors;

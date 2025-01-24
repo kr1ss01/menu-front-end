@@ -35,56 +35,83 @@
         width: 100%;
         padding: 1rem;
         min-height: 100%;
-        .passwordVerify {
-          @include mixins.d-flex(center, center, row);
-          gap: 0 0.5rem;
-          width: 100%;
-          margin-top: 0.5rem;
+        h2 {
+          font-size: 1.3rem;
+          font-weight: 700;
+          cursor: default;
+          color: variables.$black;
+          -webkit-text-stroke-width: 2px;
+          -webkit-text-stroke-color: variables.$black;
           margin-bottom: 1rem;
-          .passwordVerifyDiv_inactive,
-          .passwordVerifyDiv_active {
-            flex-basis: 12.5%;
-            height: 20px;
-            background-color: variables.$grey;
-            border-radius: 10px;
-            overflow: hidden;
-            position: relative;
-            border: none;
-            outline: none;
-            &::before {
-              content: "";
-              position: absolute;
-              top: 0;
-              left: 0;
-              right: 0;
-              bottom: 0;
-              background-color: variables.$green;
-              transition: 200ms linear transform;
+          text-transform: capitalize;
+        }
+        small {
+          text-align: center;
+          margin-top: .5rem;
+          color: variables.$black;
+        }
+        .passwordVerifyCont {
+          @include mixins.setTransBg();
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          border-radius: 0;
+          transition: all 350ms linear;
+          transform: translateY(-100%);
+          // animation: slideDown 300ms linear 1 forwards;
+          .passwordVerify {
+            @include mixins.d-flex(center, center, row);
+            gap: 0 0.5rem;
+            width: 100%;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+            .passwordVerifyDiv_inactive,
+            .passwordVerifyDiv_active {
+              flex-basis: 12.5%;
+              height: 20px;
+              background-color: variables.$white;
+              border-radius: 10px;
+              overflow: hidden;
+              position: relative;
+              border: none;
+              outline: none;
+              &::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: variables.$green;
+                transition: 200ms linear transform;
+              }
+            }
+            .passwordVerifyDiv_inactive::before {
+              transform: translateX(-120%);
+            }
+            .passwordVerifyDiv_active::before {
+              transform: translateX(0);
             }
           }
-          .passwordVerifyDiv_inactive::before {
-            transform: translateX(-120%);
-          }
-          .passwordVerifyDiv_active::before {
-            transform: translateX(0);
-          }
-        }
-        .passwordVerifyRules {
-          @include mixins.d-flex(flex-start, flex-start, column);
-          gap: 0.3rem 0;
-          padding: 0 1rem;
-          margin-top: 0.5rem;
-          margin-bottom: 1rem;
-          p {
-            font-size: 0.8rem;
-            width: 100%;
-            background-color: variables.$white;
-            color: variables.$error;
-            font-weight: 600;
-            text-align: center;
-            padding: 0.3rem;
-            border-radius: 5px;
-            cursor: default;
+          .passwordVerifyRules {
+            @include mixins.d-flex(flex-start, flex-start, column);
+            gap: 0.3rem 0;
+            padding: 0 1rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+            p {
+              @include mixins.setTransBg();
+              font-size: 0.8rem;
+              width: 100%;
+              // background-color: variables.$white;
+              color: variables.$black;
+              font-weight: 600;
+              text-align: center;
+              padding: 0.3rem;
+              border-radius: 5px;
+              cursor: default;
+            }
           }
         }
         .bgImageInfo {
@@ -301,5 +328,14 @@
   .userView {
     width: dashboard.$breakpoint_mobile_width !important;
     margin: dashboard.$margin_mobile !important;
+  }
+}
+
+@keyframes slideDown {
+  0% {
+    transform: translateY(-110%);
+  }
+  100% {
+    transform: translateY(0);
   }
 }
