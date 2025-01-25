@@ -632,9 +632,6 @@ const Plate = ({ token }: { token: string | undefined }) => {
                                 />
                             </div>
                             <div className={style.platesViewInner_imagePosition}>
-                                <button onClick={async () => { await refetchPlates() }} type='button' role='button'>
-                                    Refetch
-                                </button>
                                 <button type='button' role='button' title='Η εικόνα θα εμφανίζεται αριστερά' onClick={() => setImagePosition(PlateImagePositionEnum.left)}>
                                     <BlockLeftSVG box={2} color={imagePosition === PlateImagePositionEnum.left ? Colors.green : Colors.grey} />
                                 </button>

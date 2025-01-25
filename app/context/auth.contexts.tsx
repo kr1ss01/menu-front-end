@@ -48,13 +48,19 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
         handleMountTokenCheck();
     }, []);
 
+    React.useEffect(() => {
+        if (auth && !int) {
+            handleUpdateRt(true);
+        }
+    }, [auth, int]);
+
     // * I'm not sure if this is doing what I want it to do but ok... :)
     // ? Supposed to every 14 minutes update RT :|
     const handleUpdateRt = async (type: boolean) => {
         if (type) {
             const int = window.setInterval(async () => {
                 const tk = getCookie(Token.RefreshTokenCookie) as string;
-
+                console.log("Hello From Handle Update Rt");
                 await handleRt(tk);
                 await handleUpdateRt(false);
                 await handleUpdateRt(true);

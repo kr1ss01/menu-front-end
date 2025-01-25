@@ -117,7 +117,7 @@ const User = ({ token }: { token: string | undefined }) => {
     const [hideImgs, setHideImgs] = React.useState<boolean>();
 
     // ? Password Focus State
-    const [passwordFocus, setPasswordFocus] = React.useState<boolean>(true);
+    const [passwordFocus, setPasswordFocus] = React.useState<boolean>(false);
 
     React.useEffect(() => {
         if (globalSettings) {
@@ -671,7 +671,7 @@ const User = ({ token }: { token: string | undefined }) => {
                         </form>
                     }
                     {(display === DisplayEnum.stg && globalSettings) &&
-                        <form className={style.appSettings} onSubmit={handleSettingsSubmition}>
+                        <form className={style.appSettings} onSubmit={handleSettingsSubmition} autoCapitalize='off' autoComplete='off' autoCorrect='off'>
                             <h2>Αλλαγή Ρυθμίσεων Εφαρμογής</h2>
                             <div className={style.chooseDivOuter}>
                                 <div className={style.chooseDiv}>
@@ -783,7 +783,7 @@ const User = ({ token }: { token: string | undefined }) => {
                         </form>
                     }
                     {DisplayEnum.bgImage === display &&
-                        <form onSubmit={handleBgImageSubmition}>
+                        <form onSubmit={handleBgImageSubmition} autoCapitalize='off' autoComplete='off' autoCorrect='off'>
                             <h2>Αλλαγή Εικόνας Φόντου</h2>
                             <ImageInput 
                                 label='bg_image'
@@ -841,10 +841,6 @@ const User = ({ token }: { token: string | undefined }) => {
                             onClick={() => handleDisplay(DisplayEnum.name)}
                             style={{ opacity: display === DisplayEnum.name ? .5 : 1 }}
                         >
-                            {/* {display === DisplayEnum.name ?
-                                <Image src={IDCARD} alt='Flaticon Image | ID Card Icon' width={32} height={32} />
-                            :
-                        } */}
                             <p>Αλλαγή Ονόματος Χρήστη</p>
                         </button>
                         <button 
@@ -854,10 +850,6 @@ const User = ({ token }: { token: string | undefined }) => {
                             onClick={() => handleDisplay(DisplayEnum.image)}
                             style={{ opacity: display === DisplayEnum.image ? .5 : 1 }}
                         >
-                            {/* {display === DisplayEnum.image ?
-                                <Image src={PHOTO} alt='Flaticon Image | Photo Image Icon' width={64} height={64} />
-                            :
-                            } */}
                             <p>Αλλαγή Εικόνας Χρήστη</p>
                         </button>
                         <button
@@ -866,11 +858,7 @@ const User = ({ token }: { token: string | undefined }) => {
                             className={style.changeButtons}
                             onClick={() => handleDisplay(DisplayEnum.pwd)}
                             style={{ opacity: display === DisplayEnum.pwd ? .5 : 1 }}
-                        > 
-                            {/* {display === DisplayEnum.pwd ?
-                                <Image src={PADLOCK} alt='Flaticon Image | Padlock Icon' width={64} height={64} />
-                            :
-                            } */}
+                        >
                             <p>Αλλαγή Κωδικού Πρόσβασης</p>
                         </button>
                         <button
@@ -880,10 +868,6 @@ const User = ({ token }: { token: string | undefined }) => {
                             onClick={() => handleDisplay(DisplayEnum.mail)}
                             style={{ opacity: display === DisplayEnum.mail ? .5 : 1 }}
                         >
-                            {/* {display === DisplayEnum.mail ?
-                                <Image src={MAIL} alt='Flaticon Image | Envelope Icon' width={64} height={64} />
-                            :
-                            } */}
                             <p>Αλλαγή E-Mail</p>
                         </button>
                         <button
