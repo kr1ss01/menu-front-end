@@ -49,12 +49,6 @@ const Plate = ({ token }: { token: string | undefined }) => {
         }
     });
 
-    // const { data: plates, isLoading: isLoadingPlates, isError: isErrorPlates, refetch: refetchPlates, isFetching: isFetchingPlates } = useQuery<PlateComplex[]>({
-    //     queryKey: ['get-all-plates-from-category-admin'],
-    //     queryFn: catContent ? () => getPlatesByCategoryStrickt(catContent._id) : skipToken,
-        
-    // });
-
     const { data: stats, isLoading: isLoadingStats, isError: isErrorStats } = useQuery<PlateStats>({
         queryKey: ['get-stats-plates-admin'],
         queryFn: async () => {
@@ -189,7 +183,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
     // ? Warn For Not Showing Price On Plate (Might be illegal)
     React.useEffect(() => {
         if (!showPrice) {
-            const ans = confirm("Η απόκρυψη τιμής ίσως υπόκειτε σε νομικές παραβιάσεις!");
+            const ans = confirm("Η απόκρυψη τιμής ίσως υπόκειται σε νομικές παραβάσεις!");
             if (!ans) setShowPrice(true);
         }
     }, [showPrice]);
@@ -519,7 +513,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
                 setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
-            setPopUp({ text: 'Σφάλμα Στην Επαναφώρτοση πιάτων!', type: 'error', intID: int });
+            setPopUp({ text: 'Σφάλμα Στην Επαναφόρτωση πιάτων!', type: 'error', intID: int });
             return;
         }
     }
@@ -610,12 +604,6 @@ const Plate = ({ token }: { token: string | undefined }) => {
                             </button>
                         </div>
                     }
-                    {/* {(plate && !loadingPlates && !errorPlates) &&
-                        <div className={style.categoriesViewList_loading}>
-                            <LoadingSpinner />
-                            <p>Φόρτωση Πιάτων...</p>
-                        </div>
-                    } */}
                     {(plate) &&
                         <ul className={style.platesViewInner}>
                             <div className={style.platesViewInner_filters}>
@@ -635,7 +623,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
                                 <button type='button' role='button' title='Η εικόνα θα εμφανίζεται αριστερά' onClick={() => setImagePosition(PlateImagePositionEnum.left)}>
                                     <BlockLeftSVG box={2} color={imagePosition === PlateImagePositionEnum.left ? Colors.green : Colors.grey} />
                                 </button>
-                                <button type='button' role='button' title='Η εικόνα θα εμφανίζεται στο παρασκείνηο' onClick={() => setImagePosition(PlateImagePositionEnum.bg)}>
+                                <button type='button' role='button' title='Η εικόνα θα εμφανίζεται στο παρασκήνιο' onClick={() => setImagePosition(PlateImagePositionEnum.bg)}>
                                     <BlockBGSVG box={2} color={imagePosition === PlateImagePositionEnum.bg ? Colors.green : Colors.grey} />
                                 </button>
                                 <button type='button' role='button' title='Η εικόνα θα εμφανίζεται δεξιά' onClick={() => setImagePosition(PlateImagePositionEnum.right)}>

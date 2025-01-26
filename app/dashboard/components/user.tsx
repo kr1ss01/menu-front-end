@@ -310,7 +310,7 @@ const User = ({ token }: { token: string | undefined }) => {
                 setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
-            setPopUp({ text: 'Οι Κωδικοί Πρόσβασής Δεν Ταιριάζουν!', type: 'error', intID: int});
+            setPopUp({ text: 'Οι Κωδικοί Πρόσβασης Δεν Ταιριάζουν!', type: 'error', intID: int});
             return;
         }
 
@@ -335,7 +335,7 @@ const User = ({ token }: { token: string | undefined }) => {
                 setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
-            setPopUp({ text: 'Επιτιχής Αλλγαή!', type: 'success', intID: int });
+            setPopUp({ text: 'Επιτυχής Αλλαγή!', type: 'success', intID: int });
             return;
         } else {
             setError(true);
@@ -547,7 +547,6 @@ const User = ({ token }: { token: string | undefined }) => {
                     {display === DisplayEnum.pwd &&
                         <form onSubmit={handleChangePassword} autoCapitalize='off' autoComplete='off' autoCorrect='off'>
                             <h2>Αλλαγή Κωδικού Πρόσβασης</h2>
-                            {/* {passwordFocus && */}
                                 <div className={style.passwordVerifyCont} style={{
                                     transform: passwordFocus ? 'translateY(0)' : 'translateY(-110%)',
                                 }}>
@@ -569,10 +568,10 @@ const User = ({ token }: { token: string | undefined }) => {
                                             <p>Ο κωδικός πρέπει να περιέχει τουλάχιστον έναν αριθμό.</p>
                                         }
                                         {!sLetter &&
-                                            <p>Ο κωδικός πρέπει να περιέχει τουλάχιστον ένα πέζο γράμμα.</p>
+                                            <p>Ο κωδικός πρέπει να περιέχει τουλάχιστον ένα πεζό γράμμα.</p>
                                         }
                                         {!cLetter &&
-                                            <p>Ο κωδικός πρέπει να περιέχει τουλάχιστον ενα καιφαλαίο γράμμα.</p>
+                                            <p>Ο κωδικός πρέπει να περιέχει τουλάχιστον ένα κεφαλαίο γράμμα.</p>
                                         }
                                     </div>
                                 </div>
@@ -615,7 +614,7 @@ const User = ({ token }: { token: string | undefined }) => {
                             />
                             <PasswordInput
                                 tabIndex={2}
-                                placeholder='Επανάληψη Καινούργιου Κωδικός...'
+                                placeholder='Επανάληψη Καινούργιου Κωδικού...'
                                 label='pwdNewRe'
                                 size={1.2}
                                 value={newPwdRe}
@@ -734,7 +733,7 @@ const User = ({ token }: { token: string | undefined }) => {
                                     <div>
                                         <InfoSVG box={1.8} color={Colors.grey} />
                                     </div>
-                                    <p>Μπορείτε να κρύψετε ή να εμφανίσεται την κύρια εικόνα της εφαρμογής στην αρχική σελίδα.</p>
+                                    <p>Μπορείτε να κρύψετε ή να εμφανίσετε την κύρια εικόνα της εφαρμογής στην αρχική σελίδα.</p>
                                 </div>
                             </div>
                             <div className={style.toggleDivOuter}>
@@ -774,7 +773,7 @@ const User = ({ token }: { token: string | undefined }) => {
                                     <div>
                                         <InfoSVG box={1.8} color={Colors.grey} />
                                     </div>
-                                    <p>Μπορείτε με ένα κλίκ να απενεργοποιήσεται όλες τις εικόνες. Δεν επιρεάζει τις ίδιες τις εικόνες, απλά δεν εμφανίζονται στο μενού.</p>
+                                    <p>Μπορείτε με ένα κλίκ να απενεργοποιήσετε όλες τις εικόνες. Δεν επηρεάζει τις ίδιες τις εικόνες, απλά δεν εμφανίζονται στο μενού.</p>
                                 </div>
                             </div>
                             <div style={{ padding: '0 .5rem', marginTop: '1rem', width: '100%' }}>
@@ -802,7 +801,7 @@ const User = ({ token }: { token: string | undefined }) => {
                             <div>
                                 <SubmitButton text='Αλλαγή Εικόνας' type />
                             </div>
-                            <small>Απαιτήται επαναφώρτοση σελίδας για να φανεί η αλλαγή στην εικόνα φόντου!</small>
+                            <small>Απαιτήται επαναφόρτωση σελίδας για να φανεί η αλλαγή στην εικόνα φόντου!</small>
                             {bgImageInfo &&
                                 <div className={style.bgImageInfo}>
                                     <h2>Πληροφορίες Εικόνας</h2>

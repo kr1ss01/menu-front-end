@@ -47,7 +47,7 @@ export default function Footer() {
                         </p>
                         <p>
                             <ShoppingCartSVG box={1.3} color={Colors.black} />
-                            <span>Αγοραστικός υπεύθηνος: Κύριλλος Καρυπίδης.</span>
+                            <span>Αγοραστικός υπεύθυνος: Κύριλλος Καρυπίδης.</span>
                         </p>
                         {/* <p className={style.footerCol2InfoPrice}>Οι τιμές καταλόγου ενδέχεται να αλλάξουν χωρις καμία προειδοποίηση!</p> */}
                     </div>

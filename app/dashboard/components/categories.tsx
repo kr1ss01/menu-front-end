@@ -125,14 +125,14 @@ const Categories = ({ token }: { token: string | undefined }) => {
                     setPopUp(undefined);
                     window.clearInterval(int);
                 }, 5000);
-                setPopUp({ text: 'Ανεπυτιχής Διαγραφή! Υπάρχουν πιάτα στην κατηγορία!', type: "error", intID: int });
+                setPopUp({ text: 'Ανεπιτυχής Διαγραφή! Υπάρχουν πιάτα στην κατηγορία!', type: "error", intID: int });
                 return;
             } else {
                 const int = window.setInterval(() => {
                     setPopUp(undefined);
                     window.clearInterval(int);
                 }, 5000);
-                setPopUp({ text: 'Ανεπυτιχής Διαγραφή!', type: "error", intID: int });
+                setPopUp({ text: 'Ανεπιτυχής Διαγραφή!', type: "error", intID: int });
                 return;
             }
         }
@@ -274,7 +274,7 @@ const Categories = ({ token }: { token: string | undefined }) => {
                 setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
-            setPopUp({ text: 'Επιτυχής Αλλαγή Σειράς!', type: 'success', intID: int });
+            setPopUp({ text: 'Επιτυχιμένη Αλλαγή Σειράς!', type: 'success', intID: int });
             return;
         } else {
             setOrder(true);
@@ -283,7 +283,7 @@ const Categories = ({ token }: { token: string | undefined }) => {
                 setPopUp(undefined);
                 window.clearInterval(int);
             }, 5000);
-            setPopUp({ text: 'Ανεπιτυχής Αλλαγή Σειράς!', type: 'error', intID: int });
+            setPopUp({ text: 'Μη Επιτυχιμένη Αλλαγή Σειράς!', type: 'error', intID: int });
             return;
         }
     }
@@ -399,7 +399,7 @@ const Categories = ({ token }: { token: string | undefined }) => {
 
                         />
                         <div className={style.toggleDiv}>
-                            <label htmlFor="visible">Εμφάνηση στο μενού: </label>
+                            <label htmlFor="visible">Εμφάνιση στο μενού: </label>
                             <ToggleSwitch 
                                 banner=''
                                 hasInfo={false}
@@ -458,7 +458,7 @@ const Categories = ({ token }: { token: string | undefined }) => {
                     </div>
                     <div className={style.filters}>
                         <div className={style.toggleDiv}>
-                            <label htmlFor="showVisible">Δείτε Κατηγορίες Που Είναι Εμφανής: </label>
+                            <label htmlFor="showVisible">Δείτε Κατηγορίες Που Είναι Εμφανείς: </label>
                             <ToggleSwitch
                                 banner=''
                                 hasInfo={false}
@@ -468,7 +468,7 @@ const Categories = ({ token }: { token: string | undefined }) => {
                             />
                         </div>
                         <div className={style.toggleDiv}>
-                            <label htmlFor="showNonVisible">Δείτε Κατηγορίες Που Είναι Μη Εμφανής: </label>
+                            <label htmlFor="showNonVisible">Δείτε Κατηγορίες Που Είναι Μη Εμφανείς: </label>
                             <ToggleSwitch
                                 banner=''
                                 hasInfo={false}

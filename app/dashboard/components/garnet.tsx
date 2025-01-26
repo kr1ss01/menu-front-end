@@ -82,14 +82,14 @@ const Garnets = ({ token }: { token: string | undefined }) => {
                     setPopUp(undefined);
                     window.clearInterval(int);
                 }, 5000);
-                setPopUp({ text: 'Ανεπυτιχής Διαγραφή! Υπάρχουν πιάτα στην γαρνιτούρα!', type: 'error', intID: int });
+                setPopUp({ text: 'Ανεπιτυχής Διαγραφή! Υπάρχουν πιάτα στην γαρνιτούρα!', type: 'error', intID: int });
                 return;
             } else {
                 const int = window.setInterval(() => {
                     setPopUp(undefined);
                     window.clearInterval(int);
                 }, 5000);
-                setPopUp({ text: 'Ανεπυτιχής Διαγραφή!', type: 'error', intID: int });
+                setPopUp({ text: 'Ανεπιτυχής Διαγραφή!', type: 'error', intID: int });
                 return;
             }
         }
