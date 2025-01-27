@@ -119,6 +119,8 @@ const User = ({ token }: { token: string | undefined }) => {
     // ? Password Focus State
     const [passwordFocus, setPasswordFocus] = React.useState<boolean>(false);
 
+    const userCardRef = React.useRef<HTMLDivElement>(null);
+
     React.useEffect(() => {
         if (globalSettings) {
             setBgImage(globalSettings.backgroundImageVisibility);
@@ -138,6 +140,75 @@ const User = ({ token }: { token: string | undefined }) => {
 
         setBars(a + b + c + d + e);
     }, [newPwd]);
+
+    React.useEffect(() => {
+        if (!userCardRef.current) return;
+        
+        const handleMouseMove = (e: MouseEvent) => {
+            if (!userCardRef.current) return;
+
+            const elementHeight = userCardRef.current?.clientHeight;
+            const elementWidth = userCardRef.current?.clientWidth;
+            const cardMouseX = e.layerX;
+            const cardMouseY = e.layerY;
+
+            let left;
+            let right;
+            let up;
+            let down;
+
+            if (cardMouseY > elementHeight / 2) {
+                // ! DOWN
+                down = true;
+            }
+
+            if (cardMouseY < elementHeight / 2) {
+                // ! UP
+                up = true;
+            }
+
+            if (cardMouseX > elementWidth / 2) {
+                // ! RIGHT
+                right = true;
+            }
+
+            if (cardMouseX < elementWidth / 2) {
+                // ! LEFT
+                left = true;
+            }
+            
+            if (up && left) {
+                userCardRef.current.style.transform = 'rotateX(-10deg) rotateY(5deg)';
+            }
+
+            if (up && right) {
+                userCardRef.current.style.transform = 'rotateX(-10deg) rotateY(-5deg)';
+            }
+
+            if (down && left) {
+                userCardRef.current.style.transform = 'rotateX(10deg) rotateY(5deg)';
+            }
+
+            if (down && right) {
+                userCardRef.current.style.transform = 'rotateX(10deg) rotateY(-5deg)';
+            }
+        }
+
+        const handleOutsideResetMouse = (e: MouseEvent) => {
+            // @ts-ignore
+            if (userCardRef.current && !userCardRef.current.contains(e.target)) {
+                userCardRef.current.style.transform = 'rotateX(0) rotateY(0)';
+            }
+        }
+
+        userCardRef.current.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mousemove', handleOutsideResetMouse);
+
+        return () => {
+            userCardRef.current?.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('mousemove', handleOutsideResetMouse);
+        }
+    }, []);
 
     const chechCharachters = (): number => {
         if (newPwd.length >= 8) {
@@ -815,23 +886,24 @@ const User = ({ token }: { token: string | undefined }) => {
                     }
                 </div>
                 <div className={style.userSettings}>
-                    <div className={style.userInfoImage}>
-                        <div className={style.userInfoImage_inner}>
-                            {(userInfo && userInfo.image && userInfo.imageMimeType) ?
-                                <Image src={`data:${userInfo.imageMimeType};base64,${Buffer.from(userInfo.image).toString('base64')}`} alt='User Image' width={50} height={50} />
-                                :
-                                <UserSVG box={2.5} color={Colors.black} />
-                            }
-                            <p>{userInfo && userInfo.username}</p>
-                        </div>
-                        <div className={style.userSettingsInfo}>
-                            <p>Όνομα: <span>{user && user.name}</span></p>
-                            <p>E-mail: <span>{user && user.email}</span></p>
-                            <p>Αλλαγή Κωδικού: <span>{user && user.pwdChange}</span></p>
-                            <p>Διαχειριστής: <span>{user && user.auth ? 'Ναι' : 'Όχι'}</span></p>
+                    <div className={style.userSettingsCont}>
+                        <div className={style.userInfoImage} ref={userCardRef}>
+                            <div className={style.userInfoImage_inner}>
+                                {(userInfo && userInfo.image && userInfo.imageMimeType) ?
+                                    <Image src={`data:${userInfo.imageMimeType};base64,${Buffer.from(userInfo.image).toString('base64')}`} alt='User Image' width={50} height={50} />
+                                    :
+                                    <UserSVG box={2.5} color={Colors.black} />
+                                }
+                                <p>{userInfo && userInfo.username}</p>
+                            </div>
+                            <ul className={style.userSettingsInfo}>
+                                <li>Όνομα: <p>{user && user.name}</p></li>
+                                <li>E-mail: <p>{user && user.email}</p></li>
+                                <li>Αλλαγή Κωδικού: <p>{user && user.pwdChange}</p></li>
+                                <li>Διαχειριστής: <p>{user && user.auth ? 'Ναι' : 'Όχι'}</p></li>
+                            </ul>
                         </div>
                     </div>
-                    {/* <h2>Ρυθμίσεις Χρήστη</h2> */}
                     <div className={style.changeUserActions}>
                         <button
                             type='button'

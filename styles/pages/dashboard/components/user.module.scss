@@ -211,24 +211,26 @@
       min-width: 300px;
       background-color: variables.$white;
       height: 100%;
-      h2 {
-        font-size: 1rem;
-        font-weight: 700;
-        text-align: center;
-        width: 100%;
-        padding: 0.5rem;
-        cursor: default;
+      // padding: 1rem;
+      .userSettingsCont {
+        padding: 1rem;
+        perspective: 1000px;
+        perspective-origin: center;
       }
       .userInfoImage {
         @include mixins.d-flex(center, flex-start, column);
         padding: 0.5rem 1rem;
         width: 100%;
-        border-bottom: 1px solid variables.$grey;
+        // border-bottom: 1px solid variables.$grey;
+        background-color: variables.$grey;
+        @include mixins.setTransBg();
+        border-radius: 10px;
+        transition: transform 200ms linear;
         .userInfoImage_inner {
           @include mixins.d-flex(center, flex-start, column);
           gap: 0.5rem;
           width: 100%;
-          border-bottom: 1px dotted variables.$grey;
+          border-bottom: 2px dotted variables.$grey;
           padding-bottom: 0.5rem;
           p {
             cursor: default;
@@ -245,16 +247,22 @@
           padding: 1rem 1rem;
           margin-top: 0.2rem;
           width: 100%;
-          p {
+          list-style: none;
+          li {
             @include mixins.d-flex(flex-start, space-between, row);
-            font-size: 0.8rem;
-            font-weight: 600;
+            font-size: .9rem;
+            font-weight: 700;
             cursor: default;
+            display: inline-block;
+            margin-bottom: .5rem;
+            text-transform: uppercase;
           }
-          span {
-            text-align: right;
+          p {
+            display: block;
+            text-align: left;
             font-size: 0.8rem;
             font-weight: 300;
+            text-transform: initial;
           }
         }
       }
@@ -265,26 +273,11 @@
         flex-wrap: wrap;
         padding: 0.5rem;
         .changeButtons {
-          // @include mixins.d-flex(center, center, row);
-          // font-size: 1rem;
-          // font-weight: 600;
-          // border-radius: 5px;
-          // padding: 0.3rem 0.9rem;
-          // background-color: rgba($color: variables.$black, $alpha: .8);
-          // border: none;
-          // outline: none;
-          // text-transform: uppercase;
-          // background-position: center;
-          // background-repeat: no-repeat;
-          // cursor: pointer;
-          // width: calc(100% / 2 - 0.3rem);
-          // color: variables.$white;
-          // aspect-ratio: 1/1;
           @include mixins.d-flex(center, flex-start, row);
           font-size: 1rem;
           font-weight: 600;
           border-radius: 5px;
-          padding: 0.3rem 0.9rem;
+          padding: 0.5rem 0.9rem;
           background: variables.$grey;
           border: none;
           outline: none;
