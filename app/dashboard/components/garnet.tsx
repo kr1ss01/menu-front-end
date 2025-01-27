@@ -142,7 +142,7 @@ const Garnets = ({ token }: { token: string | undefined }) => {
         setEmptyFields(false);
         setError(false);
 
-        if (name.length === 0) {
+        if (updateObj.name.length === 0) {
             setEmptyFields(true);
             const int = window.setInterval(() => {
                 setPopUp(undefined);

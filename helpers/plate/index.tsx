@@ -287,7 +287,7 @@ export const PlateClient = ({
                             onClick={() => { (onClick && object) ? onClick(object) : null }}
                         >
                             <p className={style.infoDivName}>{(showOrder && order) && `(${order})`} {name}</p>
-                            {showGarnet && <span className={style.infoDivGarnet}>Συνοδευεται με: {garnet.name === 'Καμία' ? '-' : garnet.name}</span>}
+                            {showGarnet && <span className={style.infoDivGarnet}>Συνοδεύεται με: {garnet.name === 'Καμία' ? '-' : garnet.name}</span>}
                             {showDesc && <span className={style.infoDivDesc}>{desc}</span>}
                             {showPrice && 
                                 <span className={style.platePrice}>
@@ -316,7 +316,7 @@ export const PlateClient = ({
                             onClick={() => { (onClick && object) ? onClick(object) : null }}
                         >
                             <p className={style.infoDivName}>{(showOrder && order) && `(${order})`} {name}</p>
-                            {showGarnet && <span className={style.infoDivGarnet}>Συνοδευεται με: {garnet.name === 'Καμία' ? '-' : garnet.name}</span>}
+                            {showGarnet && <span className={style.infoDivGarnet}>Συνοδεύεται με: {garnet.name === 'Καμία' ? '-' : garnet.name}</span>}
                             {showDesc && <span className={style.infoDivDesc}>{desc}</span>}
                             {showPrice && 
                                 <span className={style.platePrice}>
@@ -352,7 +352,7 @@ export const PlateClient = ({
             onClick={() => { (onClick && object) ? onClick(object) : null }}
         >
             <p>{(showOrder && order) && `(${order})`} {name}</p>
-            {showGarnet && <span>Συνοδευεται με: {garnet.name}</span>}
+            {showGarnet && <span>Συνοδεύεται με: {garnet.name}</span>}
             {showDesc && <span>{desc}</span>}
             {showPrice && 
                 <span className={style.platePrice}>

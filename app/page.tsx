@@ -50,6 +50,42 @@ export default function Home() {
     });
 
     React.useEffect(() => {
+        let altPress = false;
+        let keyPress = false;
+
+        const handleKeyBind = (e: KeyboardEvent) => {
+            if (e.code === "AltLeft") {
+                altPress = true;
+            }
+
+            if (e.code === "KeyS") {
+                e.preventDefault();
+                keyPress = true;
+            }
+        }
+
+        const handleKeyUp = (e: KeyboardEvent) => {
+            if (altPress && keyPress) {
+                setShowSpecial(curr => !curr);
+            }
+
+            if (e.code === "AltLeft") {
+                altPress = false;
+            }
+
+            keyPress = false;
+        }
+
+        document.addEventListener('keydown', handleKeyBind);
+        document.addEventListener('keyup', handleKeyUp);
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyBind)
+            document.removeEventListener('keyup', handleKeyUp)
+        };
+    }, []);
+
+    React.useEffect(() => {
         if (special) {
             setSpecialPlates(special);
         }

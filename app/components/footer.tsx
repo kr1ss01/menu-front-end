@@ -23,7 +23,7 @@ export default function Footer() {
                 <div className={style.footerCol2}>
                     <Logo align='flex-start' justify='center' margin={0} mode='dark' />
                     <div className={style.showUsLove}>
-                        <h2>Αγαπηστέ μας:</h2>
+                        <h2>Αγαπήστε μας:</h2>
                         <div className={style.showUsLove_icons}>
                             <a href="https://www.instagram.com/mavropiperiskg" target="_blank" rel="noopener noreferrer" className={style.instagram}>
                                 <InstagramSquareSVG box={1.5} color={Colors.white} />
