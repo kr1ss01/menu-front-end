@@ -221,11 +221,11 @@
         @include mixins.d-flex(center, flex-start, column);
         padding: 0.5rem 1rem;
         width: 100%;
-        // border-bottom: 1px solid variables.$grey;
         background-color: variables.$grey;
         @include mixins.setTransBg();
-        border-radius: 10px;
+        border-radius: 0px;
         transition: transform 200ms linear;
+        border: 1px solid variables.$black;
         .userInfoImage_inner {
           @include mixins.d-flex(center, flex-start, column);
           gap: 0.5rem;
@@ -244,6 +244,7 @@
           }
         }
         .userSettingsInfo {
+          @include mixins.d-flex(flex-start, flex-start, column);
           padding: 1rem 1rem;
           margin-top: 0.2rem;
           width: 100%;
@@ -274,17 +275,15 @@
         padding: 0.5rem;
         .changeButtons {
           @include mixins.d-flex(center, flex-start, row);
+          @include mixins.naturalButton();
+          width: 100%;
+          padding: .3rem .9rem;
           font-size: 1rem;
           font-weight: 600;
-          border-radius: 5px;
-          padding: 0.5rem 0.9rem;
-          background: variables.$grey;
-          border: none;
-          outline: none;
           text-transform: uppercase;
-          cursor: pointer;
-          color: variables.$black;
-          width: 100%;
+          background-color: rgba($color: variables.$black, $alpha: .8);
+          color: variables.$white;
+          border-radius: 5px;
         }
       }
     }
@@ -300,6 +299,11 @@
   .userViewList,
   .userSettings {
     flex-basis: auto !important;
+  }
+  .userSettingsCont {
+    max-width: 310px !important;
+    width: 100% !important;
+    margin: 0 auto;
   }
   .errorHandlingDiv {
     width: 95% !important;
