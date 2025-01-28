@@ -22,6 +22,7 @@ enum Dashboard {
 export default function Page() {
     const { token, auth, loading } = useAuthContext();
 
+    // ? Component State
     const [active, setActive] = React.useState<Dashboard>(Dashboard.user);
 
     // ? Check Authentication
@@ -31,6 +32,11 @@ export default function Page() {
         }
     }, [loading]);
 
+    // ? Key-bind Use Effect
+    // * ALT + 1 -> User's Page
+    // * ALT + 2 -> Categories Page
+    // * ALT + 3 -> Garnets Page
+    // * ALT + 4 -> Plates Page
     React.useEffect(() => {
         let digitPress: boolean = false;
         let altPress: boolean = false;

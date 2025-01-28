@@ -2,9 +2,10 @@
 
 import * as React from 'react';
 import style from '@/styles/components/footer/index.module.scss';
-import Logo from '@/helpers/logo.help';
+import Logo from '@/helpers/logo';
 import { FacebookSquareSVG, InstagramSquareSVG, MapSVG, PhoneSVG, ShoppingCartSVG, TikTokSVG } from '@/svg';
 import Colors from '@/types/colors';
+import { FACEBOOK, INSTAGRAM, TIKTOK } from '../const/social_media.const';
 
 export default function Footer() {
     return (
@@ -25,13 +26,13 @@ export default function Footer() {
                     <div className={style.showUsLove}>
                         <h2>Αγαπήστε μας:</h2>
                         <div className={style.showUsLove_icons}>
-                            <a href="https://www.instagram.com/mavropiperiskg" target="_blank" rel="noopener noreferrer" className={style.instagram}>
+                            <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" className={style.instagram}>
                                 <InstagramSquareSVG box={1.5} color={Colors.white} />
                             </a>
-                            <a href="http://www.facebook.com/mavropiperiskg/" target="_blank" rel="noopener noreferrer">
+                            <a href={FACEBOOK} target="_blank" rel="noopener noreferrer">
                                 <FacebookSquareSVG box={1.5} color={Colors.facebook} />
                             </a>
-                            <a href="https://www.tiktok.com/@mavropiperi_skg" target='_blank' rel='noopener noreferrer'>
+                            <a href={TIKTOK} target='_blank' rel='noopener noreferrer'>
                                 <TikTokSVG box={1.3} color={Colors.tiktok} />
                             </a>
                         </div>

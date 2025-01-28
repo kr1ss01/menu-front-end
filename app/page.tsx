@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from 'react';
-import style from '@/styles/pages/test/index.module.scss'
+import style from '@/styles/pages/index/index.module.scss'
 import { useQuery } from '@tanstack/react-query';
 import Category from '@/types/categories';
 import { getCategories } from '@/axios/categories';

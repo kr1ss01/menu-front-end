@@ -16,6 +16,7 @@ import DeleteInterface from '@/types/delete';
 import SearchInput from '@/helpers/inputs/search.input';
 
 const Garnets = ({ token }: { token: string | undefined }) => {
+    // ? Fetch All Garnets
     const { data: garnets, isLoading, isError, refetch } = useQuery<Garnet[]>({
         queryKey: ['get-all-garnets-admin'],
         queryFn: async () => {
@@ -43,13 +44,14 @@ const Garnets = ({ token }: { token: string | undefined }) => {
     // ? Search Filter
     const [search, setSearch] = React.useState<string>('');
 
-
+    // ? As Soon As Garnets are fetched, set them as state.
     React.useEffect(() => {
         if (garnets) {
             setAllGarnets(garnets);
         }
     }, [garnets]);
 
+    // ? Handle Update Object
     React.useEffect(() => {
         if (updateObj) {
             setUpdateName(updateObj.name);
@@ -62,6 +64,7 @@ const Garnets = ({ token }: { token: string | undefined }) => {
         }
     }, [updateObj]);
 
+    // ? Handle Garnet Deletion
     const handleDeletion = async (obj: Garnet) => {
         const ans = confirm("Είστε σίγουρος πως θέλετε να διαγράψετε την γαρνιτούρα: \"" + obj.name + "\"");
         if (!ans) return;
@@ -95,6 +98,7 @@ const Garnets = ({ token }: { token: string | undefined }) => {
         }
     }
 
+    // ? Handle Garnet Creation
     const handleSubmitionCreation = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -135,6 +139,7 @@ const Garnets = ({ token }: { token: string | undefined }) => {
         }
     }
 
+    // ? Handle Ganret Update
     const handleSubmitionUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!updateObj) return;

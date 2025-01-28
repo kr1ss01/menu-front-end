@@ -35,6 +35,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
     // ? Render Category Content
     const [catContent, setCatContent] = React.useState<Category>();
 
+    // ? Fetch all categories
     const { data: categories, isLoading: isLoadingCategories, isError: isErrorCategories, refetch: refetchCategories } = useQuery<Category[]>({
         queryKey: ['get-all-categories-for-plates-admin'],
         queryFn: async () => {
@@ -42,6 +43,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
         }
     });
 
+    // ? Fetch all garnets
     const { data: garnets, isLoading: isLoadingGarnets, isError: isErrorGarnets } = useQuery<Garnet[]>({
         queryKey: ['get-all-garnets-for-plates-admin'],
         queryFn: async () => {
@@ -49,12 +51,13 @@ const Plate = ({ token }: { token: string | undefined }) => {
         }
     });
 
+    // ? Fetch stats of plates
     const { data: stats, isLoading: isLoadingStats, isError: isErrorStats } = useQuery<PlateStats>({
         queryKey: ['get-stats-plates-admin'],
         queryFn: async () => {
             return await getPlateStats();
         }
-    })
+    });
 
     // ? API States
     const [allCategories, setAllCategories] = React.useState<Category[]>();
@@ -132,17 +135,19 @@ const Plate = ({ token }: { token: string | undefined }) => {
     let todoItemDragOver = React.useRef<number>(0);
     let todoItemDrag = React.useRef<number>(0);
 
+    // ? Handle Uplaod Image Too Large Error -- It's not beeing handled by Image Component at Inputs.
     React.useEffect(() => {
-            if (uploadImageTooLarge) {
-                const int = window.setInterval(() => {
-                    setPopUp(undefined);
-                    window.clearInterval(int);
-                }, 5000);
-                setPopUp({ type: 'error', text: 'Μεγάλη Εικόνα!', intID: int });
-                return;
-            }
-        }, [uploadImageTooLarge]);
+        if (uploadImageTooLarge) {
+            const int = window.setInterval(() => {
+                setPopUp(undefined);
+                window.clearInterval(int);
+            }, 5000);
+            setPopUp({ type: 'error', text: 'Μεγάλη Εικόνα!', intID: int });
+            return;
+        }
+    }, [uploadImageTooLarge]);
 
+    // ? Don't let user have specific pair values checked at the same time.
     React.useEffect(() => {
         if (visibleOnly && nonVisibleOnly) {
             setNonVisibleOnly(false);
@@ -185,6 +190,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
         }
     }, [exclDayPlateOnly]);
 
+    // ? As soos as categories are fetched set them as state.
     React.useEffect(() => {
         if (categories) {
             setAllCategories(categories);
@@ -199,7 +205,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
         }
     }, [showPrice]);
 
-    // ! ADD SPECIAL PLATES
+    // ? Get Plates and handle Cache.
     const getPlates = async (cat: Category, t?: number) => {
         if (!t) {
             setLoadingPlates(false);
@@ -286,14 +292,8 @@ const Plate = ({ token }: { token: string | undefined }) => {
         }
     }, [updateObject]);
 
-    // React.useEffect(() => {
-    //     if (plates) {
-    //         setAllPlates(plates);
-    //     } else {
-    //         setAllPlates(undefined);
-    //     }
-    // }, [plates]);
-
+    // ? Handle Plate Creation Or Update
+    // * This function handles BOTH update & creation.
     const handleSubmition = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -412,6 +412,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
         }
     }
 
+    // ? Handle Order Change
     const handleOrderSubmition = async (e: React.MouseEvent) => {
         if (!order || !plate) return;
         setOrder(false);
@@ -505,6 +506,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
         }
     }
 
+    // ? Refetch Function - Similar to useQuery refetch function.
     const refetchPlates = async () => {
         if (!active) return;
 
@@ -529,6 +531,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
         }
     }
 
+    // ? Delete Plate
     const deletePlateFE = async (id: string | undefined) => {
         const ans = confirm("Ειστέ σίγουρος για την διαγραφή του " + updateObject?.name + ";");
 

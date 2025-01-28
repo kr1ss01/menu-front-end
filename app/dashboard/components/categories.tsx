@@ -17,6 +17,7 @@ import DeleteInterface from '@/types/delete';
 import SearchInput from '@/helpers/inputs/search.input';
 
 const Categories = ({ token }: { token: string | undefined }) => {
+    // ? Fetch Categories
     const { data: categories, isLoading, isError, refetch } = useQuery<Category[]>({
         queryKey: ['get-all-categories-admin'],
         queryFn: async () => {
@@ -24,6 +25,7 @@ const Categories = ({ token }: { token: string | undefined }) => {
         }
     });
 
+    // ? Fetch Categories Stats
     const { data: stats } = useQuery<CategoryStats>({
         queryKey: ['get-categories-stats'],
         queryFn: async () => {
@@ -65,18 +67,21 @@ const Categories = ({ token }: { token: string | undefined }) => {
     let todoItemDragOver = React.useRef<number>(0);
     let todoItemDrag = React.useRef<number>(0);
 
+    // ? As soon as categories are fetched, copy them to state
     React.useEffect(() => {
         if (categories) {
             setAllCategories(categories);
         }
     }, [categories]);
 
+    // ? Reset Categories After Order Is Turned Off
     React.useEffect(() => {
         if (!order) {
             categories && setAllCategories(categories);
         }
     }, [order]);
 
+    // ? Handle Update Object
     React.useEffect(() => {
         if (updateObj) {
             setUpdateName(updateObj.name);
@@ -91,6 +96,7 @@ const Categories = ({ token }: { token: string | undefined }) => {
         }
     }, [updateObj])
 
+    // ? Never let user have visible and non visible filters at the same time on
     React.useEffect(() => {
         if (onlyNonVisible && onlyVisible) {
             setOnlyNonVisible(false);
@@ -105,6 +111,7 @@ const Categories = ({ token }: { token: string | undefined }) => {
         }
     }, [onlyNonVisible]);
 
+    // ? Handle The Deletion Of A Category
     const handleDeletion = async (obj: Category) => {
         const ans = confirm("Είστε σίγουρος πως θέλετε να διαγράψετε την κατηγορία \"" + obj.name + "\"");
         if (!ans) return;
@@ -138,6 +145,7 @@ const Categories = ({ token }: { token: string | undefined }) => {
         }
     }
 
+    // ? Handle The Creation Of A Cateogry
     const handleSubmitionCreation = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -184,6 +192,7 @@ const Categories = ({ token }: { token: string | undefined }) => {
         }
     }
 
+    // ? Handle The Update Of A Category
     const handleSubmitionUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!updateObj) return;
@@ -288,6 +297,7 @@ const Categories = ({ token }: { token: string | undefined }) => {
         }
     }
 
+    // ? Handle The Different Behaiviour For Mobile Order
     const handleOrderMobile = (cat: Category) => {
         if (window.innerWidth < 620 && order && allCategories) {
             if (!orderSet) {

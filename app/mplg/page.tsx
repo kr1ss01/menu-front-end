@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import style from '@/styles/pages/mplg/index.module.scss';
-import Logo from '@/helpers/logo.help';
+import Logo from '@/helpers/logo';
 import Colors from '@/types/colors';
 import Image from 'next/image';
 import JWTResponseType from '@/types/tokens';

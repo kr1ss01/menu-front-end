@@ -35,7 +35,7 @@ enum DisplayEnum {
 };
 
 const User = ({ token }: { token: string | undefined }) => {
-
+    // ? Fetch User Admin Status
     const { data: user, isLoading: isLoadingOwn, isError: isErrorOwn, refetch: refetchOwn } = useQuery<OwnUser>({
         queryKey: ['get-admin'],
         queryFn: token ? async () => {
@@ -43,6 +43,7 @@ const User = ({ token }: { token: string | undefined }) => {
         } : skipToken,
     });
 
+    // ? Fetch User Info
     const { data: userInfo, isLoading: isLoadingInfo, isError: isErrorInfo, refetch: refetchInfo } = useQuery<InfoUser | undefined>({
         queryKey: ['get-admin-info'],
         queryFn: token ? async () => {
@@ -50,6 +51,7 @@ const User = ({ token }: { token: string | undefined }) => {
         } : skipToken,
     });
 
+    // ? Fetch Global Settings Object
     const { data: globalSettings, refetch: refetchGlobalSettings } = useQuery<Settings>({
         queryKey: ['get-global-settings-admin'],
         queryFn: async () => {
@@ -57,6 +59,7 @@ const User = ({ token }: { token: string | undefined }) => {
         }
     });
 
+    // ? Fetch Background Image Info
     const { data: bgImageInfo, refetch: refetchBgImageInfo } = useQuery<BackgroundImage>({
         queryKey: ['get-background-image-info-admin'],
         queryFn: async () => {
@@ -120,8 +123,10 @@ const User = ({ token }: { token: string | undefined }) => {
     // ? Password Focus State
     const [passwordFocus, setPasswordFocus] = React.useState<boolean>(false);
 
+    // ? User's Card Ref
     const userCardRef = React.useRef<HTMLDivElement>(null);
 
+    // ? Handle Uplaod Image Too Large Error -- It's not beeing handled by Image Component at Inputs.
     React.useEffect(() => {
         if (uploadImageTooLarge || bgUploadImageTooLarge) {
             const int = window.setInterval(() => {
@@ -133,6 +138,7 @@ const User = ({ token }: { token: string | undefined }) => {
         }
     }, [uploadImageTooLarge, bgUploadImageTooLarge]);
 
+    // ? Handle Global Settings. As soos as they are fetched, set them as state.
     React.useEffect(() => {
         if (globalSettings) {
             setBgImage(globalSettings.backgroundImageVisibility);
@@ -144,6 +150,7 @@ const User = ({ token }: { token: string | undefined }) => {
         }
     }, [globalSettings]);
 
+    // ? Password Strongness Functions
     React.useEffect(() => {
         const a = chechCharachters();
         const b = checkCapitalLetter();
@@ -154,6 +161,7 @@ const User = ({ token }: { token: string | undefined }) => {
         setBars(a + b + c + d + e);
     }, [newPwd]);
 
+    // ? Hover Effect On User's Card
     React.useEffect(() => {
         if (!userCardRef.current) return;
         
@@ -223,6 +231,7 @@ const User = ({ token }: { token: string | undefined }) => {
         }
     }, []);
 
+    // ? Password Strongness Functions
     const chechCharachters = (): number => {
         if (newPwd.length >= 8) {
             setChar(true); 
@@ -232,6 +241,7 @@ const User = ({ token }: { token: string | undefined }) => {
         return 0;
     }
 
+    // ? Password Strongness Functions
     const checkCapitalLetter = (): number => {
         if (checkCapitalCharacters(newPwd)) {
             setCLetter(true);
@@ -241,6 +251,7 @@ const User = ({ token }: { token: string | undefined }) => {
         return 0;
     }
 
+    // ? Password Strongness Functions
     const checkSmallLetter = (): number => {
         if (checkSmallCharacters(newPwd)) {
             setSLetter(true);
@@ -250,6 +261,7 @@ const User = ({ token }: { token: string | undefined }) => {
         return 0;
     }
 
+    // ? Password Strongness Functions
     const checkNumbers = (): number => {
         if (checkNumber(newPwd)) {
             setNum(true);
@@ -259,6 +271,7 @@ const User = ({ token }: { token: string | undefined }) => {
         return 0;
     }
 
+    // ? Password Strongness Functions
     const checkSpeacial = (): number => {
         if (checkSpecialCharacters(newPwd)) {
             setSpecial(true);
@@ -268,6 +281,8 @@ const User = ({ token }: { token: string | undefined }) => {
         return 0;
     }
 
+    // ? Handle What Is Being Displayed
+    // * Def = default
     const handleDisplay = (dis: DisplayEnum) => {
         if (dis === display) {
             setDisplay(DisplayEnum.def);
@@ -276,6 +291,7 @@ const User = ({ token }: { token: string | undefined }) => {
         }
     }
 
+    // ? Change Name Function
     const handleNameSubmition = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -314,6 +330,7 @@ const User = ({ token }: { token: string | undefined }) => {
         }
     }
 
+    // ? Change User's Image Function
     const handleImageSubmition = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -359,6 +376,7 @@ const User = ({ token }: { token: string | undefined }) => {
         }
     }
 
+    // ? Change User's Password
     const handleChangePassword = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -435,6 +453,7 @@ const User = ({ token }: { token: string | undefined }) => {
         }
     }
 
+    // ? Change User's Email Function
     const handleEmailSubmition = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -498,6 +517,7 @@ const User = ({ token }: { token: string | undefined }) => {
         }
     }
 
+    // ? Change Settings Function
     const handleSettingsSubmition = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!globalSettings) return;
@@ -529,6 +549,7 @@ const User = ({ token }: { token: string | undefined }) => {
         }
     }
 
+    // ? Change Background Image Function
     const handleBgImageSubmition = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 

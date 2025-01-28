@@ -3,7 +3,7 @@
 import * as React from 'react';
 import style from '@/styles/components/navbar/index.module.scss';
 import { useAuthContext } from '../context/auth.contexts';
-import Logo from '@/helpers/logo.help';
+import Logo from '@/helpers/logo';
 import { useQuery } from '@tanstack/react-query';
 import Category from '@/types/categories';
 import { getCategories } from '@/axios/categories';
@@ -17,7 +17,7 @@ import { redirect } from 'next/navigation';
 export default function Navbar() {
     const { auth, logout } = useAuthContext();
 
-    const { data: categories, isLoading, refetch } = useQuery<Category[]>({
+    const { data: categories, isLoading } = useQuery<Category[]>({
         queryKey: ['get-all-categories-navbar'],
         queryFn: async () => {
             return (await getCategories()).reverse();
@@ -180,5 +180,3 @@ export default function Navbar() {
         </>
     )
 }
-
-// style={{ transform: `translateX(${(touchX + 1)/2}px)` }}
