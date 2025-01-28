@@ -760,7 +760,7 @@ const User = ({ token }: { token: string | undefined }) => {
                                 </div>
                                 <div className={style.chooseDivInfo}>
                                     <div>
-                                        <InfoSVG box={1.8} color={Colors.grey} />
+                                        <InfoSVG box={1.8} color={Colors.black} />
                                     </div>
                                     <p>Επιλέξτε σε ποιο σημείο θα εμφανίζεται η εικόνα στο μενού στα πιάτα.</p>
                                 </div>
@@ -782,7 +782,7 @@ const User = ({ token }: { token: string | undefined }) => {
                                 </div>
                                 <div className={style.chooseDivInfo}>
                                     <div>
-                                        <InfoSVG box={1.8} color={Colors.grey} />
+                                        <InfoSVG box={1.8} color={Colors.black} />
                                     </div>
                                     <p>Επιλέξτε πως θα εμφανίζονται τα μη διαθέσμια πιάτα στο μενού ή αν δεν θα εμφανίζονται καθόλου.</p>
                                 </div>
@@ -802,7 +802,7 @@ const User = ({ token }: { token: string | undefined }) => {
                                 </div>
                                 <div className={style.toggleDivInfo}>
                                     <div>
-                                        <InfoSVG box={1.8} color={Colors.grey} />
+                                        <InfoSVG box={1.8} color={Colors.black} />
                                     </div>
                                     <p>Μπορείτε να κρύψετε ή να εμφανίσετε την κύρια εικόνα της εφαρμογής στην αρχική σελίδα.</p>
                                 </div>
@@ -822,7 +822,7 @@ const User = ({ token }: { token: string | undefined }) => {
                                 </div>
                                 <div className={style.toggleDivInfo}>
                                     <div>
-                                        <InfoSVG box={1.8} color={Colors.grey} />
+                                        <InfoSVG box={1.8} color={Colors.black} />
                                     </div>
                                     <p>Αν ένα πιάτο δεν είναι ΜΌΝΟ στα ημέρας αλλά είναι σαν πιάτο ημέρας, καθορίζεται το αν θα εμφανίζεται στα Πιάτα Ημέρας.</p>
                                 </div>
@@ -842,7 +842,7 @@ const User = ({ token }: { token: string | undefined }) => {
                                 </div>
                                 <div className={style.toggleDivInfo}>
                                     <div>
-                                        <InfoSVG box={1.8} color={Colors.grey} />
+                                        <InfoSVG box={1.8} color={Colors.black} />
                                     </div>
                                     <p>Μπορείτε με ένα κλίκ να απενεργοποιήσετε όλες τις εικόνες. Δεν επηρεάζει τις ίδιες τις εικόνες, απλά δεν εμφανίζονται στο μενού.</p>
                                 </div>

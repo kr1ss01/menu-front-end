@@ -7,7 +7,7 @@ import { skipToken, useQuery } from '@tanstack/react-query';
 import LoadingSpinner from '@/helpers/loading';
 import { getCategories } from '@/axios/categories';
 import Category from '@/types/categories';
-import { BinSVG, BlockBGSVG, BlockLeftSVG, BlockRightSVG, BugSVG, CategorySVG, ExpandSVG, EyeCloseSVG, EyeOpenSVG, GarnetSVG, PlateSVG, ResetSVG, SettingsSVG, UpSVG } from '@/svg';
+import { BinSVG, BlockBGSVG, BlockLeftSVG, BlockRightSVG, BugSVG, CategorySVG, ExpandSVG, EyeCloseSVG, EyeOpenSVG, GarnetSVG, PlateSVG, ResetSVG, SettingsSVG, UpSVG, XCircleNoFillIcon } from '@/svg';
 import ImageInput from '@/helpers/inputs/image.input';
 import TextInput from '@/helpers/inputs/text.input';
 import NumberInput from '@/helpers/inputs/number.input';
@@ -653,7 +653,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
                                         onDragEnter={(e: React.DragEvent) => dragEnter(e, key)}
                                         onDragEnd={(e: React.DragEvent) => dragEnd(e)}
                                         onDragOver={(e: React.DragEvent) => e.preventDefault()}
-                                        onClick={() => {setUpdateObject(pl); handleOrderMobile(pl); setSettings(false);}}
+                                        onClick={() => {order ? null : setUpdateObject(pl); handleOrderMobile(pl); order ? null : setSettings(false);}}
                                         style={{ opacity: orderSet?._id === pl._id ? .5 : 1 }}
                                     >
                                         <PlateClient
@@ -671,7 +671,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
                                             showGarnet={pl.showGarnet}
                                             imagePosition={imagePosition}
                                             object={pl}
-                                            onClick={setUpdateObject}
+                                            onClick={order ? () => {} : setUpdateObject}
                                             showOrder={order}
                                             order={pl.order}
                                             availabilityActions={AvailabilityOptionsEnum.nothing}
@@ -815,7 +815,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
                                     />
                                 </div>
                                 <hr />
-                                <button type='button' role='button' onClick={() => setSettings(false)} className={style.backSettingsButton}>
+                                <button type='button' role='button' onClick={() => {setSettings(false); setOrder(false);}} className={style.backSettingsButton}>
                                     <UpSVG box={1} color={Colors.black} />
                                     Πίσω
                                 </button>
@@ -1027,9 +1027,14 @@ const Plate = ({ token }: { token: string | undefined }) => {
                                     </button>
                                 }
                                 {updateObject &&
-                                    <button type='button' role='button' title='Διαγραφή' onClick={() => deletePlateFE(updateObject._id)}>
-                                        <BinSVG box={2} color={Colors.error} />
-                                    </button>
+                                    <>
+                                        <button type='button' role='button' title='Διαγραφή' onClick={() => deletePlateFE(updateObject._id)}>
+                                            <BinSVG box={2} color={Colors.error} />
+                                        </button>
+                                        <button type="button" role='button' title='Ακύρωση' onClick={() => setUpdateObject(null)} style={{ marginLeft: '1rem'}}>
+                                            <XCircleNoFillIcon box={2} color={Colors.error} />
+                                        </button>
+                                    </>
                                 }
                                 <SubmitButton text={updateObject ? 'Ενημέρωση' : 'Προσθήκη'} type={true} />
                             </div>
