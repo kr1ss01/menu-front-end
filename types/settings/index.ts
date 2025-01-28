@@ -6,6 +6,7 @@ export interface Settings {
     backgroundImageVisibility: boolean;
     availabilitySettings: AvailabilityOptionsEnum;
     hideAllImages: boolean;
+    hideOrShowSpecial: boolean;
 };
 
 export interface UpdateSettings {
@@ -14,4 +15,5 @@ export interface UpdateSettings {
     specialSettings: boolean;
     hideImagesSettings: boolean;
     mainImage: boolean;
+    hideOrShowSpecial: boolean;
 };

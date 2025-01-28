@@ -115,11 +115,23 @@ const User = ({ token }: { token: string | undefined }) => {
     const [imgPosSettings, setImgPosSettings] = React.useState<PlateImagePositionEnum>();
     const [specialSettings, setSpecialSettings] = React.useState<boolean>();
     const [hideImgs, setHideImgs] = React.useState<boolean>();
+    const [hideSpecial, setHideSpecial] = React.useState<boolean>();
 
     // ? Password Focus State
     const [passwordFocus, setPasswordFocus] = React.useState<boolean>(false);
 
     const userCardRef = React.useRef<HTMLDivElement>(null);
+
+    React.useEffect(() => {
+        if (uploadImageTooLarge || bgUploadImageTooLarge) {
+            const int = window.setInterval(() => {
+                setPopUp(undefined);
+                window.clearInterval(int);
+            }, 5000);
+            setPopUp({ type: 'error', text: 'Μεγάλη Εικόνα!', intID: int });
+            return;
+        }
+    }, [uploadImageTooLarge, bgUploadImageTooLarge]);
 
     React.useEffect(() => {
         if (globalSettings) {
@@ -128,6 +140,7 @@ const User = ({ token }: { token: string | undefined }) => {
             setImgPosSettings(globalSettings.imagePosition);
             setSpecialSettings(globalSettings.showOnSpecialVisibility);
             setHideImgs(globalSettings.hideAllImages);
+            setHideSpecial(globalSettings.hideOrShowSpecial);
         }
     }, [globalSettings]);
 
@@ -495,6 +508,7 @@ const User = ({ token }: { token: string | undefined }) => {
             imagePosition: imgPosSettings as PlateImagePositionEnum,
             specialSettings: specialSettings as boolean,
             mainImage: bgImage as boolean,
+            hideOrShowSpecial: hideSpecial as boolean,
         };
 
         const res = await updateAll(updateObjectSettings, token);
@@ -824,7 +838,7 @@ const User = ({ token }: { token: string | undefined }) => {
                                     <div>
                                         <InfoSVG box={1.8} color={Colors.black} />
                                     </div>
-                                    <p>Αν ένα πιάτο δεν είναι ΜΌΝΟ στα ημέρας αλλά είναι σαν πιάτο ημέρας, καθορίζεται το αν θα εμφανίζεται στα Πιάτα Ημέρας.</p>
+                                    <p>Εμφανίστε στα Πιάτα Ημέρας μόνο όσα πιάτα είναι στα Ημέρας.</p>
                                 </div>
                             </div>
                             <div className={style.toggleDivOuter}>
@@ -845,6 +859,26 @@ const User = ({ token }: { token: string | undefined }) => {
                                         <InfoSVG box={1.8} color={Colors.black} />
                                     </div>
                                     <p>Μπορείτε με ένα κλίκ να απενεργοποιήσετε όλες τις εικόνες. Δεν επηρεάζει τις ίδιες τις εικόνες, απλά δεν εμφανίζονται στο μενού.</p>
+                                </div>
+                            </div>
+                            <div className={style.toggleDivOuter}>
+                                <div className={style.toggleDiv}>
+                                    <label htmlFor='hidespecial'>Απόκρυψη Πιάτων Ημέρας: </label>
+                                    <ToggleSwitch
+                                        banner=''
+                                        hasInfo={false}
+                                        label='hidespecial'
+                                        // @ts-ignore
+                                        clicked={hideSpecial}
+                                        // @ts-ignore
+                                        setClicked={setHideSpecial}
+                                    />
+                                </div>
+                                <div className={style.toggleDivInfo}>
+                                    <div>
+                                        <InfoSVG box={1.8} color={Colors.black} />
+                                    </div>
+                                    <p>Μπορείτε να κρύψετε ή να εμφανίσετε το μενού με τα Πιάτα Ημέρας.</p>
                                 </div>
                             </div>
                             <div style={{ padding: '0 .5rem', marginTop: '1rem', width: '100%' }}>

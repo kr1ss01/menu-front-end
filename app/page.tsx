@@ -165,7 +165,7 @@ export default function Home() {
                     role='presentation'
                 ></div>
             }
-            {(specialPlates && showSpecial && specialPlates.length >= 1 && globalSettings) &&
+            {(specialPlates && showSpecial && specialPlates.length >= 1 && globalSettings && !globalSettings.hideOrShowSpecial) &&
                 <div className={style.specialPopUp}>
                     <div className={style.specialPopUpInner} ref={specialRef}>
                         <h2>Πιάτα Ημέρας</h2>
@@ -198,7 +198,7 @@ export default function Home() {
                     </div>
                 </div>
             }
-            {!showSpecial &&
+            {(!showSpecial && globalSettings && !globalSettings.hideOrShowSpecial) &&
                 <button type="button" role='button' className={style.openSpecialButton} onClick={() => setShowSpecial(true)}>
                     <Image src={SPECIAL} alt='Menu Icon' width={40} height={40} />
                 </button>

@@ -28,6 +28,12 @@ export default function Navbar() {
 
     const [openSide, setOpenSide] = React.useState<boolean>(false);
     const [red, setRed] = React.useState<boolean>(false);
+
+    const [dragStartX, setDragStartX] = React.useState<number>(0);
+    const [dragStartY, setDragStartY] = React.useState<number>(0);
+    const [dragEndX, setDragEndX] = React.useState<number>(0);
+    const [dragEndY, setDragEndY] = React.useState<number>(0);
+    const [animateDrag, setAnimateDrag] = React.useState<number>(0);
     
     useOutsideHook(sideNavRef, setOpenSide);
 
@@ -66,58 +72,55 @@ export default function Navbar() {
         };
     }, []);
 
-    function useTouchMove() {
-        const [touchX, setTouchX] = React.useState<number>(0);
+    React.useEffect(() => {
+        if (!openSide) return;
+        if (!sideNavRef.current) return;
 
-        const onTouchMove = (e: React.TouchEvent) => {
-            setTouchX(e.changedTouches[0].clientX);
-        };
+        const handleTouchStart = (e: TouchEvent) => {
+            setDragStartX(e.changedTouches[0].clientX);
+            setDragStartY(e.changedTouches[0].clientY);
+        }
 
-        return { touchX, onTouchMove, setTouchX };
-    }
+        const handleTouchMove = (e: TouchEvent) => {
+            setDragEndX(e.changedTouches[0].clientX);
+            setDragEndY(e.changedTouches[0].clientY);
 
-    const { touchX, onTouchMove, setTouchX } = useTouchMove();
+            let dragDistanceX = dragEndX - dragStartX;
+            let dragDistanceY = Math.abs(dragEndY - dragStartY);
+
+            if (dragDistanceX > 20 && dragDistanceY < 70) {
+                setAnimateDrag(dragDistanceX);
+            }
+        }
+        
+        const handleTouchEnd = (e: TouchEvent) => {
+            let dragDistanceX = dragEndX - dragStartX;
+            let dragDistanceY = Math.abs(dragEndY - dragStartY);
+
+            if (dragDistanceX > 245 && dragDistanceY < 70) {
+                setOpenSide(false);
+                setAnimateDrag(0);
+            } else {
+                setAnimateDrag(0);
+            }
+        }
+
+        sideNavRef.current.addEventListener('touchstart', handleTouchStart);
+        sideNavRef.current.addEventListener('touchmove', handleTouchMove);
+        sideNavRef.current.addEventListener('touchend', handleTouchEnd);
+
+        return () => {
+            sideNavRef.current?.removeEventListener('touchstart', handleTouchStart);
+            sideNavRef.current?.removeEventListener('touchmove', handleTouchMove);
+            sideNavRef.current?.removeEventListener('touchend', handleTouchEnd);
+        }
+    }, [openSide, sideNavRef, dragStartX, dragStartY, dragEndX, dragEndY, animateDrag]);
 
     React.useEffect(() => {
         if (red) {
             redirect('/');
         }
     }, [red]);
-
-    React.useEffect(() => {
-        var cx: number;
-
-        const handleStart = (e: React.TouchEvent) => {
-            cx = e.touches[0].clientX;
-        }
-
-        const handleEnd = (e: React.TouchEvent) => {
-            let cxdelta = e.changedTouches[0].clientX - cx;
-
-            if (cxdelta > 220) {
-                setOpenSide(false);
-            } else {
-                setTouchX(0);
-            }
-        }
-
-        // ! FUCK ME WITH THE TS TYPES...
-        // @ts-ignore
-        document.addEventListener("touchstart", handleStart);
-        // @ts-ignore
-        document.addEventListener("touchmove", onTouchMove);
-        // @ts-ignore
-        document.addEventListener("touchend", handleEnd);
-
-        return () => {
-            // @ts-ignore
-            document.removeEventListener("touchstart", handleStart);
-            // @ts-ignore
-            document.removeEventListener("touchmove", onTouchMove);
-            // @ts-ignore
-            document.removeEventListener("touchend", handleEnd);
-        }
-    }, []);
 
     return (
         <>
@@ -140,8 +143,11 @@ export default function Navbar() {
                 </div>
             </nav>
             {openSide &&
-                <div className={style.sideNavOuter} style={{ transform: `translateX(${(touchX + 1)/2}px)` }}>
-                    <div className={style.sideNav} ref={sideNavRef}>
+                <div className={style.sideNavOuter} style={{ transform: `translateX(${animateDrag / 2}px)` }}>
+                    <div
+                        className={style.sideNav}
+                        ref={sideNavRef}
+                    >
                         <div onClick={() => setOpenSide(false)} className={style.sideNavTop}>
                             <Logo align='center' justify='center' margin={'0 auto'} mode="dark" />
                         </div>
@@ -174,3 +180,5 @@ export default function Navbar() {
         </>
     )
 }
+
+// style={{ transform: `translateX(${(touchX + 1)/2}px)` }}

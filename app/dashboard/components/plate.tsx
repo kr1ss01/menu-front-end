@@ -133,6 +133,17 @@ const Plate = ({ token }: { token: string | undefined }) => {
     let todoItemDrag = React.useRef<number>(0);
 
     React.useEffect(() => {
+            if (uploadImageTooLarge) {
+                const int = window.setInterval(() => {
+                    setPopUp(undefined);
+                    window.clearInterval(int);
+                }, 5000);
+                setPopUp({ type: 'error', text: 'Μεγάλη Εικόνα!', intID: int });
+                return;
+            }
+        }, [uploadImageTooLarge]);
+
+    React.useEffect(() => {
         if (visibleOnly && nonVisibleOnly) {
             setNonVisibleOnly(false);
             setVisibleOnly(true);

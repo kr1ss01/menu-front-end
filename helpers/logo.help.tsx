@@ -13,7 +13,7 @@ type LogoProps = {
 
 export default function Logo({align, justify, margin, mode}: LogoProps) {
     return (
-        <Link href={'/#'} className={style.logo} style={{
+        <Link href={'/'} className={style.logo} style={{
             alignItems: align,
             justifyContent: justify,
             flexDirection: 'column',
