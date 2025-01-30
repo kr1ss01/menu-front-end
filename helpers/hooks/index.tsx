@@ -7,7 +7,7 @@ export default function useOutsideHook(
     setDisplay: React.Dispatch<React.SetStateAction<boolean>>,
 ) {
     React.useEffect(() => {
-        function handleClickOutside(event: any) {
+        function handleClickOutside(event: MouseEvent) {
             if (ref.current && !ref.current.contains(event.target)) {
                 setDisplay(false);
             }

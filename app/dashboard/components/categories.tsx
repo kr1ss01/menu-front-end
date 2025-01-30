@@ -15,6 +15,7 @@ import ErrorDiv, { SetStateTypeObject, SuccessDiv } from '@/helpers/components/e
 import { deleteCategory } from '@/axios/complex';
 import DeleteInterface from '@/types/delete';
 import SearchInput from '@/helpers/inputs/search.input';
+import { scrollToTop } from '@/helpers/functions/scrollToTop';
 
 const Categories = ({ token }: { token: string | undefined }) => {
     // ? Fetch Categories
@@ -273,6 +274,7 @@ const Categories = ({ token }: { token: string | undefined }) => {
         if (!order || !allCategories) return;
         setOrder(false);
         setLoadingCategories(true);
+        scrollToTop();
 
         const res = await orderFixOnCategory(token, allCategories.filter(i => ({ _id: i._id, order: i.order })));
 
@@ -424,7 +426,7 @@ const Categories = ({ token }: { token: string | undefined }) => {
                                     <XCircleNoFillIcon box={2} color={Colors.black} />
                                 </button>
                             }
-                            <SubmitButton text={updateObj ? 'Ενημέρωση' : 'Προσθήκη'} type={true} />
+                            <SubmitButton text={updateObj ? 'Ενημέρωση' : 'Προσθήκη'} type={true} scroll={true} />
                         </div>
                     </form>
                     <div className={style.categoriesSettingsInfo}>

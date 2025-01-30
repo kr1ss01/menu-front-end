@@ -23,6 +23,7 @@ import { PlateClient, PlateFinal } from '@/helpers/plate';
 import { deletePlate, fixPlateOrder, getPlateStats, newPlate, updatePlateWithImage } from '@/axios/plates';
 import ErrorDiv, { SetStateTypeObject, SuccessDiv } from '@/helpers/components/error.div';
 import SearchInput from '@/helpers/inputs/search.input';
+import { scrollToTop } from '@/helpers/functions/scrollToTop';
 
 type PlateArrayType = {
     catID: string,
@@ -417,6 +418,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
         if (!order || !plate) return;
         setOrder(false);
         setOrderLoading(true);
+        scrollToTop();
 
         const orderFix: PlateFixOrder[] = [];
 
@@ -1050,7 +1052,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
                                         </button>
                                     </>
                                 }
-                                <SubmitButton text={updateObject ? 'Ενημέρωση' : 'Προσθήκη'} type={true} />
+                                <SubmitButton text={updateObject ? 'Ενημέρωση' : 'Προσθήκη'} type={true} scroll={true} />
                             </div>
                         </form>
                     }

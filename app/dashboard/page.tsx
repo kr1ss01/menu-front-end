@@ -108,16 +108,52 @@ export default function Page() {
         <>
             <div className={style.dashboardNav}>
                 <div className={style.dashboardNavWidth}>
-                    <button type='button' onClick={() => setActive(Dashboard.user)} role='button' className={active === Dashboard.user ? style.dashboardNavBoxIconActive : style.dashboardNavBoxIcon}>
+                    <button
+                        type='button'
+                        onClick={() => setActive(Dashboard.user)}
+                        role='button'
+                        className={
+                            active === Dashboard.user ?
+                                style.dashboardNavBoxIconActive : style.dashboardNavBoxIcon
+                        }
+                        title='Χρήστης'
+                    >
                         <UserSVG box={2.5} color={Colors.white} />
                     </button>
-                    <button type='button' onClick={() => setActive(Dashboard.cat)} role='button' className={active === Dashboard.cat ? style.dashboardNavBoxIconActive : style.dashboardNavBoxIcon}>
+                    <button
+                        type='button'
+                        onClick={() => setActive(Dashboard.cat)}
+                        role='button'
+                        className={
+                            active === Dashboard.cat ? 
+                                style.dashboardNavBoxIconActive : style.dashboardNavBoxIcon
+                        }
+                        title='Κατηγορίες'
+                    >
                         <CategorySVG box={2.5} color={Colors.white} />
                     </button>
-                    <button type='button' onClick={() => setActive(Dashboard.grnt)} role='button' className={active === Dashboard.grnt ? style.dashboardNavBoxIconActive : style.dashboardNavBoxIcon}>
+                    <button
+                        type='button'
+                        onClick={() => setActive(Dashboard.grnt)}
+                        role='button'
+                        className={
+                            active === Dashboard.grnt ?
+                                style.dashboardNavBoxIconActive : style.dashboardNavBoxIcon
+                        }
+                        title='Γαρνιτούρα'
+                    >
                         <GarnetSVG box={2.5} color={Colors.white} />
                     </button>
-                    <button type='button' onClick={() => setActive(Dashboard.plate)} role='button' className={active === Dashboard.plate ? style.dashboardNavBoxIconActive : style.dashboardNavBoxIcon}>
+                    <button
+                        type='button'
+                        onClick={() => setActive(Dashboard.plate)}
+                        role='button'
+                        className={
+                            active === Dashboard.plate ?
+                                style.dashboardNavBoxIconActive : style.dashboardNavBoxIcon
+                        }
+                        title='Πιάτα'
+                    >
                         <PlateSVG box={2.5} color={Colors.white} />
                     </button>
                 </div>

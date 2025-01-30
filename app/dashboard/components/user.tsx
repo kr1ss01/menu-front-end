@@ -622,7 +622,7 @@ const User = ({ token }: { token: string | undefined }) => {
                                 setError={setError}
                             />
                             <div>
-                                <SubmitButton text='Αλλαγή Ονόματος' type />
+                                <SubmitButton text='Αλλαγή Ονόματος' type scroll={true} />
                             </div>
                         </form>
                     }
@@ -646,7 +646,7 @@ const User = ({ token }: { token: string | undefined }) => {
                                 uploadImageTooLarge={uploadImageTooLarge}
                             />
                             <div>
-                                <SubmitButton text='Αλλαγή Εικόνας' type />
+                                <SubmitButton text='Αλλαγή Εικόνας' type scroll={true} />
                             </div>
                         </form>
                     }
@@ -733,7 +733,7 @@ const User = ({ token }: { token: string | undefined }) => {
                                 setError2={setPwdNoMatch}
                             />
                             <div>
-                                <SubmitButton text='Αλλαγή Κωδικού' type />
+                                <SubmitButton text='Αλλαγή Κωδικού' type scroll={true} />
                             </div>
                         </form>
                     }
@@ -771,7 +771,7 @@ const User = ({ token }: { token: string | undefined }) => {
                                 setError3={setUnverifiableEmail}
                             />
                             <div>
-                                <SubmitButton text='Αλλαγή E-Mail' type />
+                                <SubmitButton text='Αλλαγή E-Mail' type scroll={true} />
                             </div>
                         </form>
                     }
@@ -903,7 +903,7 @@ const User = ({ token }: { token: string | undefined }) => {
                                 </div>
                             </div>
                             <div style={{ padding: '0 .5rem', marginTop: '1rem', width: '100%' }}>
-                                <SubmitButton text={'Ενημέρωση'} type={true} />
+                                <SubmitButton text={'Ενημέρωση'} type={true} scroll={true} />
                             </div>
                         </form>
                     }
@@ -925,7 +925,7 @@ const User = ({ token }: { token: string | undefined }) => {
                                 imageSize={4096 * 2160}
                             />
                             <div>
-                                <SubmitButton text='Αλλαγή Εικόνας' type />
+                                <SubmitButton text='Αλλαγή Εικόνας' type scroll={true} />
                             </div>
                             <small>Απαιτήται επαναφόρτωση σελίδας για να φανεί η αλλαγή στην εικόνα φόντου!</small>
                             {bgImageInfo &&

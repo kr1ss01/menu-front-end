@@ -258,7 +258,7 @@ const Garnets = ({ token }: { token: string | undefined }) => {
                                     <XCircleNoFillIcon box={2} color={Colors.black} />
                                 </button>
                             }
-                            <SubmitButton text={updateObj ? 'Ενημέρωση' : 'Προσθήκη'} type={true} />
+                            <SubmitButton text={updateObj ? 'Ενημέρωση' : 'Προσθήκη'} type={true} scroll={true} />
                         </div>
                     </form>
                 </div>
