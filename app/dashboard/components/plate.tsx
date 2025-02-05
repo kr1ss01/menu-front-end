@@ -3,7 +3,7 @@
 import * as React from 'react';
 import style from '@/styles/pages/dashboard/components/plate.module.scss';
 import Colors from '@/types/colors';
-import { skipToken, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import LoadingSpinner from '@/helpers/loading';
 import { getCategories } from '@/axios/categories';
 import Category from '@/types/categories';
@@ -19,11 +19,12 @@ import Garnet from '@/types/garnets';
 import { getGarnets } from '@/axios/garnets';
 import { AvailabilityOptionsEnum, PlateComplex, PlateFixOrder, PlateImagePositionEnum, PlateStats } from '@/types/plate';
 import { getPlatesByCategoryStrickt } from '@/axios/complex';
-import { PlateClient, PlateFinal } from '@/helpers/plate';
+import { PlateClient } from '@/helpers/plate';
 import { deletePlate, fixPlateOrder, getPlateStats, newPlate, updatePlateWithImage } from '@/axios/plates';
 import ErrorDiv, { SetStateTypeObject, SuccessDiv } from '@/helpers/components/error.div';
 import SearchInput from '@/helpers/inputs/search.input';
 import { scrollToTop } from '@/helpers/functions/scrollToTop';
+import PopUpInit from '@/helpers/functions/popUpInit';
 
 type PlateArrayType = {
     catID: string,
@@ -33,9 +34,6 @@ type PlateArrayType = {
 const plateArray: PlateArrayType[] = [];
 
 const Plate = ({ token }: { token: string | undefined }) => {
-    // ? Render Category Content
-    const [catContent, setCatContent] = React.useState<Category>();
-
     // ? Fetch all categories
     const { data: categories, isLoading: isLoadingCategories, isError: isErrorCategories, refetch: refetchCategories } = useQuery<Category[]>({
         queryKey: ['get-all-categories-for-plates-admin'],
@@ -45,7 +43,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
     });
 
     // ? Fetch all garnets
-    const { data: garnets, isLoading: isLoadingGarnets, isError: isErrorGarnets } = useQuery<Garnet[]>({
+    const { data: garnets, isLoading: isLoadingGarnets } = useQuery<Garnet[]>({
         queryKey: ['get-all-garnets-for-plates-admin'],
         queryFn: async () => {
             return await getGarnets();
@@ -53,7 +51,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
     });
 
     // ? Fetch stats of plates
-    const { data: stats, isLoading: isLoadingStats, isError: isErrorStats } = useQuery<PlateStats>({
+    const { data: stats } = useQuery<PlateStats>({
         queryKey: ['get-stats-plates-admin'],
         queryFn: async () => {
             return await getPlateStats();
@@ -139,11 +137,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
     // ? Handle Uplaod Image Too Large Error -- It's not beeing handled by Image Component at Inputs.
     React.useEffect(() => {
         if (uploadImageTooLarge) {
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ type: 'error', text: 'Μεγάλη Εικόνα!', intID: int });
+            PopUpInit({ setPopUp: setPopUp, type: 'error', text: 'Μεγάλη Εικόνα!' });
             return;
         }
     }, [uploadImageTooLarge]);
@@ -214,11 +208,8 @@ const Plate = ({ token }: { token: string | undefined }) => {
         }
 
         if (t == 4) {
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Απροσδιόριστο Σφάλμα Στην Λήψη Πιάτων!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Απροσδιόριστο Σφάλμα Στην Λήψη Πιάτων!', type: 'error' });
+            return;
         }
 
         if (cat._id === active?._id) {
@@ -309,51 +300,31 @@ const Plate = ({ token }: { token: string | undefined }) => {
         if (name.length === 0 || price === 0 || price == undefined || price == null 
             || price == 0 || !gID || !cID || gID.length === 0 || cID.length === 0) {
             setEmptyFields(true);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Κενά Πεδία!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Κενά Πεδία!', type: 'error' });
             return;
         }
 
         if ((showDesc && !desc) || (showDesc && desc.length === 0)) {
             setDescError(true);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Σφάλμα Στην Περιγραφή!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Σφάλμα Στην Περιγραφή!', type: 'error' });
             return;
         }
 
         if (showIcon && !uploadImage && !updateObject) {
             setNoImage(true);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Σφάλμα Στην Εικόνα!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Σφάλμα Στην Εικόνα!', type: 'error' });
             return;
         }
 
         if ((showGarnet && !gID) || (showGarnet && gID.length === 0)) {
             setGarnetError(true);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Σφάλμα Στην Γαρνιτούρα!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Σφάλμα Στην Γαρνιτούρα!', type: 'error' });
             return;
         }
 
         if (onlyOnSpecial && !showOnSpecial) {
             setSpecialError(true);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Μη Διαθέσιμο στα Πιάτα Ημέρας!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Μη Διαθέσιμο στα Πιάτα Ημέρας!', type: 'error' });
             return;
         }
 
@@ -396,19 +367,11 @@ const Plate = ({ token }: { token: string | undefined }) => {
             setUploadImageShow(undefined);
             active && await refetchPlates();
             updateObject && setUpdateObject(null);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            updateObject ? setPopUp({ text: 'Επιτυχής Ενημέρωση Πιάτου!', type: 'success', intID: int }) : setPopUp({ text: 'Επιτυχής Καταχώρηση Πιάτου!', type: 'success', intID: int });
+            PopUpInit({ setPopUp: setPopUp, type: 'success', text: updateObject ? 'Επιτυχής Ενημέρωση Πιάτου!' : 'Επιτυχής Καταχώρηση Πιάτου!' });
             return;
         } else {
             setError(true);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            updateObject ? setPopUp({ text: 'Ανεπιτυχής Ενημέρωση Πιάτου!', type: 'error', intID: int }) : setPopUp({ text: 'Ανεπιτυχής Καταχώρηση Πιάτου!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, type: 'error', text: updateObject ? 'Ανεπιτυχής Ενημέρωση Πιάτου!' : 'Ανεπιτυχής Καταχώρηση Πιάτου!' });
             return;
         }
     }
@@ -437,20 +400,12 @@ const Plate = ({ token }: { token: string | undefined }) => {
         if (res) {
             await refetchPlates();
             setOrderLoading(false);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Επιτυχής Αλλαγή Σειράς!', type: "success", intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Επιτυχής Αλλαγή Σειράς!', type: "success" });
             return;
         } else {
             setOrder(true);
             setOrderLoading(false);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Ανεπιτυχής Αλλαγή Σειράς!', type: 'success', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Ανεπιτυχής Αλλαγή Σειράς!', type: 'success' });
             return;
         }
     }
@@ -513,7 +468,6 @@ const Plate = ({ token }: { token: string | undefined }) => {
         if (!active) return;
 
         const res = await getPlatesByCategoryStrickt(active._id);
-        // console.log(res);
         if (res) {
             setCurrentPlates(res);
             setAllPlates(res);
@@ -524,11 +478,7 @@ const Plate = ({ token }: { token: string | undefined }) => {
             });
             return;
         } else {
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Σφάλμα Στην Επαναφόρτωση πιάτων!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Σφάλμα Στην Επαναφόρτωση πιάτων!', type: 'error' });
             return;
         }
     }
@@ -542,20 +492,12 @@ const Plate = ({ token }: { token: string | undefined }) => {
         const res = await deletePlate(token, id ? id : '');
 
         if (res) {
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Επιτυχής Διαγραφή!', type: 'success', intID: int });
             refetchPlates();
             setUpdateObject(null);
+            PopUpInit({ setPopUp: setPopUp, text: 'Επιτυχής Διαγραφή!', type: 'success' });
             return;
         } else {
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Σφάλμα Στην Διαγραφή!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Σφάλμα Στην Διαγραφή!', type: 'error' });
             return;
         }
     }

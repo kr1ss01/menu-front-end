@@ -13,6 +13,7 @@ import TextInput from '@/helpers/inputs/text.input';
 import { UserSVG } from '@/svg';
 import PasswordInput from '@/helpers/inputs/password.input';
 import ErrorDiv, { SetStateTypeObject, SuccessDiv } from '@/helpers/components/error.div';
+import PopUpInit from '@/helpers/functions/popUpInit';
 
 export default function Page() {
     const { login, auth } = useAuthContext();
@@ -58,11 +59,7 @@ export default function Page() {
         if (uid.length == 0 || pwd.length == 0) {
             setEmptyFields(true);
             setLoading(false);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Κενά Πεδία!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Κενά Πεδία!', type: "error" });
             return;
         }
 
@@ -81,11 +78,7 @@ export default function Page() {
             setUID('');
             setPWD('');
             setLoading(false);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Λανθασμένος Κωδικός ή Όνομα!', type: 'success', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: "Λανθασμένος Κωδικός ή Όνομα!", type: "error" });
             return;
         }
     }
@@ -99,10 +92,6 @@ export default function Page() {
                 <h2>Καλώς Ήρθατε Πίσω</h2>
                 <h3>Admin Dashboard</h3>
                 <form role='form' onSubmit={handleSubmition} autoComplete='off' autoCapitalize='off' autoCorrect='off'>
-                    {/* <div className={style.errorDiv}>
-                        {emptyFields && <p className={style.error}>Κένα Πεδία!</p>}
-                        {error && <p className={style.error}>Λάθος Κωδικός ή Username!</p>}
-                    </div> */}
                     <TextInput
                         tabIndex={1}
                         placeholder='Username ή e-mail...'

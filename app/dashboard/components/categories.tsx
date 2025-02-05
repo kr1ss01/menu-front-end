@@ -16,6 +16,7 @@ import { deleteCategory } from '@/axios/complex';
 import DeleteInterface from '@/types/delete';
 import SearchInput from '@/helpers/inputs/search.input';
 import { scrollToTop } from '@/helpers/functions/scrollToTop';
+import PopUpInit from '@/helpers/functions/popUpInit';
 
 const Categories = ({ token }: { token: string | undefined }) => {
     // ? Fetch Categories
@@ -121,26 +122,14 @@ const Categories = ({ token }: { token: string | undefined }) => {
 
         if (res?.deletionOK) {
             refetch();
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Επιτυχής Διαγραφή!', type: "success", intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Επιτυχής Διαγραφή!', type: "success" });
             return;
         } else {
             if (res?.hasPlates) {
-                const int = window.setInterval(() => {
-                    setPopUp(undefined);
-                    window.clearInterval(int);
-                }, 5000);
-                setPopUp({ text: 'Ανεπιτυχής Διαγραφή! Υπάρχουν πιάτα στην κατηγορία!', type: "error", intID: int });
+                PopUpInit({ setPopUp: setPopUp, text: 'Ανεπιτυχής Διαγραφή! Υπάρχουν πιάτα στην κατηγορία!', type: "error" });
                 return;
             } else {
-                const int = window.setInterval(() => {
-                    setPopUp(undefined);
-                    window.clearInterval(int);
-                }, 5000);
-                setPopUp({ text: 'Ανεπιτυχής Διαγραφή!', type: "error", intID: int });
+                PopUpInit({ setPopUp: setPopUp, text: 'Ανεπιτυχής Διαγραφή!', type: "error" });
                 return;
             }
         }
@@ -155,11 +144,7 @@ const Categories = ({ token }: { token: string | undefined }) => {
 
         if (name.length === 0) {
             setEmptyFields(true);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Κενά Πεδία!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Κενά Πεδία!', type: 'error' });
             return;
         }
 
@@ -176,19 +161,11 @@ const Categories = ({ token }: { token: string | undefined }) => {
             setEmptyFields(false);
             setError(false);
             refetch();
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Επιτυχής Προσθήκη!', type: 'success', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Επιτυχής Προσθήκη!', type: 'success' });
             return;
         } else {
             setError(true);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Απροσδιόριστο Σφάλμα!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Απροσδιόριστο Σφάλμα!', type: 'error' });
             return;
         }
     }
@@ -203,11 +180,7 @@ const Categories = ({ token }: { token: string | undefined }) => {
 
         if (updateName.length === 0) {
             setEmptyFields(true);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Κενά Πεδία!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Κενά Πεδία!', type: 'error' });
             return;
         }
 
@@ -229,19 +202,11 @@ const Categories = ({ token }: { token: string | undefined }) => {
             setEmptyFields(false);
             setError(false);
             refetch();
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Επιτυχής Ενημέρωση!', type: 'success', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Επιτυχής Ενημέρωση!', type: 'success' });
             return;
         } else {
             setError(true);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Απροσδιόριστο Σφάλμα!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Απροσδιόριστο Σφάλμα!', type: 'error' });
             return;
         }
     }
@@ -281,20 +246,12 @@ const Categories = ({ token }: { token: string | undefined }) => {
         if (res) {
             setLoadingCategories(false);
             refetch();
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Επιτυχιμένη Αλλαγή Σειράς!', type: 'success', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Επιτυχιμένη Αλλαγή Σειράς!', type: 'success' });
             return;
         } else {
             setOrder(true);
             setLoadingCategories(false);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Μη Επιτυχιμένη Αλλαγή Σειράς!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Μη Επιτυχιμένη Αλλαγή Σειράς!', type: 'error'});
             return;
         }
     }

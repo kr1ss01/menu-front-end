@@ -23,6 +23,7 @@ import DropDownInput from '@/helpers/inputs/dropdown.input';
 import { getImageName, newImage } from '@/axios/backgroundImage';
 import { BackgroundImage } from '@/types/backgroundImage';
 import BASE from '@/axios/base';
+import PopUpInit from '@/helpers/functions/popUpInit';
 
 enum DisplayEnum {
     pwd = 'pwd',
@@ -129,11 +130,7 @@ const User = ({ token }: { token: string | undefined }) => {
     // ? Handle Uplaod Image Too Large Error -- It's not beeing handled by Image Component at Inputs.
     React.useEffect(() => {
         if (uploadImageTooLarge || bgUploadImageTooLarge) {
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ type: 'error', text: 'Μεγάλη Εικόνα!', intID: int });
+            PopUpInit({ setPopUp: setPopUp, type: 'error', text: 'Μεγάλη Εικόνα!' });
             return;
         }
     }, [uploadImageTooLarge, bgUploadImageTooLarge]);
@@ -300,11 +297,7 @@ const User = ({ token }: { token: string | undefined }) => {
 
         if (name.length === 0) {
             setEmptyFields(true);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ type: 'error', text: 'Κενά Πεδία!', intID: int });
+            PopUpInit({ setPopUp: setPopUp, type: 'error', text: 'Κενά Πεδία!' });
             return;
         }
 
@@ -313,19 +306,11 @@ const User = ({ token }: { token: string | undefined }) => {
         if (res) {
             refetchOwn();
             setDisplay(DisplayEnum.def);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Το Όνομα Άλλαξε Με Επιτυχία!', type: 'success', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Το Όνομα Άλλαξε Με Επιτυχία!', type: 'success' });
             return;
         } else {
             setError(true);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Απροσδιόριστο Σφάλμα!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Απροσδιόριστο Σφάλμα!', type: 'error' });
             return;
         }
     }
@@ -340,11 +325,7 @@ const User = ({ token }: { token: string | undefined }) => {
 
         if (!uploadImage || !uploadImageShow) {
             setNoImage(true);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Προσθέστε Εικόνα!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Προσθέστε Εικόνα!', type: 'error' });
             return;
         }
 
@@ -358,20 +339,12 @@ const User = ({ token }: { token: string | undefined }) => {
             refetchInfo();
             setUploadImage(undefined);
             setUploadImageShow(undefined);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Επιτυχής Αλλαγή!', type: 'success', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Επιτυχής Αλλαγή!', type: 'success' });
             return;
         } else {
             setUploadImage(undefined);
             setUploadImageShow(undefined);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Απροσδιόριστο Σφάλμα!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Απροσδιόριστο Σφάλμα!', type: 'error' });
             return;
         }
     }
@@ -388,41 +361,25 @@ const User = ({ token }: { token: string | undefined }) => {
 
         if (newPwd.length === 0 || pwdCurr.length === 0 || newPwdRe.length === 0) {
             setEmptyFields(true);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Κενά Πεδία!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Κενά Πεδία!', type: 'error' });
             return;
         }
 
         if (pwdCurr == newPwd) {
             setPwdMatch(true);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Ο Καινούργιος Κωδικός Πρέπει Να Διαφέρει Απο Τον Παλιό!', type: 'error', intID: int});
+            PopUpInit({ setPopUp: setPopUp, text: 'Ο Καινούργιος Κωδικός Πρέπει Να Διαφέρει Απο Τον Παλιό!', type: 'error' });
             return;
         }
 
         if (newPwd !== newPwdRe) {
             setPwdNoMatch(true);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Οι Κωδικοί Πρόσβασης Δεν Ταιριάζουν!', type: 'error', intID: int});
+            PopUpInit({ setPopUp: setPopUp, text: 'Οι Κωδικοί Πρόσβασης Δεν Ταιριάζουν!', type: 'error' });
             return;
         }
 
         if (bars < 4) {
             setWeakPwd(true);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Αδύναμος Κωδικός Πρόσβασης!', type: 'error', intID: int});
+            PopUpInit({ setPopUp: setPopUp, text: 'Αδύναμος Κωδικός Πρόσβασης!', type: 'error' });
             return;
         }
 
@@ -433,22 +390,14 @@ const User = ({ token }: { token: string | undefined }) => {
             setNewPwd('');
             setNewPwdRe('');
             refetchOwn();
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Επιτυχής Αλλαγή!', type: 'success', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Επιτυχής Αλλαγή!', type: 'success' });
             return;
         } else {
             setError(true);
             setPwdCurr('');
             setNewPwd('');
             setNewPwdRe('');
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Απροσδιόριστο Σφάλμα!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Απροσδιόριστο Σφάλμα!', type: 'error' });
             return;
         }
     }
@@ -464,31 +413,19 @@ const User = ({ token }: { token: string | undefined }) => {
 
         if (oldEmail.length === 0 || newEmail.length === 0) {
             setEmptyFields(true);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Κενά Πεδία!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Κενά Πεδία!', type: 'error' });
             return;
         }
 
         if (newEmail === oldEmail) {
             setEmailsMatch(true);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Το Καινούργιο Και Το Παλιό E-Mail Πρέπει Να Διαφέρουν!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Το Καινούργιο Και Το Παλιό E-Mail Πρέπει Να Διαφέρουν!', type: 'error' });
             return;
         }
 
         if (!verifyEmail(newEmail)) {
             setUnverifiableEmail(true);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Μη Επαληθεύσιμο E-Mail!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Μη Επαληθεύσιμο E-Mail!', type: 'error' });
             return;
         }
 
@@ -498,21 +435,13 @@ const User = ({ token }: { token: string | undefined }) => {
             setOldEmail('');
             setNewEmail('');
             refetchOwn();
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Επιτιχής Αλλγαή!', type: 'success', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Επιτιχής Αλλγαή!', type: 'success' });
             return;
         } else {
             setError(true);
             setOldEmail('');
             setNewEmail('');
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Απροσδιόριστο Σφάλμα!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Απροσδιόριστο Σφάλμα!', type: 'error' });
             return;
         }
     }
@@ -535,17 +464,11 @@ const User = ({ token }: { token: string | undefined }) => {
 
         if (res) {
             refetchGlobalSettings();
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Επιτυχής Ενημέρωη Ρυθμίσεων!', type: 'success', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Επιτυχής Ενημέρωη Ρυθμίσεων!', type: 'success' });
+            return;
         } else {
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Απροσδιόριστο Σφάλμα Στην Ενημέρωη Ρυθμίσεων!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Απροσδιόριστο Σφάλμα Στην Ενημέρωη Ρυθμίσεων!', type: 'error' });
+            return;
         }
     }
 
@@ -559,11 +482,7 @@ const User = ({ token }: { token: string | undefined }) => {
 
         if (!bgUploadImage || !bgUploadImageShow) {
             setNoBgImage(true);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Προσθέστε Εικόνα!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Προσθέστε Εικόνα!', type: 'error' });
             return;
         }
 
@@ -577,20 +496,12 @@ const User = ({ token }: { token: string | undefined }) => {
             refetchBgImageInfo();
             setBgUploadImage(undefined);
             setBgUploadImageShow(undefined);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Επιτυχής Αλλαγή!', type: 'success', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Επιτυχής Αλλαγή!', type: 'success' });
             return;
         } else {
             setBgUploadImage(undefined);
             setBgUploadImageShow(undefined);
-            const int = window.setInterval(() => {
-                setPopUp(undefined);
-                window.clearInterval(int);
-            }, 5000);
-            setPopUp({ text: 'Απροσδιόριστο Σφάλμα!', type: 'error', intID: int });
+            PopUpInit({ setPopUp: setPopUp, text: 'Απροσδιόριστο Σφάλμα!', type: 'error' });
             return;
         }
     }
