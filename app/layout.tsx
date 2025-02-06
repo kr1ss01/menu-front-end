@@ -11,12 +11,23 @@ import Footer from "./components/footer";
 const jura = Jura({ subsets: ['latin', 'greek']});
 
 export const metadata: Metadata = {
-  title: "Μαύρο Πιπέρι Menu",
+  title: "Μαύρο Πιπέρι || Online Menu",
   description: "Μαύρο Πιπέρι Online Menu. Το online menu για την αγαπημένη σας ταβέρνα στον Εύοσμο Θεσσαλονίκης. Σας περιμένουμε να ανακαλύωετε όλα τα υπέροχα πιάτα μας.",
   keywords: "μαύρο, πιπέρι, εύοσμος, ταβέρνα, εστιατόριο, black, mavro, piperi, pepper, evosmos, restaurant, tavern, food",
   icons: {
-    icon: '/restaurant.png',
-  }
+    icon: '/mp_c.png',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+    }
+  },
+  category: "online menu",
 };
 
 export default function RootLayout({

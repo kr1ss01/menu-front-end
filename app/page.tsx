@@ -35,7 +35,7 @@ export default function Home() {
         }
     });
 
-    const { data: special, isLoading: isLoadingSpecial, isError: isErrorSpecial, refetch: refetchSpecial } = useQuery<PlateComplex[]>({
+    const { data: special } = useQuery<PlateComplex[]>({
         queryKey: ['get-all-special-plates-main'],
         queryFn: async () => {
             return await getSpecialPlates();
@@ -49,6 +49,7 @@ export default function Home() {
         }
     });
 
+    // ? Key-bindings.
     React.useEffect(() => {
         let altPress = false;
         let keyPress = false;
@@ -109,20 +110,26 @@ export default function Home() {
 
     // ! ADD SPECIAL PLATES
     const getPlates = async (cat: Category, t?: number) => {
+        // * T Variables Counts the times this function has run.
+        // * Stop it at for times, to stop infinite loop and wasting time.
         if (!t) {
+            // ? If it's first time entrering this function set loaders false.
             setLoadingPlates(false);
             setErrorPlates(false);
         }
 
         if (t == 4) return;
 
+        // ? Close Tab
         if (cat._id === active?._id) {
             setActive(undefined);
             return;
         }
 
+        // ? Initialize Loaders.
         setActive(cat)
         setLoadingPlates(true);
+        // ? Search on cache array if already exists.
         if (plateArray.length > 0) {
             for (let i = 0; i < plateArray.length; i++) {
                 if (plateArray[i].catID === cat._id) {
@@ -133,6 +140,7 @@ export default function Home() {
             }
         }
 
+        // ? If not on cache array, fetch value.
         const res = await getPlatesByCategoryStrickt(cat._id);
 
         if (res) {
@@ -227,7 +235,16 @@ export default function Home() {
                         return (
                             <React.Fragment key={cat._id}>
                                 <li className={style.categoryItem} onClick={() => getPlates(cat)} id={`${cat._id}order-${key}`}>
-                                    <Link href={`#${cat._id + 'order-' + key}`} passHref>
+                                    <Link
+                                        href={`#${cat._id + 'order-' + key}`}
+                                        passHref
+                                        onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                                            // * Prevent Deafault Behaviour On Close
+                                            if (active?._id === cat._id) {
+                                                e.preventDefault();
+                                            }
+                                        }}
+                                    >
                                         <div role='presentation' className={style.cross}>
                                             <span role='presentation'></span>
                                             <span role='presentation' style={{ transform: active?._id === cat._id ? 'rotate(0)' : '' }} ></span>
