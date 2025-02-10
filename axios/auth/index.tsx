@@ -120,7 +120,7 @@ export const changeUsersPassword = async (at: string | undefined, oldPwd: string
     try {
         const token = 'Bearer ' + at;
         const res = await api.put('/password', {
-            oldPwd: oldPwd,
+            pwd: oldPwd,
             newPwd: newPwd,
         },
         {
@@ -130,6 +130,7 @@ export const changeUsersPassword = async (at: string | undefined, oldPwd: string
         });
         return res.data;
     } catch (e) {
+        console.log(e);
         return;
     }
 }

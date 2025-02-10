@@ -397,7 +397,7 @@ const User = ({ token }: { token: string | undefined }) => {
             setPwdCurr('');
             setNewPwd('');
             setNewPwdRe('');
-            PopUpInit({ setPopUp: setPopUp, text: 'Απροσδιόριστο Σφάλμα!', type: 'error' });
+            PopUpInit({ setPopUp: setPopUp, text: 'Λάθος Κωδικός Ή Όνομα!', type: 'error' });
             return;
         }
     }

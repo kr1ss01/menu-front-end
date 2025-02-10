@@ -5,8 +5,9 @@
   @include mixins.page();
   .backgroundImageTop {
     width: 100%;
+    // max-width: 1440px;
+    // margin: 0 auto;
     height: 40vh;
-    background-color: #000;
     position: relative;
   }
   .specialPopUp {
